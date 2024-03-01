@@ -1,25 +1,29 @@
 "use client"
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+
+import { Image } from 'next/image'
 import InputMask from 'react-input-mask';
-async function cadastro(req) {
-  const body = JSON.stringify(req);
-  const res = await fetch(`https://facial.parquedasaguas.com.br/cadastro/titulo`, {
-    // mode: 'no-cors',
-    method: 'POST',
-    headers: {
-        'Content-Type': 'application/json',
-        'Authorization': localStorage.getItem('token')
-    },
-    body,
-  });
-  console.log(res);
-  const json = await res.json();
-  console.log(json);
-  localStorage.setItem('token', json['token']);
-  Router.push('/cadastro');
+async function cadastro(req, token) {
+  if (typeof window !== 'undefined') {
+    const body = JSON.stringify(req);
+    const res = await fetch(`https://facial.parquedasaguas.com.br/cadastro/titulo`, {
+      // mode: 'no-cors',
+      method: 'POST',
+      headers: {
+          'Content-Type': 'application/json',
+          'Authorization': token
+      },
+      body,
+    });
+    const json = await res.json();
+  }
   return json
 }
 export default function Cadastro() {
+  useEffect(() => {
+    // Perform localStorage action
+    const token = localStorage.getItem('token')
+  }, [])
   const [showModal, setShowModal] = useState(false);
   const [registro, setRegistro] = useState({
     matricula: '',
@@ -54,7 +58,8 @@ export default function Cadastro() {
   }
   const salvar = () => {
     console.log(updated);
-    cadastro(updated);
+    const json = cadastro(updated, token);
+    localStorage.setItem('token', json['token']);
     setShowModal(false);
   }
   return (
@@ -73,11 +78,11 @@ export default function Cadastro() {
         <h1 className="text-lg font-bold">Relação de Pessoas no Título</h1>
         <ul role="list" className="divide-y sm:grid sm:grid-cols-3 sm:gap-4 cursor-pointer">
           {titulos.map((person) => (
-            <li key={person.email} className={'flex justify-between gap-x-6 py-2 '+ (person.facial=="1"?'bg-green-200':'bg-red-200')}
-              onClick={() => {mostraModal(person)}} key={person.matricula}>
+            <li key={person.matricula} className={'flex justify-between gap-x-6 py-2 '+ (person.facial=="1"?'bg-green-200':'bg-red-200')}
+              onClick={() => {mostraModal(person)}}>
               <div className="flex min-w-0 gap-x-4 px-2">
                 <div className="w-24 flex-none">
-                  <img className="w-40 h-32 rounded-lg" src={'https://sistema.parquedasaguas.com.br/fotos.php?matricula='+person.matricula} alt="" />
+                  <Image className="w-40 h-32 rounded-lg" src={'https://sistema.parquedasaguas.com.br/fotos.php?matricula='+person.matricula} alt="" />
                 </div>
                 <div className="min-w-0 flex-auto">
                   <p className="text-sm font-semibold leading-6 text-gray-900">{person.nome}</p>
@@ -128,7 +133,6 @@ export default function Cadastro() {
                           id="cpf"
                           defaultValue={registro.cpf}
                           onChange={handleOnChange}
-                          onChange={(event) => console.log(event.target.value)}
                           className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                         />
                       </div>

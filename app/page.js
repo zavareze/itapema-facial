@@ -1,5 +1,6 @@
 "use client"
 import { useState } from 'react'
+import { Image } from 'next/image'
 import { redirect } from 'next/navigation'
 import { Switch } from '@headlessui/react'
 function classNames(...classes) {
@@ -17,7 +18,9 @@ async function getLogin(matricula, cpf) {
     body,
   });
   const json = await res.json();
-  localStorage.setItem('token', json['token']);
+  if (typeof window !== 'undefined') {
+    localStorage.setItem('token', json['token']);
+  }
   return json['titulo'];
 }
 export default function Login() {
@@ -49,7 +52,7 @@ export default function Login() {
         />
       </div>
       <div className="mx-auto max-w-2xl text-center">
-        <img src="https://compre.parquedasaguas.com.br/img/cpa.png" className="w-24 mx-auto" />
+        <Image src="https://compre.parquedasaguas.com.br/img/cpa.png" className="w-24 mx-auto" alt="Parque das Águas" />
         <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">Reconhecimento Facial Sócios</h2>
         <p className="mt-2 text-lg leading-8 text-gray-600">
           Efetue o cadastramento e atualização de dados de reconhecimento facial para sócios e dependentes.
