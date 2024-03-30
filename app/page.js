@@ -6,30 +6,31 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
 async function getLogin(matricula, cpf) {
-  const body = new URLSearchParams();
-  body.append('matricula', matricula);
-  body.append('cpf', cpf);
   const res = await fetch(`https://facial.parquedasaguas.com.br/login`, {
     method: 'POST',
     headers: {
         'Content-Type': 'application/json',
     },
-    body,
+    body: JSON.stringify({ matricula, cpf }),
   });
   const json = await res.json();
-  localStorage.setItem('token', json['token']);
-  return json['titulo'];
+  if (json['token'])
+    localStorage.setItem('token', json['token']);
+  return json;
 }
 export default function Login() {
   const [agreed, setAgreed] = useState(false)
   const [matricula, setMatricula] = useState('');
   const [cpf, setCPF] = useState('');
   
-  const login = () => {
+  const login = async () => {
     if (agreed) {
-      const titulo = getLogin(matricula, cpf);
-      if (titulo)
-        redirect('/cadastro');
+      const result = await getLogin(matricula, cpf);
+      if (result.status != 'fail') {
+          redirect('/cadastro');
+      } else {
+        alert(result['message']);
+      }
     } else {
       alert("Você deve concordar com a política de privacidade antes de entrar")
     }
