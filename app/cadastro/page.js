@@ -1,7 +1,20 @@
 "use client";
 import { useEffect, useState } from "react";
 import InputMask from "react-input-mask";
-
+const parseJWT = (token) => {
+  var base64Url = token.split(".")[1];
+  var base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+  var jsonPayload = decodeURIComponent(
+    window
+      .atob(base64)
+      .split("")
+      .map(function (c) {
+        return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
+      })
+      .join("")
+  );
+  return JSON.parse(jsonPayload);
+};
 function useGetLocalStorageToken() {
   const [token, setToken] = useState();
 
@@ -10,6 +23,14 @@ function useGetLocalStorageToken() {
   }, [token]);
 
   return [token, setToken];
+}
+function useGetLocalStorageTitulos() {
+  const [state, setState] = useState();
+  useEffect(() => {
+    // const jwt = parseJWT(localStorage.getItem("token"));
+    setState([]);
+  }, [state]);
+  return [state, setState];
 }
 
 async function cadastro(req, token, onSuccess) {
@@ -36,7 +57,13 @@ async function cadastro(req, token, onSuccess) {
 
 export default function Cadastro() {
   const [showModal, setShowModal] = useState(false);
-  const [localStorageToken, setLocalStorageToken] = useGetLocalStorageToken();
+  const [token, setToken] = useState([]);
+  const [titulos, setTitulos] = useState([]);
+  useEffect(() => {
+    setToken(localStorage.getItem("token"));
+    const jwt = parseJWT(localStorage.getItem("token"))
+    setTitulos(jwt['titulo']);
+  }, [token]);
   const [registro, setRegistro] = useState({
     matricula: "",
     nome: "",
@@ -53,22 +80,7 @@ export default function Cadastro() {
     const { name, value } = event.target;
     setUpdated({ ...updated, [name]: value });
   };
-  const parseJWT = (token) => {
-    var base64Url = token.split(".")[1];
-    var base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
-    var jsonPayload = decodeURIComponent(
-      window
-        .atob(base64)
-        .split("")
-        .map(function (c) {
-          return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
-        })
-        .join("")
-    );
-    return JSON.parse(jsonPayload);
-  };
-  const jwt = localStorageToken ? parseJWT(localStorageToken) : [];
-  const [titulos, setTitulos] = useState(jwt["titulo"]);
+
 
   const mostraModal = (person) => {
     setRegistro(person);
@@ -105,7 +117,7 @@ export default function Cadastro() {
         >
           {titulos?.map((person) => (
             <li
-              key={person.email}
+              key={person.matricula}
               className={
                 "flex justify-between gap-x-6 py-2 " +
                 (person.facial == "1" ? "bg-green-200" : "bg-red-200")
