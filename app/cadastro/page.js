@@ -15,24 +15,6 @@ const parseJWT = (token) => {
   );
   return JSON.parse(jsonPayload);
 };
-function useGetLocalStorageToken() {
-  const [token, setToken] = useState();
-
-  useEffect(() => {
-    setToken(localStorage.getItem("token"));
-  }, [token]);
-
-  return [token, setToken];
-}
-function useGetLocalStorageTitulos() {
-  const [state, setState] = useState();
-  useEffect(() => {
-    // const jwt = parseJWT(localStorage.getItem("token"));
-    setState([]);
-  }, [state]);
-  return [state, setState];
-}
-
 async function cadastro(req, token, onSuccess) {
   const body = JSON.stringify(req);
   const res = await fetch(
@@ -47,11 +29,21 @@ async function cadastro(req, token, onSuccess) {
       body,
     }
   );
-  console.log(res);
   const json = await res.json();
-  console.log(json);
-  onSuccess(json["token"]);
-  Router.push("/cadastro");
+  onSuccess(json);
+  return json;
+}
+async function upload(req, token, onSuccess) {
+  const res = await fetch(`https://facial.parquedasaguas.com.br/cadastro/store`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": token,
+    },
+    body: JSON.stringify(req),
+  });
+  const json = await res.json();
+  onSuccess(json);
   return json;
 }
 
@@ -88,15 +80,54 @@ export default function Cadastro() {
     setShowModal(true);
   };
 
-  const onSuccess = (token) => {
-    setLocalStorageToken(token);
+  const onCadastroSuccess = (response) => {
+    if (response['response'] == 'success') {
+      localStorage.setItem('token', response['token']);
+      setToken('');
+      alert(response['message']);
+    } else {
+      let str = response['message']+'\n\n';
+      for (const [k, v] of Object.entries(response['errors'])) {
+        str += v+'\n';
+      }
+      alert(str);
+    }
   };
 
   const salvar = () => {
-    console.log(updated);
-    cadastro(updated, localStorageToken, onSuccess);
+    cadastro(updated, token, onCadastroSuccess);
     setShowModal(false);
   };
+  const onUploadSuccess = (response) => {
+    if (response['response'] == 'success') {
+      localStorage.setItem('token', response['token']);
+      setToken('');
+      setShowModal(false)
+      alert(response['message']);
+    } else {
+      let str = response['message']+'\n\n';
+      for (const [k, v] of Object.entries(response['errors'])) {
+        str += v+'\n';
+      }
+      alert(str);
+    }
+  };
+  const handleUploadFile = (event) => {
+    console.log('loading file', event.target.files[0]);
+    const img = document.createElement('img');
+    img.onload = () => {
+      const scale = 3200 / img.width < 800 / img.height ? 3200 / img.width : 800 / img.height;
+      const dst = document.createElement("canvas");
+      dst.width = img.width * scale;
+      dst.height = img.height * scale;
+      const ctx = dst.getContext("2d");
+      ctx.drawImage(img, 0, 0, dst.width, dst.height);
+      const body = { matricula: registro.matricula, image: dst.toDataURL() };
+      console.log('arquivo carregado e redimensionado', JSON.stringify(body));
+      upload(body, token, onUploadSuccess);
+    }
+    img.src = window.URL.createObjectURL(event.target.files[0]);
+  }
   return (
     <>
       <div>
@@ -265,7 +296,21 @@ export default function Cadastro() {
                   </div>
                 </div>
                 {/*footer*/}
-                <div className="flex items-center justify-end p-6 border-t border-solid border-blueGray-200 rounded-b">
+                <div className="flex items-center flex-wrap justify-end p-6 border-t border-solid border-blueGray-200 rounded-b">
+                  <button
+                    className="btn-responsive bg-emerald-500 text-white active:bg-emerald-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                    type="button"
+                  >
+                    <input type="file" name="image" id="upload" accept="image/*" capture="environment" onChange={handleUploadFile}></input>
+                    Procurar na Galeria
+                  </button>
+                  <button
+                    className="btn-responsive bg-emerald-500 text-white active:bg-emerald-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                    type="button"
+                  >
+                    <input type="file" name="image2" id="upload2" accept="image/*" onChange={handleUploadFile}></input>
+                    Foto Camera
+                  </button>
                   <button
                     className="text-red-500 background-transparent font-bold uppercase px-6 py-2 text-sm outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                     type="button"
