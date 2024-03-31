@@ -67,7 +67,7 @@ export default function Login() {
             </label>
             <div className="mt-2.5">
               <input
-                type="text"
+                type="number"
                 name="matricula"
                 id="matricula"
                 onChange={evt => setMatricula(evt.target.value)}
@@ -81,7 +81,7 @@ export default function Login() {
             </label>
             <div className="mt-2.5">
               <input
-                type="text"
+                type="number"
                 name="cpf"
                 id="cpf"
                 onChange={evt => setCPF(evt.target.value)}
