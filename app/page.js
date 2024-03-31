@@ -16,6 +16,9 @@ async function getLogin(matricula, cpf) {
   const json = await res.json();
   if (json['token'])
     localStorage.setItem('token', json['token']);
+  if (json['titulo'])
+    localStorage.setItem('titulo', JSON.stringify(json['titulo']));
+    
   return json;
 }
 export default function Login() {
