@@ -47,7 +47,7 @@ async function upload(req, token, onSuccess) {
   return json;
 }
 
-export default function Cadastro() {
+export default function Taxas() {
   const [showModal, setShowModal] = useState(false);
   const [loading, setLoading] = useState(false);
   const [token, setToken] = useState([]);
@@ -146,26 +146,25 @@ export default function Cadastro() {
   return (
     <>
       <div>
-        <div className="pb-4">
-        <p className="text-sm">
-          Você deve finalizar o cadastro e fazer o reconhecimento 
-          facial de todas que estão na cor rosa para que as 
-          mesmas possam acessar o clube.
-        </p>
-        <p className="text-sm">
-          Vale lembrar que as mesmas devem também estar em
-          dia com as taxas para poder acessar o clube</p>
+          <button type="submit" className={`block w-full rounded-md bg-indigo-600 px-2 py-2.5 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 
+          focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 `}>Reconhecimento facial clique aqui</button>
+        <h1 className="text-2xl font-bold text-center py-2">Renovação de Taxas</h1>
+        <div className="pb-4 px-2">
+          <p className="text-sm">
+            Existem duas taxas que devem ser pagas periodicamente são elas taxa de carteirinha e Taxa Sanitária.
+            A taxa de carteirinha existe renovação por 1 ano ou 2 anos, já a taxa sanitária tem pela validade de 1 mês ou 2 meses.
+          </p>
         </div>
-        <h1 className="text-lg font-bold">Relação de Pessoas no Título</h1>
+        <h1 className="text-lg font-bold text-center">Relação de Pessoas no Título</h1>
         <ul
           role="list"
-          className="divide-y sm:grid sm:grid-cols-3 sm:gap-4 cursor-pointer"
+          className="divide-y sm:grid sm:grid-cols-3 sm:gap-4 cursor-pointer px-2 pb-2"
         >
           {titulos?.map((person) => (
             <li
               key={person.matricula}
               className={
-                "flex justify-between gap-x-6 py-2 " +
+                "flex justify-between gap-x-6 py-2 mb-2 " +
                 (person.facial == "1" ? "bg-green-200" : "bg-red-200")
               }
               onClick={() => {
@@ -181,21 +180,17 @@ export default function Cadastro() {
                   />
                 </div>
                 <div className="min-w-0 flex-auto">
-                  <p className="text-sm font-semibold leading-6 text-gray-900">
+                  <div className="text-sm font-semibold leading-6 text-gray-900">
                     {person.nome}
-                  </p>
-                  <p className="mt-1 truncate text-xs leading-5 text-gray-500">
-                    {person.cpf}
-                  </p>
-                  <p className="mt-1 truncate text-xs leading-5 text-gray-500">
-                    {person.celular}
-                  </p>
-                  <p className="mt-1 truncate text-xs leading-5 text-gray-500">
-                    {person.email}
-                  </p>
-                  <p className="mt-1 truncate text-xs leading-5 text-gray-500">
-                    Atualizado: {person.updated}
-                  </p>
+                  </div>
+                  <div className="mt-1 truncate text-xs leading-5 text-gray-500">
+                    <div>Vencimento Carteirinha:</div>
+                    <span className="text-center bg-red-500 text-white font-bold uppercase text-sm px-3 py-1 rounded">28/02/2024</span>
+                  </div>
+                  <div className="mt-1 truncate text-xs leading-5 text-gray-500">
+                    <div>Vencimento Taxa Sanitária:</div>
+                    <span className="text-center bg-red-500 text-white font-bold uppercase text-sm px-3 py-1 rounded">28/02/2024</span>
+                  </div>
                 </div>
               </div>
             </li>
@@ -226,106 +221,39 @@ export default function Cadastro() {
                 </div>
                 {/*body*/}
                 <div className="relative p-4 flex-auto">
-                  <div className="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2">
-                  <div>
-                      <label htmlFor="cpf" className="block text-sm font-semibold leading-4 text-gray-900">
-                        CPF
-                      </label>
-                      <div className="mt-2">
-                        <InputMask
-                          mask="999.999.999-99"
-                          type="text"
-                          name="cpf"
-                          id="cpf"
-                          defaultValue={registro.cpf}
-                          onChange={handleOnChange}
-                          className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                        />
-                      </div>
-                    </div>
-                    <div>
-                      <label htmlFor="data_nascimento" className="block text-sm font-semibold leading-4 text-gray-900">
-                        Data Nascimento
-                      </label>
-                      <div className="mt-2">
-                        <input
-                          type="date"
-                          name="data_nascimento"
-                          id="data_nascimento"
-                          defaultValue={registro.data_nascimento}
-                          onChange={handleOnChange}
-                          className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:4"
-                        />
-                      </div>
-                    </div>
-                    <div>
-                      <label htmlFor="celular" className="block text-sm font-semibold leading-4 text-gray-900">
-                        Celular
-                      </label>
-                      <div className="mt-2">
-                        <input
-                          type="tel"
-                          name="celular"
-                          id="celular"
-                          defaultValue={registro.celular}
-                          autoComplete='billing mobile tel'
-                          onChange={handleOnChange}
-                          className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                        />
-                      </div>
-                    </div>
-                    <div>
-                      <label htmlFor="email" className="block text-sm font-semibold leading-4 text-gray-900">
-                        E-Mail
-                      </label>
-                      <div className="mt-2">
-                        <input
-                          type="email"
-                          name="email"
-                          id="email"
-                          defaultValue={registro.email}
-                          onChange={handleOnChange}
-                          className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                        />
-                      </div>
-                    </div>
-                    <div>
-                      <label htmlFor="cidade" className="block text-sm font-semibold leading-4 text-gray-900">
-                        Cidade
-                      </label>
-                      <div className="mt-2">
-                        <input
-                          type="text"
-                          name="cidade"
-                          id="cidade"
-                          defaultValue={registro.cidade}
-                          autoComplete="home city"
-                          onChange={handleOnChange}
-                          className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                        />
-                      </div>
-                    </div>
+                  <div className="grid grid-cols-1 gap-x-4 gap-y-2">
+                  <div className="btn-responsive text-center bg-red-500 text-white font-bold uppercase text-sm px-2 py-3 rounded shadow outline-none mr-1 mb-1 ease-linear transition-all duration-150">
+                    Vencido Carteirinha 26/01/2050
+                  </div>
+                  <button
+                    className="btn-responsive bg-emerald-500 text-white active:bg-emerald-600 font-bold uppercase text-sm px-2 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                    type="button">
+                    Carteirinha 1 Ano R$ 54,50
+                  </button>
+                  <button
+                    className="btn-responsive bg-emerald-500 text-white active:bg-emerald-600 font-bold uppercase text-sm px-2 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                    type="button">
+                    Carteirinha 2 Anos R$ 79,50
+                  </button>
+                  <hr />
+                  <div className="btn-responsive text-center bg-red-500 text-white font-bold uppercase text-sm px-2 py-3 rounded shadow outline-none mr-1 mb-1 ease-linear transition-all duration-150">
+                    Vencido Taxa Sanitária 26/01/2050
+                  </div>
+                  <button
+                    className="btn-responsive bg-emerald-500 text-white active:bg-emerald-600 font-bold uppercase text-sm px-2 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                    type="button">
+                    Taxa Sanitária 1 mês R$ 54,50
+                  </button>
+                  <button
+                    className="btn-responsive bg-emerald-500 text-white active:bg-emerald-600 font-bold uppercase text-sm px-2 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                    type="button">
+                    Taxa Sanitária 5 meses R$ 99,50
+                  </button>
+
+                    
                   </div>
                 </div>
-                {/*footer*/}
                 <div className="flex items-center flex-wrap justify-end p-6 border-t border-solid border-blueGray-200 rounded-b">
-                  {registro.cpf != '' ? (
-                  <>
-                    <button
-                      className="btn-responsive bg-emerald-500 text-white active:bg-emerald-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
-                      type="button"
-                    >
-                      <input type="file" name="image" id="upload" accept="image/*" capture="user" onChange={handleUploadFile}></input>
-                      Foto Câmera
-                    </button>
-                    <button
-                      className="btn-responsive bg-emerald-500 text-white active:bg-emerald-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
-                      type="button"
-                    >
-                      <input type="file" name="image2" id="upload2" accept="image/*" onChange={handleUploadFile}></input>
-                      Procurar na Galeria
-                    </button>
-                  </>) : (<div className="mb-4">Após salvar todos os dados você poderá enviar a Foto para efetuar o reconhecimento facial</div>)}
                   <button
                     className="text-red-500 background-transparent font-bold uppercase px-6 py-2 text-sm outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                     type="button"

@@ -16,34 +16,34 @@ export default function Selecao() {
         />
       </div>
       <div className="mx-auto max-w-2xl text-center">
-        <img src="cpa.png" className="w-24 mx-auto" />
+        <img src="/cpa.png" className="w-24 mx-auto" />
         <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">Bem vindo ao Thermas Clube Parque das Águas</h2>
         <p className="mt-2 text-lg leading-8 text-gray-600">
-          Nesta página você pode comprar ingressos, visualizar ingressos ou se for sócio atualizar as taxas e também atualizar seu o reconhecimento facial.
+          Selecione o parque que deseja visitar, hoje contamos com dois parques, um em Farroupilha/RS e outro em Viamão/RS.
         </p>
       </div>
         <div className="m-10">
             <Link
                 className="block w-full rounded-md bg-indigo-600 px-3.5 py-2.5 text-center text-xl font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                href="/login-socio"
+                href="/selecione-data?parque=2"
             >
-                Sócio
+                Parque Viamão
             </Link>
         </div>
         <div className="m-10">
             <Link
                 className="block w-full rounded-md bg-indigo-600 px-3.5 py-2.5 text-center text-xl font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                href="/selecione-parque"
+                href="/selecione-data?parque=1"
             >
-                Comprar Ingressos
+                Parque Farroupilha
             </Link>
         </div>
         <div className="m-10">
             <Link
-                className="block w-full rounded-md bg-indigo-600 px-3.5 py-2.5 text-center text-xl font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                href="/login-visitante"
+                className="block w-full rounded-md bg-slate-900 px-3.5 py-2.5 text-center text-xl font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                href="/"
             >
-                Ver ingressos comprados
+                Voltar
             </Link>
         </div>
         <div className='pt-8 text-center'>
