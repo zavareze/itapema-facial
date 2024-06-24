@@ -15,7 +15,7 @@ export default function Selecao() {
     useEffect(() => {
         let ignore = false;
         const getCalendario = async () => {
-            const res = await fetch(`https://facial.parquedasaguas.com.br/ingressos`, {
+            const res = await fetch(`https://facial.parquedasaguas.com.br/ingressos?parque=`+parque, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -24,8 +24,8 @@ export default function Selecao() {
             const result = await res.json();
             if (!ignore) {
                 console.log(result);
-                setCalendario(result['mes']);
-                setCalendarioAtual(result['mes'][0]);
+                setCalendario(result);
+                setCalendarioAtual(result[0]);
             }
         }
         getCalendario();
