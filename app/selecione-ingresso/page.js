@@ -2,18 +2,101 @@
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { useSearchParams, useRouter } from 'next/navigation';
+import Quantidade from "@/components/Quantidade";
+import ModalCPF from "@/components/ModalCPF";
+import ModalFormaPagamento from "@/components/ModalFormaPagamento";
+import ModalPix from "@/components/ModalPix";
+import ModalCartao from "@/components/ModalCartao";
+import ModalCadastro from "@/components/ModalCadastro";
+import Loading from "@/components/Loading";
+
 export default function Selecao() {
     const searchParams = useSearchParams();
     const router = useRouter();
     const [parque, setParque] = useState(searchParams.get('parque'));
     const [data, setData] = useState(searchParams.get('data'));
+    const [ingressos, setIngressos] = useState([]);
     const [calendario, setCalendario] = useState([]);
-    const [mes, setMes] = useState(0);
-    const [calendarioAtual, setCalendarioAtual] = useState([]);
+    const [produtosEscolhidos, setProdutosEscolhidos] = useState({});
+    const [carregando, setCarregando] = useState(false);
+    const [showDialogCPF, setShowDialogCPF] = useState(false);
+    const [showDialogCadastro, setShowDialogCadastro] = useState(false);
+    const [showDialogFormaPagamento, setShowDialogFormaPagamento] = useState(false);
+    const [showDialogPix, setShowDialogPix] = useState(false);
+    const [showDialogCartao, setShowDialogCartao] = useState(false);
+    const [total, setTotal] = useState(0);
+    const [cpf, setCPF] = useState('');
+    const [cpfVerificado, setCPFVerificado] = useState(false);
+    const [voucher, setVoucher] = useState('');
+    const [pix, setPIX] = useState('');
+    const [pedido, setPedido] = useState('');
+    
+    const verificaCPF = () => {
+        if (total == 0) {
+            alert("Você precisa adicionar algum ingresso no pedido antes de avançar");
+        } else
+        if (!cpfVerificado) {
+            setShowDialogCPF(true);
+        } else {
+            setShowDialogFormaPagamento(true);
+        }
+    }
+    const retornoCPF = (result) => {
+        setCPF(result.cpf);
+        if (result.status == 'notfound') {
+            setShowDialogCadastro(true);
+        } else
+            if (result.status == 'success') {
+                setCPFVerificado(true);
+                setShowDialogFormaPagamento(true);
+            }
+    }
+    const geraPedido = async (forma_pagamento) => {
+        setCarregando(true);
+        const res = await fetch(`https://facial.parquedasaguas.com.br/pedido`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                cpf,
+                forma_pagamento,
+                parque,
+                data,
+                produtos: produtosEscolhidos,
+                voucher,
+            }),
+        });
+        const result = await res.json();
+        setCarregando(false);
+        if (result.status == 'success') {
+            setPIX(result.pedido.pix);
+            setVoucher(result.pedido.voucher);
+            setPedido(result.pedido.id);
+            if (result.pedido.forma_pagamento == 5)
+                setShowDialogPix(true);
+            if (result.pedido.forma_pagamento == 1)
+                setShowDialogCartao(true);
+        }
+    }
+    const goToPayment = async (forma) => {
+        setShowDialogFormaPagamento(false);
+        await geraPedido(forma);
+    }
+    useEffect(() => {
+        let total = 0;
+        Object.entries(produtosEscolhidos).forEach(([k, v]) => {
+            let p = ingressos.filter(x => x.id == k)?.[0]?.valorPromo*1 | 0;
+            total += p*v;
+        });
+        setTotal(total);
+    }, [produtosEscolhidos]);
+
     useEffect(() => {
         let ignore = false;
+        setCarregando(true);
         const getCalendario = async () => {
-            const res = await fetch(`https://facial.parquedasaguas.com.br/ingressos`, {
+            const res = await fetch(`https://facial.parquedasaguas.com.br/ingressos?parque=`+parque, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -21,9 +104,14 @@ export default function Selecao() {
             });
             const result = await res.json();
             if (!ignore) {
-                console.log(result);
-                setCalendario(result['mes']);
-                setCalendarioAtual(result['mes'][0]);
+                setCarregando(false);
+                result.map(item => {
+                    item.dias.map(dia => {
+                        if (dia.data == data) {
+                            setIngressos(dia.produtos);
+                        }
+                    })
+                })
             }
         }
         getCalendario();
@@ -33,6 +121,7 @@ export default function Selecao() {
     }, []);
     return (
         <div className="isolate bg-white px-6 py-8 sm:py-32 lg:px-8">
+            { carregando ? <Loading /> : ''}
             <div
                 className="absolute inset-x-0 top-[-10rem] -z-10 transform-gpu overflow-hidden blur-3xl sm:top-[-20rem]"
                 aria-hidden="true"
@@ -51,88 +140,92 @@ export default function Selecao() {
                     Promoções Disponíveis
                 </h2>
             </div>
-            <h2 className="text-xl font-bold mb-2 text-black">Ingresso para 1 dia (Day Use)</h2>
-            <div className="text-black">
-                <div className="font-bold text-md mb-2">
-                    Ingresso Adulto <span className="text-blue-900 font-normal">(+info)</span>
-                </div>
-                <div className="flex mb-2">
-                    <div className="font-bold mx-4 text-xl">R$ 79,90</div>
-                    <div className="rounded-full border bg-slate-100 w-8 px-2 text-center cursor-pointer">-</div>
-                    <div className="border mx-2 px-2 w-16 text-center">0</div>
-                    <div className="rounded-full border bg-slate-100 w-8 px-2 text-center cursor-pointer">+</div>
-                </div>
-            </div>
-            <div className="text-black">
-                <div className="font-bold text-black text-md mb-2">
-                    Ingresso Criança <span className="text-blue-900 font-normal">(2 a 9 anos e 11 meses)</span>
-                </div>
-                <div className="flex mb-2">
-                    <div className="font-bold mx-4 text-xl">R$ 59,90</div>
-                    <div className="rounded-full border bg-slate-100 w-8 px-2 text-center">-</div>
-                    <div className="border mx-2 px-2 w-16 text-center">0</div>
-                    <div className="rounded-full border bg-slate-100 w-8 px-2 text-center">+</div>
-                </div>
-            </div>
-            <div className="text-black mb-4">
-                <div className="font-bold text-md mb-2">
-                    Estacionamento (1 por veículo)
-                </div>
-                <div className="flex mb-2">
-                    <div className="font-bold mx-4 text-xl">R$ 25,00</div>
-                    <div className="rounded-full border bg-slate-100 w-8 px-2 text-center">-</div>
-                    <div className="border mx-2 px-2 w-16 text-center">0</div>
-                    <div className="rounded-full border bg-slate-100 w-8 px-2 text-center">+</div>
-                </div>
-            </div>
+            
 
-            { parque == '2' ? (<div className="mt-8 mb-4 text-black">
+            <h2 className="text-xl font-bold mb-2 text-black">Ingresso para 1 dia (Day Use)</h2>
+            {ingressos.filter(produto => produto.categoria == 1).map((produto, i) => (
+                <div className="text-black" key={i}>
+                    <div className="font-bold text-md mb-2">
+                        {produto.titulo} {produto.sub ? (<span className="text-blue-900 font-normal">{produto.sub}</span>) : ''}
+                    </div>
+                    <div className="flex mb-2">
+                        <div className="font-bold mx-4 text-xl">R$ {parseFloat(produto.valorPromo)?.toLocaleString('pt-BR', { minimumFractionDigits: 2})}</div>
+                        <Quantidade quantidade={produtosEscolhidos[produto.id] || 0} setQuantidade={(qnt) => {
+                            setProdutosEscolhidos(prevState => ({ ...prevState, [produto.id]: qnt}))}}></Quantidade>
+                    </div>
+                </div>
+                )
+            )}
+            {ingressos.filter(produto => produto.categoria == 3).map((produto, i) => (
+            <div key={i} className="mt-8 mb-4 text-black">
                 <div className="font-bold text-md mb-2">
-                    Temporada Individual VIPCARD 1 ano
+                    {produto.titulo} {produto.sub ? (<span className="text-blue-900 font-normal">{produto.sub}</span>) : ''}
                 </div>
                 <div className="text-sm mb-2">Tenha seu acesso individual liberado no parque aquático de viamão durante 1 ano e ainda ganhe desconto no estacionamento, 
                 adquira já seu VIPCARD.</div>
                 <div className="flex mb-2">
-                    <div className="font-bold mx-4 text-xl">R$ 275,00</div>
-                    <div className="rounded-full border bg-slate-100 w-8 px-2 text-center">-</div>
-                    <div className="border mx-2 px-2 w-16 text-center">0</div>
-                    <div className="rounded-full border bg-slate-100 w-8 px-2 text-center">+</div>
+                    <div className="font-bold mx-4 text-xl">R$ {parseFloat(produto.valorPromo)?.toLocaleString('pt-BR', { minimumFractionDigits: 2})}</div>
+                    <Quantidade quantidade={produtosEscolhidos[produto.id] || 0} setQuantidade={(qnt) => {
+                            setProdutosEscolhidos(prevState => ({ ...prevState, [produto.id]: qnt}))}}></Quantidade>
                 </div>
-            </div>) : ''}
-
+            </div>
+            )
+            )}
             <hr />
-
-            <div className="my-4 text-black">
+            { (ingressos.filter(produto => produto.categoria == 2).length > 0) ? (<div className="my-4 text-black">
                 <h2 className="text-xl font-bold mt-4">Ingresso Especiais</h2>
                 <div className="text-sm">Apresente documentação comprobatória para obter o benefício.</div>
-            </div>
-            <div className="text-black">
-                <div className="font-bold text-md mb-2">
-                    Ingresso Idoso (+65 anos)
+            </div>) : ''}
+            {ingressos.filter(produto => produto.categoria == 2).map((produto, i) => (
+                <div className="text-black" key={i}>
+                    <div className="font-bold text-md mb-2">
+                        {produto.titulo} {produto.sub ? (<span className="text-blue-900 font-normal">{produto.sub}</span>) : ''}
+                    </div>
+                    <div className="flex mb-2">
+                        <div className="font-bold mx-4 text-xl">R$ {parseFloat(produto.valorPromo)?.toLocaleString('pt-BR', { minimumFractionDigits: 2})}</div>
+                        <Quantidade quantidade={produtosEscolhidos[produto.id] || 0} setQuantidade={(qnt) => {
+                            setProdutosEscolhidos(prevState => ({ ...prevState, [produto.id]: qnt}))}}></Quantidade>
+                    </div>
                 </div>
-                <div className="flex mb-2">
-                    <div className="font-bold mx-4 text-xl">R$ 59,90</div>
-                    <div className="rounded-full border bg-slate-100 w-8 px-2 text-center">-</div>
-                    <div className="border mx-2 px-2 w-16 text-center">0</div>
-                    <div className="rounded-full border bg-slate-100 w-8 px-2 text-center">+</div>
-                </div>
-            </div>
-            <div className="text-black">
-                <div className="font-bold text-md mb-2">
-                    Ingresso Pessoa com Deficiência (PCD)
-                </div>
-                <div className="flex mb-2">
-                    <div className="font-bold mx-4 text-xl">R$ 59,90</div>
-                    <div className="rounded-full border bg-slate-100 w-8 px-2 text-center">-</div>
-                    <div className="border mx-2 px-2 w-16 text-center">0</div>
-                    <div className="rounded-full border bg-slate-100 w-8 px-2 text-center">+</div>
-                </div>
-            </div>
-            
-
+                )
+            )}
+            <div className="font-bold text-2xl text-center mx-4 my-4 p-4 border rounded bg-green-100">Total R$ {total?.toLocaleString('pt-BR', { minimumFractionDigits: 2})}</div>
+            {showDialogCPF ? <ModalCPF 
+                cpf={cpf} 
+                setShowModal={(show) => setShowDialogCPF(show)} 
+                setCarregando={show => setCarregando(show)} 
+                avancar={(result) => retornoCPF(result)} /> : ''}
+            {showDialogCadastro ? <ModalCadastro 
+                cpf={cpf} 
+                setShowModal={(show) => setShowDialogCadastro(show)} 
+                setCarregando={show => setCarregando(show)} 
+                avancar={(result) => retornoCPF(result)}  /> : ''}
+            {showDialogFormaPagamento ? <ModalFormaPagamento 
+                total={total}
+                setCarregando={show => setCarregando(show)}
+                setShowModal={(show) => setShowDialogFormaPagamento(show)} 
+                setFormaPagamento={(forma) => goToPayment(forma)} /> : ''}
+            {showDialogPix ? <ModalPix 
+                pix={pix} 
+                pedido={pedido} 
+                total={total}
+                setShowModal={(show) => setShowDialogPix(show)} /> : ''}
+            {showDialogCartao ? <ModalCartao 
+                total={total} 
+                pedido={pedido}
+                setCarregando={show => setCarregando(show)}
+                setShowModal={(show) => setShowDialogCartao(show)} /> : ''}
             <div className="m-4">
                 <div
-                    className="block w-full rounded-md bg-slate-900 px-3.5 py-2.5 text-center text-xl font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                    className="block w-full rounded-md bg-slate-900 px-3.5 py-2.5 text-center text-xl font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 cursor-pointer"
+                    onClick={() => verificaCPF()}
+                >
+                    Escolher Forma de Pagamento
+                </div>
+            </div>
+            <div className="m-4">
+                <div
+                    className="block w-full rounded-md bg-slate-900 px-3.5 py-2.5 text-center text-xl font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 cursor-pointer"
                     onClick={() => router.back()}
                 >
                     Voltar

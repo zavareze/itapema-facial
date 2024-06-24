@@ -44,6 +44,7 @@ async function getLogin(celular, cpf) {
   return json;
 }
 export default function Login() {
+  const router = useRouter();
   const [showModal, setShowModal] = useState(false);
   const [agreed, setAgreed] = useState(false)
   const [celular, setCelular] = useState('');
@@ -68,9 +69,11 @@ export default function Login() {
   const login = async () => {
     if (agreed) {
       const result = await getLogin(celular, cpf);
-      if (result.status != 'fail') {
-          setShowModal(true);
-      } else {
+      console.log('login-result', result);
+      if (result.status == 'success') {
+        router.push('/cadastro-visitante')
+      } else
+      if (result.status == 'fail') {
         alert(result['message']);
       }
     } else {

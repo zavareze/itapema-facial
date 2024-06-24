@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-export default function ModalCadastro(data='', order='') {
+export default function AlterarData(data='', order='') {
     const [updated, setUpdated] = useState([]);
     const handleOnChange = (event) => {
         const { name, value } = event.target;

@@ -148,6 +148,14 @@ export default function Cadastro() {
       >
         {visitantes?.map((person) => (<PersonCard key={person.matricula} person={person} mostraModal={mostraModal} handleUploadFile={handleUploadFile} />))}
       </ul>
+      <div className="m-4">
+          <div
+              className="block w-full rounded-md bg-slate-900 px-3.5 py-2.5 text-center text-xl font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+              onClick={() => router.back()}
+          >
+              Voltar
+          </div>
+      </div>
     </div>
   )
 }
