@@ -24,7 +24,7 @@ return show ?? (
         <div className="relative p-4 flex-auto">
           <div className="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2">
                 <div className="mx-4">
-                    <div className="w-72 h-72 bg-green-100 dark:bg-white flex items-center mx-auto">
+                    <div className="w-72 h-72 bg-white flex items-center mx-auto">
                         <QRCode value={pix} className="mx-auto my-auto" />
                     </div>
                 </div>

@@ -189,7 +189,8 @@ export default function Selecao() {
                 </div>
                 )
             )}
-            <div className="font-bold text-2xl text-center mx-4 my-4 p-4 border rounded bg-green-100 dark:bg-green-900 text-black dark:text-gray-300">Total R$ {total?.toLocaleString('pt-BR', { minimumFractionDigits: 2})}</div>
+            <div className="font-bold text-2xl text-center my-4 p-4 border rounded bg-green-100
+             dark:bg-green-900 text-black dark:text-gray-300">Total R$ {total?.toLocaleString('pt-BR', { minimumFractionDigits: 2})}</div>
             {showDialogCPF ? <ModalCPF 
                 cpf={cpf} 
                 setShowModal={(show) => setShowDialogCPF(show)} 
@@ -215,7 +216,7 @@ export default function Selecao() {
                 pedido={pedido}
                 setCarregando={show => setCarregando(show)}
                 setShowModal={(show) => setShowDialogCartao(show)} /> : ''}
-            <div className="m-4">
+            <div className="mb-2">
                 <div
                     className="block w-full rounded-md bg-slate-900 dark:bg-slate-600 px-3.5 py-2.5 text-center text-xl font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 cursor-pointer"
                     onClick={() => verificaCPF()}
@@ -223,9 +224,9 @@ export default function Selecao() {
                     Escolher Forma de Pagamento
                 </div>
             </div>
-            <div className="m-4">
+            <div className="mb-2">
                 <div
-                    className="block w-full rounded-md bg-slate-900 dark:bg-slate-600 px-3.5 py-2.5 text-center text-xl font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 cursor-pointer"
+                    className="block w-full rounded-md bg-slate-900 dark:bg-slate-600 px-2 py-2.5 text-center text-xl font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 cursor-pointer"
                     onClick={() => router.back()}
                 >
                     Voltar

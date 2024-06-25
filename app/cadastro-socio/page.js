@@ -1,4 +1,6 @@
 "use client";
+import Loading from "@/components/Loading";
+import LoadingFacial from "@/components/LoadingFacial";
 import ModalCadastroSocio from "@/components/ModalCadastroSocio";
 import { useEffect, useState } from "react";
 const parseJWT = (token) => {
@@ -19,24 +21,10 @@ const parseJWT = (token) => {
 export default function Cadastro() {
   const [showModal, setShowModal] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [loadingFetch, setLoadingFetch] = useState(false);
   const [token, setToken] = useState([]);
   const [titulos, setTitulos] = useState([]);
-  const [registro, setRegistro] = useState({
-    matricula: "",
-    nome: "",
-    cpf: "",
-    data_nascimento: "",
-    celular: "",
-    email: "",
-    cidade: "",
-    facial: "",
-    updated: "",
-  });
-  const [updated, setUpdated] = useState({});
-  const handleOnChange = (event) => {
-    const { name, value } = event.target;
-    setUpdated({ ...updated, [name]: value });
-  };
+  const [person, setPerson] = useState({});
   const onUploadSuccess = (response) => {
     setLoading(false);
     if (response['response'] == 'success') {
@@ -79,8 +67,7 @@ export default function Cadastro() {
     setTitulos(JSON.parse(localStorage.getItem("titulo")));
   }, [token]);
   const mostraModal = (person) => {
-    setRegistro(person);
-    setUpdated(person);
+    setPerson(person);
     setShowModal(true);
   };
 
@@ -88,16 +75,12 @@ export default function Cadastro() {
     // cadastro(updated, token, onCadastroSuccess);
     setShowModal(false);
   };
-  const DoneIcon = () => (<svg className="w-4 h-4 me-2 text-green-500 dark:text-green-400 flex-shrink-0" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-  <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z"/>
-</svg>);
-  const LoadingIcon = () => (<svg aria-hidden="true" className="w-4 h-4 me-2 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor"/><path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentFill"/></svg>)
-  
+
   return (
     <>
-      <div>
+      <div className="bg-slate-200">
         <h1 className="text-2xl font-bold text-center py-2">Reconhecimento Facial</h1>
-        <div className="pb-4 px-2 dark:text-slate-300">
+        <div className="pb-4 mx-4 dark:text-slate-300">
           <p className="text-sm">
             Você deve finalizar o cadastro e fazer o reconhecimento 
             facial de todas que estão na cor rosa para que as 
@@ -107,8 +90,12 @@ export default function Cadastro() {
             Vale lembrar que as mesmas devem também estar em
             dia com as taxas para poder acessar o clube</p>
         </div>
-        <button type="submit" className={`mb-2 block w-full rounded-md bg-indigo-600 px-2 py-2.5 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 
-          focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 `}>Pagamento de taxas clique aqui</button>
+        <button type="submit" className={`mb-2 block mx-auto rounded-md bg-indigo-600 px-2 py-2.5 text-center text-sm 
+        font-semibold text-white shadow-sm hover:bg-indigo-500 
+          focus-visible:outline focus-visible:outline-2 
+          focus-visible:outline-offset-2 focus-visible:outline-indigo-600 `}>
+            Pagamento de taxas clique aqui
+        </button>
         <h1 className="text-lg font-bold text-center">Relação de Pessoas no Título</h1>
         <ul
           role="list"
@@ -118,7 +105,7 @@ export default function Cadastro() {
             <li
               key={person.matricula}
               className={
-                "flex justify-between flex-wrap gap-x-6 py-2 mb-2 rounded shadow " +
+                "flex justify-between flex-wrap gap-x-6 mx-2 py-2 mb-2 rounded shadow " +
                 (person.facial == "1" ? "bg-white dark:bg-slate-700" : "bg-red-200")
               }
             >
@@ -150,8 +137,8 @@ export default function Cadastro() {
               </div>
               <div className="px-2 text-sm">
                 <div>
-                  Carteira: <b className="text-red-500">99/99/9999</b>
-                  - Taxa Sanitária: <b className="text-red-500">99/99/9999</b></div>
+                  Carteira: <b className={person.carteira_vencida != '0' ? 'text-red-500' : 'text-green-500'}>{person.vencimento_carteira ? person.vencimento_carteira : 'Vencida'}</b>
+                  - Taxa Sanitária: <b className={person.taxa_sanitaria_vencida != '0' ? 'text-red-500' : 'text-green-500'}>{person.vencimento_taxa_sanitaria ? person.vencimento_taxa_sanitaria : 'Vencida'}</b></div>
                 { person.facial == '1' ? (<div className="text-center text-green-500 font-bold">Reconhecimento Facial Validado!</div>) : '' }
                 <div className="flex">
                 {person.cpf != '' ? (
@@ -177,44 +164,9 @@ export default function Cadastro() {
           ))}
         </ul>
       </div>
-      {showModal ? <ModalCadastroSocio /> : null}
-      {loading ? (
-        <div className="bg-white w-full px-12 h-full py-28 -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2 fixed">
-          <h2 className="mb-8 text-lg font-semibold text-gray-900 dark:text-white">Aguarde que estamos efetuando o Reconhecimento facial:</h2>
-          <div className="mb-8">Este procedimento pode levar em torno de 15 segundos, por favor aguarde</div>
-          <ul className="max-w-md space-y-2 text-gray-500 list-inside dark:text-gray-400">
-              <li className="flex items-center">
-                  <DoneIcon />
-                  Enviando foto para servidor
-              </li>
-              <li className="flex items-center">
-                  <DoneIcon />
-                  Processando imagem
-              </li>
-              <li className="flex items-center">
-                  <div role="status">
-                      <LoadingIcon />
-                      <span className="sr-only">Loading...</span>
-                  </div>
-                  Fazendo Reconhecimento
-              </li>
-              <li className="flex items-center">
-                  <div role="status">
-                      <LoadingIcon />
-                      <span className="sr-only">Loading...</span>
-                  </div>
-                  Comparando Rostos
-              </li>
-              <li className="flex items-center">
-                  <div role="status">
-                      <LoadingIcon />
-                      <span className="sr-only">Loading...</span>
-                  </div>
-                  Associando Face
-              </li>
-          </ul>
-        </div>
-      ) : null}
+      {showModal ? <ModalCadastroSocio person={person} setPerson={(person) => setPerson(person)} setShowModal={(show) => setShowModal(show)} /> : null}
+      {loading ? <LoadingFacial /> : null}
+      {loadingFetch ? <Loading /> : null}
     </>
   )
 }

@@ -1,15 +1,50 @@
-export default function ModalCadastroSocio() {
-    const [registro, setRegistro] = useState({
-        matricula: "",
-        nome: "",
-        cpf: "",
-        data_nascimento: "",
-        celular: "",
-        email: "",
-        cidade: "",
-        facial: "",
-        updated: "",
-    });
+import { useState } from "react";
+
+export default function ModalCadastroSocio({person, setPerson, setShowModal}) {
+    const [updated, setUpdated] = useState(person);
+    const handleOnChange = (event) => {
+      const { name, value } = event.target;
+      setUpdated({ ...updated, [name]: value });
+    };
+    const salvar = async () => {
+        try {
+            let post = Object.assign({}, updated);
+            delete post.foto;
+            delete post.carteira_vencida;
+            delete post.facial;
+            delete post.taxa_sanitaria_vencida;
+            delete post.updated;
+            delete post.vencimento_carteira;
+            delete post.vencimento_taxa_sanitaria;
+            // console.log(post, localStorage.getItem('token'));
+            // setCarregando(true);
+            
+            const r = await fetch(`https://facial.parquedasaguas.com.br/cadastro/titulo`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': localStorage.getItem('token'),
+
+                },
+                body: JSON.stringify(post),
+            });
+            const result = await r.json();
+            
+            // setCarregando(false);
+            if (result.status == 'fail') {
+                alert(result.message);
+            } else {
+                // avancar(result);
+                console.log(result);
+            }
+        } catch (error) {
+        //   setCarregando(false);
+            console.log(error);
+        }
+    }
+
+
+
     return (<>
     <div
       className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none"
@@ -20,7 +55,7 @@ export default function ModalCadastroSocio() {
           {/*header*/}
           <div className="flex items-start justify-between p-5 border-b border-solid border-blueGray-200 rounded-t">
             <h3 className="text-3xl font-semibold">
-              {registro.nome}
+              {person.nome}
             </h3>
             <button
               className="p-1 ml-auto bg-transparent border-0 text-black opacity-5 float-right text-3xl leading-none font-semibold outline-none focus:outline-none"
@@ -33,8 +68,8 @@ export default function ModalCadastroSocio() {
           </div>
           {/*body*/}
           <div className="relative p-4 flex-auto">
-            <div className="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2">
-            <div>
+            <div className="grid grid-cols-2 gap-x-4 gap-y-6 sm:grid-cols-2">
+            <div className="col-span-2">
                 <label htmlFor="cpf" className="block text-sm font-semibold leading-4 text-gray-900">
                   CPF
                 </label>
@@ -44,7 +79,7 @@ export default function ModalCadastroSocio() {
                     type="text"
                     name="cpf"
                     id="cpf"
-                    defaultValue={registro.cpf}
+                    defaultValue={person.cpf}
                     onChange={handleOnChange}
                     className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                   />
@@ -59,7 +94,7 @@ export default function ModalCadastroSocio() {
                     type="date"
                     name="data_nascimento"
                     id="data_nascimento"
-                    defaultValue={registro.data_nascimento}
+                    defaultValue={person.data_nascimento}
                     onChange={handleOnChange}
                     className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:4"
                   />
@@ -74,14 +109,14 @@ export default function ModalCadastroSocio() {
                     type="tel"
                     name="celular"
                     id="celular"
-                    defaultValue={registro.celular}
+                    defaultValue={person.celular}
                     autoComplete='billing mobile tel'
                     onChange={handleOnChange}
                     className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                   />
                 </div>
               </div>
-              <div>
+              <div className="col-span-2">
                 <label htmlFor="email" className="block text-sm font-semibold leading-4 text-gray-900">
                   E-Mail
                 </label>
@@ -90,13 +125,13 @@ export default function ModalCadastroSocio() {
                     type="email"
                     name="email"
                     id="email"
-                    defaultValue={registro.email}
+                    defaultValue={person.email}
                     onChange={handleOnChange}
                     className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                   />
                 </div>
               </div>
-              <div>
+              <div className="col-span-2">
                 <label htmlFor="cidade" className="block text-sm font-semibold leading-4 text-gray-900">
                   Cidade
                 </label>
@@ -105,7 +140,7 @@ export default function ModalCadastroSocio() {
                     type="text"
                     name="cidade"
                     id="cidade"
-                    defaultValue={registro.cidade}
+                    defaultValue={person.cidade}
                     autoComplete="home city"
                     onChange={handleOnChange}
                     className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
