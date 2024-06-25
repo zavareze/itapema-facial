@@ -42,7 +42,7 @@ return (
   >
     <div className="relative w-auto my-6 mx-auto max-w-3xl z-20">
       {/*content*/}
-      <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
+      <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white dark:bg-slate-800 outline-none focus:outline-none">
         {/*header*/}
         <div className="flex items-start justify-between p-5 border-b border-solid border-blueGray-200 rounded-t">
           <h3 className="text-3xl font-semibold">
@@ -59,9 +59,9 @@ return (
         </div>
         {/*body*/}
         <div className="relative p-4 flex-auto">
-          <div className="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2">
-          <div>
-              <label htmlFor="cpf" className="block text-sm font-semibold leading-4 text-gray-900">
+          <div className="grid grid-cols-2 gap-x-4 gap-y-6 sm:grid-cols-2">
+          <div className="col-span-2">
+              <label htmlFor="cpf" className="block text-sm font-semibold leading-4 text-gray-900 dark:text-slate-300">
                 CPF
               </label>
               <div className="mt-2">
@@ -75,8 +75,8 @@ return (
                 />
               </div>
             </div>
-            <div>
-              <label htmlFor="nome" className="block text-sm font-semibold leading-4 text-gray-900">
+            <div className="col-span-2">
+              <label htmlFor="nome" className="block text-sm font-semibold leading-4 text-gray-900 dark:text-slate-300">
                 Nome
               </label>
               <div className="mt-2">
@@ -92,7 +92,7 @@ return (
               </div>
             </div>
             <div>
-              <label htmlFor="data_nascimento" className="block text-sm font-semibold leading-4 text-gray-900">
+              <label htmlFor="data_nascimento" className="block text-sm font-semibold leading-4 text-gray-900 dark:text-slate-300">
                 Data Nascimento
               </label>
               <div className="mt-2">
@@ -108,7 +108,7 @@ return (
               </div>
             </div>
             <div>
-              <label htmlFor="celular" className="block text-sm font-semibold leading-4 text-gray-900">
+              <label htmlFor="celular" className="block text-sm font-semibold leading-4 text-gray-900 dark:text-slate-300">
                 Celular com DDD
               </label>
               <div className="mt-2">
@@ -123,8 +123,8 @@ return (
                 />
               </div>
             </div>
-            <div>
-              <label htmlFor="email" className="block text-sm font-semibold leading-4 text-gray-900">
+            <div className="col-span-2">
+              <label htmlFor="email" className="block text-sm font-semibold leading-4 text-gray-900 dark:text-slate-300">
                 E-Mail
               </label>
               <div className="mt-2">
@@ -138,8 +138,8 @@ return (
                 />
               </div>
             </div>
-            <div>
-              <label htmlFor="cidade" className="block text-sm font-semibold leading-4 text-gray-900">
+            <div className="col-span-2">
+              <label htmlFor="cidade" className="block text-sm font-semibold leading-4 text-gray-900 dark:text-slate-300">
                 Cidade
               </label>
               <div className="mt-2">

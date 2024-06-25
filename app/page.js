@@ -2,7 +2,7 @@ import Link from 'next/link'
 
 export default function Selecao() {
   return (
-    <div className="isolate bg-white px-6 py-8 sm:py-32 lg:px-8">
+    <div className="isolate bg-white dark:bg-slate-900 px-6 py-8 sm:py-32 lg:px-8">
       <div
         className="absolute inset-x-0 top-[-10rem] -z-10 transform-gpu overflow-hidden blur-3xl sm:top-[-20rem]"
         aria-hidden="true"
@@ -17,8 +17,8 @@ export default function Selecao() {
       </div>
       <div className="mx-auto max-w-2xl text-center">
         <img src="cpa.png" className="w-24 mx-auto" />
-        <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">Bem vindo ao Thermas Clube Parque das Águas</h2>
-        <p className="mt-2 text-lg leading-8 text-gray-600">
+        <h2 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-4xl">Bem vindo ao Thermas Clube Parque das Águas</h2>
+        <p className="mt-2 text-lg leading-8 text-gray-600 dark:text-gray-300">
           Nesta página você pode comprar ingressos, visualizar ingressos ou se for sócio atualizar as taxas e também atualizar seu o reconhecimento facial.
         </p>
       </div>

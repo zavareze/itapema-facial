@@ -56,7 +56,7 @@ return show ?? (
   >
     <div className="relative w-auto my-6 mx-auto max-w-3xl z-20">
       {/*content*/}
-      <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
+      <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white dark:bg-slate-800 outline-none focus:outline-none">
         {/*header*/}
         <div className="flex items-start justify-between p-5 border-b border-solid border-blueGray-200 rounded-t">
           <h3 className="text-3xl font-semibold">
@@ -73,9 +73,9 @@ return show ?? (
         </div>
         {/*body*/}
         <div className="relative p-4 flex-auto">
-          { !loading ? (<div className="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2">
-            <div>
-                <label htmlFor="cardNumber" className="block text-sm font-semibold leading-4 text-gray-900">
+          { !loading ? (<div className="grid grid-cols-3 gap-x-4 gap-y-6">
+            <div className="col-span-3">
+                <label htmlFor="cardNumber" className="block text-sm font-semibold leading-4 text-gray-900 dark:text-slate-300">
                     Número do Cartão
                 </label>
                 <div className="mt-2">
@@ -89,8 +89,8 @@ return show ?? (
                     />
                 </div>
             </div>
-            <div>
-                <label htmlFor="cardName" className="block text-sm font-semibold leading-4 text-gray-900">
+            <div className="col-span-3">
+                <label htmlFor="cardName" className="block text-sm font-semibold leading-4 text-gray-900 dark:text-slate-300">
                     Nome Titular
                 </label>
                 <div className="mt-2">
@@ -105,7 +105,7 @@ return show ?? (
                 </div>
             </div>
             <div>
-                <label htmlFor="cardMonth" className="block text-sm font-semibold leading-4 text-gray-900">
+                <label htmlFor="cardMonth" className="block text-sm font-semibold leading-4 text-gray-900 dark:text-slate-300">
                     Mês
                 </label>
                 <div className="mt-2">
@@ -120,7 +120,7 @@ return show ?? (
                 </div>
             </div>
             <div>
-                <label htmlFor="cardYear" className="block text-sm font-semibold leading-4 text-gray-900">
+                <label htmlFor="cardYear" className="block text-sm font-semibold leading-4 text-gray-900 dark:text-slate-300">
                     Ano
                 </label>
                 <div className="mt-2">
@@ -135,7 +135,7 @@ return show ?? (
                 </div>
             </div>
             <div>
-                <label htmlFor="cardCvv" className="block text-sm font-semibold leading-4 text-gray-900">
+                <label htmlFor="cardCvv" className="block text-sm font-semibold leading-4 text-gray-900 dark:text-slate-300">
                     CVV
                 </label>
                 <div className="mt-2">
@@ -149,8 +149,8 @@ return show ?? (
                     />
                 </div>
             </div>
-            <div>
-                <label htmlFor="cardInstallments" className="block text-sm font-semibold leading-4 text-gray-900">
+            <div className="col-span-3">
+                <label htmlFor="cardInstallments" className="block text-sm font-semibold leading-4 text-gray-900 dark:text-slate-300">
                     Parcelas
                 </label>
                 <div className="mt-2">
@@ -169,7 +169,7 @@ return show ?? (
                     </select>
                 </div>
             </div>
-                <div className="text-sm">
+                <div className="text-sm col-span-3">
                     Dúvidas, envie um whatsapp para o suporte (51) 99992-6208
                 </div>
           </div>) : (

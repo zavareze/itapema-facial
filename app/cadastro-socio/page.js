@@ -1,4 +1,5 @@
 "use client";
+import ModalCadastroSocio from "@/components/ModalCadastroSocio";
 import { useEffect, useState } from "react";
 const parseJWT = (token) => {
   var base64Url = token.split(".")[1];
@@ -96,7 +97,7 @@ export default function Cadastro() {
     <>
       <div>
         <h1 className="text-2xl font-bold text-center py-2">Reconhecimento Facial</h1>
-        <div className="pb-4 px-2">
+        <div className="pb-4 px-2 dark:text-slate-300">
           <p className="text-sm">
             Você deve finalizar o cadastro e fazer o reconhecimento 
             facial de todas que estão na cor rosa para que as 
@@ -118,7 +119,7 @@ export default function Cadastro() {
               key={person.matricula}
               className={
                 "flex justify-between flex-wrap gap-x-6 py-2 mb-2 rounded shadow " +
-                (person.facial == "1" ? "bg-white" : "bg-red-200")
+                (person.facial == "1" ? "bg-white dark:bg-slate-700" : "bg-red-200")
               }
             >
               <div className="flex min-w-0 gap-x-4 px-2"
@@ -133,16 +134,16 @@ export default function Cadastro() {
                   />
                 </div>
                 <div className="min-w-0 flex-auto">
-                  <p className="text-sm font-semibold leading-6 text-gray-900">
+                  <p className="text-sm font-semibold leading-6 text-gray-900 dark:text-white">
                     {person.nome}
                   </p>
-                  <p className="mt-1 truncate text-xs leading-5 text-gray-500">
+                  <p className="mt-1 truncate text-xs leading-5 text-gray-500 dark:text-slate-300">
                     {person.cpf}
                   </p>
-                  <p className="mt-1 truncate text-xs leading-5 text-gray-500">
+                  <p className="mt-1 truncate text-xs leading-5 text-gray-500 dark:text-slate-300">
                     {person.celular}
                   </p>
-                  <p className="mt-1 truncate text-xs leading-5 text-gray-500">
+                  <p className="mt-1 truncate text-xs leading-5 text-gray-500 dark:text-slate-300">
                     {person.email}
                   </p>
                 </div>
@@ -176,134 +177,7 @@ export default function Cadastro() {
           ))}
         </ul>
       </div>
-      {showModal ? (
-        <>
-          <div
-            className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none"
-          >
-            <div className="relative w-auto my-6 mx-auto max-w-3xl">
-              {/*content*/}
-              <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
-                {/*header*/}
-                <div className="flex items-start justify-between p-5 border-b border-solid border-blueGray-200 rounded-t">
-                  <h3 className="text-3xl font-semibold">
-                    {registro.nome}
-                  </h3>
-                  <button
-                    className="p-1 ml-auto bg-transparent border-0 text-black opacity-5 float-right text-3xl leading-none font-semibold outline-none focus:outline-none"
-                    onClick={() => setShowModal(false)}
-                  >
-                    <span className="bg-transparent text-black opacity-5 h-6 w-6 text-2xl block outline-none focus:outline-none">
-                      ×
-                    </span>
-                  </button>
-                </div>
-                {/*body*/}
-                <div className="relative p-4 flex-auto">
-                  <div className="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2">
-                  <div>
-                      <label htmlFor="cpf" className="block text-sm font-semibold leading-4 text-gray-900">
-                        CPF
-                      </label>
-                      <div className="mt-2">
-                        <input
-                          mask="999.999.999-99"
-                          type="text"
-                          name="cpf"
-                          id="cpf"
-                          defaultValue={registro.cpf}
-                          onChange={handleOnChange}
-                          className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                        />
-                      </div>
-                    </div>
-                    <div>
-                      <label htmlFor="data_nascimento" className="block text-sm font-semibold leading-4 text-gray-900">
-                        Data Nascimento
-                      </label>
-                      <div className="mt-2">
-                        <input
-                          type="date"
-                          name="data_nascimento"
-                          id="data_nascimento"
-                          defaultValue={registro.data_nascimento}
-                          onChange={handleOnChange}
-                          className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:4"
-                        />
-                      </div>
-                    </div>
-                    <div>
-                      <label htmlFor="celular" className="block text-sm font-semibold leading-4 text-gray-900">
-                        Celular
-                      </label>
-                      <div className="mt-2">
-                        <input
-                          type="tel"
-                          name="celular"
-                          id="celular"
-                          defaultValue={registro.celular}
-                          autoComplete='billing mobile tel'
-                          onChange={handleOnChange}
-                          className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                        />
-                      </div>
-                    </div>
-                    <div>
-                      <label htmlFor="email" className="block text-sm font-semibold leading-4 text-gray-900">
-                        E-Mail
-                      </label>
-                      <div className="mt-2">
-                        <input
-                          type="email"
-                          name="email"
-                          id="email"
-                          defaultValue={registro.email}
-                          onChange={handleOnChange}
-                          className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                        />
-                      </div>
-                    </div>
-                    <div>
-                      <label htmlFor="cidade" className="block text-sm font-semibold leading-4 text-gray-900">
-                        Cidade
-                      </label>
-                      <div className="mt-2">
-                        <input
-                          type="text"
-                          name="cidade"
-                          id="cidade"
-                          defaultValue={registro.cidade}
-                          autoComplete="home city"
-                          onChange={handleOnChange}
-                          className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                {/*footer*/}
-                <div className="flex items-center flex-wrap justify-end p-6 border-t border-solid border-blueGray-200 rounded-b">
-                  <button
-                    className="text-red-500 background-transparent font-bold uppercase px-6 py-2 text-sm outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
-                    type="button"
-                    onClick={() => setShowModal(false)}
-                  >
-                    Cancelar
-                  </button>
-                  <button
-                    className="bg-emerald-500 text-white active:bg-emerald-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
-                    type="button"
-                    onClick={() => salvar()}
-                  >
-                    Salvar
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
-        </>
-      ) : null}
+      {showModal ? <ModalCadastroSocio /> : null}
       {loading ? (
         <div className="bg-white w-full px-12 h-full py-28 -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2 fixed">
           <h2 className="mb-8 text-lg font-semibold text-gray-900 dark:text-white">Aguarde que estamos efetuando o Reconhecimento facial:</h2>

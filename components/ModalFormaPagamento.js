@@ -27,7 +27,7 @@ return show ?? (
   >
     <div className="relative w-auto my-6 mx-auto max-w-3xl z-20">
       {/*content*/}
-      <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
+      <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white dark:bg-slate-800 outline-none focus:outline-none">
         {/*header*/}
         <div className="flex items-start justify-between p-5 border-b border-solid border-blueGray-200 rounded-t">
           <h3 className="text-3xl font-semibold">
@@ -45,12 +45,12 @@ return show ?? (
         {/*body*/}
         <div className="relative p-4 flex-auto">
           <div className="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2">
-                <div className="font-bold text-2xl text-center mx-4 p-4 border rounded bg-green-100">
+                <div className="font-bold text-2xl text-center mx-4 p-4 border rounded bg-green-100 dark:bg-green-900">
                     Total R$ {total?.toLocaleString('pt-BR', { minimumFractionDigits: 2})}
                 </div>
                 <div className="mx-4">Escolha a forma de pagamento, caso opte por cartão de crédito na próxima tela você poderá parcelar</div>
                 <div
-                    className="block w-full rounded-md bg-slate-900 px-3.5 py-2.5 text-center text-xl font-semibold text-white shadow-sm
+                    className="block w-full rounded-md bg-slate-900 px-3.5 py-2.5 text-center text-xl font-semibold text-white dark:bg-slate-600 shadow-sm
                      hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 cursor-pointer"
                     onClick={() => {
                         setFormaPagamento(5);
@@ -59,7 +59,7 @@ return show ?? (
                     PIX
                 </div>
                 <div
-                    className="block w-full rounded-md bg-slate-900 px-3.5 py-2.5 text-center text-xl font-semibold text-white shadow-sm 
+                    className="block w-full rounded-md bg-slate-900 px-3.5 py-2.5 text-center text-xl font-semibold text-white dark:bg-slate-600 shadow-sm 
                     hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 cursor-pointer"
                     onClick={() => {
                         setFormaPagamento(1);

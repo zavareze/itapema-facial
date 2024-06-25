@@ -120,7 +120,7 @@ export default function Selecao() {
         }
     }, []);
     return (
-        <div className="isolate bg-white px-6 py-8 sm:py-32 lg:px-8">
+        <div className="isolate bg-white dark:bg-slate-900 px-6 py-8 sm:py-32 lg:px-8">
             { carregando ? <Loading /> : ''}
             <div
                 className="absolute inset-x-0 top-[-10rem] -z-10 transform-gpu overflow-hidden blur-3xl sm:top-[-20rem]"
@@ -136,17 +136,17 @@ export default function Selecao() {
             </div>
             <div className="mx-auto max-w-2xl text-center">
                 <img src="/cpa.png" className="w-24 mx-auto" />
-                <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl mb-4">
+                <h2 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-4xl mb-4">
                     Promoções Disponíveis
                 </h2>
             </div>
             
 
-            <h2 className="text-xl font-bold mb-2 text-black">Ingresso para 1 dia (Day Use)</h2>
+            <h2 className="text-xl font-bold mb-2 text-black dark:text-gray-300">Ingresso para 1 dia (Day Use)</h2>
             {ingressos.filter(produto => produto.categoria == 1).map((produto, i) => (
-                <div className="text-black" key={i}>
+                <div className="text-black dark:text-gray-300" key={i}>
                     <div className="font-bold text-md mb-2">
-                        {produto.titulo} {produto.sub ? (<span className="text-blue-900 font-normal">{produto.sub}</span>) : ''}
+                        {produto.titulo} {produto.sub ? (<span className="text-blue-900 dark:text-blue-300 font-normal">{produto.sub}</span>) : ''}
                     </div>
                     <div className="flex mb-2">
                         <div className="font-bold mx-4 text-xl">R$ {parseFloat(produto.valorPromo)?.toLocaleString('pt-BR', { minimumFractionDigits: 2})}</div>
@@ -157,11 +157,11 @@ export default function Selecao() {
                 )
             )}
             {ingressos.filter(produto => produto.categoria == 3).map((produto, i) => (
-            <div key={i} className="mt-8 mb-4 text-black">
+            <div key={i} className="mt-8 mb-4 text-black dark:text-gray-300">
                 <div className="font-bold text-md mb-2">
-                    {produto.titulo} {produto.sub ? (<span className="text-blue-900 font-normal">{produto.sub}</span>) : ''}
+                    {produto.titulo} {produto.sub ? (<span className="text-blue-900 dark:text-blue-300 font-normal">{produto.sub}</span>) : ''}
                 </div>
-                <div className="text-sm mb-2">Tenha seu acesso individual liberado no parque aquático de viamão durante 1 ano e ainda ganhe desconto no estacionamento, 
+                <div className="text-sm mb-2 text-black dark:text-gray-300">Tenha seu acesso individual liberado no parque aquático de viamão durante 1 ano e ainda ganhe desconto no estacionamento, 
                 adquira já seu VIPCARD.</div>
                 <div className="flex mb-2">
                     <div className="font-bold mx-4 text-xl">R$ {parseFloat(produto.valorPromo)?.toLocaleString('pt-BR', { minimumFractionDigits: 2})}</div>
@@ -173,23 +173,23 @@ export default function Selecao() {
             )}
             <hr />
             { (ingressos.filter(produto => produto.categoria == 2).length > 0) ? (<div className="my-4 text-black">
-                <h2 className="text-xl font-bold mt-4">Ingresso Especiais</h2>
-                <div className="text-sm">Apresente documentação comprobatória para obter o benefício.</div>
+                <h2 className="text-xl font-bold mt-4 text-black dark:text-gray-300">Ingresso Especiais</h2>
+                <div className="text-sm text-black dark:text-gray-300">Apresente documentação comprobatória para obter o benefício.</div>
             </div>) : ''}
             {ingressos.filter(produto => produto.categoria == 2).map((produto, i) => (
-                <div className="text-black" key={i}>
+                <div className="text-black dark:text-gray-300" key={i}>
                     <div className="font-bold text-md mb-2">
-                        {produto.titulo} {produto.sub ? (<span className="text-blue-900 font-normal">{produto.sub}</span>) : ''}
+                        {produto.titulo} {produto.sub ? (<span className="text-blue-900 dark:text-blue-300 font-normal">{produto.sub}</span>) : ''}
                     </div>
                     <div className="flex mb-2">
-                        <div className="font-bold mx-4 text-xl">R$ {parseFloat(produto.valorPromo)?.toLocaleString('pt-BR', { minimumFractionDigits: 2})}</div>
+                        <div className="font-bold mx-4 text-xl ">R$ {parseFloat(produto.valorPromo)?.toLocaleString('pt-BR', { minimumFractionDigits: 2})}</div>
                         <Quantidade quantidade={produtosEscolhidos[produto.id] || 0} setQuantidade={(qnt) => {
                             setProdutosEscolhidos(prevState => ({ ...prevState, [produto.id]: qnt}))}}></Quantidade>
                     </div>
                 </div>
                 )
             )}
-            <div className="font-bold text-2xl text-center mx-4 my-4 p-4 border rounded bg-green-100">Total R$ {total?.toLocaleString('pt-BR', { minimumFractionDigits: 2})}</div>
+            <div className="font-bold text-2xl text-center mx-4 my-4 p-4 border rounded bg-green-100 dark:bg-green-900 text-black dark:text-gray-300">Total R$ {total?.toLocaleString('pt-BR', { minimumFractionDigits: 2})}</div>
             {showDialogCPF ? <ModalCPF 
                 cpf={cpf} 
                 setShowModal={(show) => setShowDialogCPF(show)} 
@@ -217,7 +217,7 @@ export default function Selecao() {
                 setShowModal={(show) => setShowDialogCartao(show)} /> : ''}
             <div className="m-4">
                 <div
-                    className="block w-full rounded-md bg-slate-900 px-3.5 py-2.5 text-center text-xl font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 cursor-pointer"
+                    className="block w-full rounded-md bg-slate-900 dark:bg-slate-600 px-3.5 py-2.5 text-center text-xl font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 cursor-pointer"
                     onClick={() => verificaCPF()}
                 >
                     Escolher Forma de Pagamento
@@ -225,7 +225,7 @@ export default function Selecao() {
             </div>
             <div className="m-4">
                 <div
-                    className="block w-full rounded-md bg-slate-900 px-3.5 py-2.5 text-center text-xl font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 cursor-pointer"
+                    className="block w-full rounded-md bg-slate-900 dark:bg-slate-600 px-3.5 py-2.5 text-center text-xl font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 cursor-pointer"
                     onClick={() => router.back()}
                 >
                     Voltar

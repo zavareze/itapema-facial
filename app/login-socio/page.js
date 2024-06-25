@@ -31,7 +31,7 @@ export default function Login() {
     if (agreed) {
       const result = await getLogin(matricula, cpf);
       if (result.status != 'fail') {
-          push('/cadastro');
+          push('/cadastro-socio');
       } else {
         alert(result['message']);
       }
@@ -40,7 +40,7 @@ export default function Login() {
     }
   }
   return (
-    <div className="isolate bg-white px-6 py-12 sm:py-32 lg:px-8">
+    <div className="isolate bg-white dark:bg-slate-900 px-6 py-12 sm:py-32 lg:px-8">
       <div
         className="absolute inset-x-0 top-[-10rem] -z-10 transform-gpu overflow-hidden blur-3xl sm:top-[-20rem]"
         aria-hidden="true"
@@ -55,15 +55,15 @@ export default function Login() {
       </div>
       <div className="mx-auto max-w-2xl text-center">
         <img src="https://compre.parquedasaguas.com.br/img/cpa.png" className="w-24 mx-auto" />
-        <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">Reconhecimento Facial Sócios</h2>
-        <p className="mt-2 text-lg leading-8 text-gray-600">
+        <h2 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-4xl">Reconhecimento Facial Sócios</h2>
+        <p className="mt-2 text-lg leading-8 text-gray-600 dark:text-slate-300">
           Efetue o cadastramento e atualização de dados de reconhecimento facial para sócios e dependentes.
         </p>
       </div>
       <form action={login} className="mx-auto mt-8 max-w-xl sm:mt-20">
         <div className="grid grid-cols-1 gap-x-8 gap-y-6 sm:grid-cols-2">
           <div>
-            <label htmlFor="matricula" className="block text-sm font-semibold leading-6 text-gray-900">
+            <label htmlFor="matricula" className="block text-sm font-semibold leading-6 text-gray-900 dark:text-slate-300">
               Matrícula
             </label>
             <div className="mt-2.5">
@@ -77,7 +77,7 @@ export default function Login() {
             </div>
           </div>
           <div>
-            <label htmlFor="cpf" className="block text-sm font-semibold leading-6 text-gray-900">
+            <label htmlFor="cpf" className="block text-sm font-semibold leading-6 text-gray-900 dark:text-slate-300">
               CPF
             </label>
             <div className="mt-2.5">
@@ -96,8 +96,10 @@ export default function Login() {
                 checked={agreed}
                 onChange={setAgreed}
                 className={classNames(
-                  agreed ? 'bg-indigo-600' : 'bg-gray-200',
-                  'flex w-8 flex-none cursor-pointer rounded-full p-px ring-1 ring-inset ring-gray-900/5 transition-colors duration-200 ease-in-out focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600'
+                  agreed ? 'bg-indigo-600 dark:bg-indigo-400' : 'bg-gray-200 dark:bg-slate-400',
+                  `flex w-8 flex-none cursor-pointer rounded-full p-px ring-1 ring-inset ring-gray-900/5 transition-colors duration-200 
+                  ease-in-out focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 
+                  focus-visible:outline-indigo-600 dark:focus-visible:outline-indigo-300`
                 )}
               >
                 <span className="sr-only">Estou de acordo com a polícica de privacidade</span>
@@ -110,9 +112,9 @@ export default function Login() {
                 />
               </Switch>
             </div>
-            <Switch.Label className="text-sm leading-6 text-gray-600">
+            <Switch.Label className="text-sm leading-6 text-gray-600 dark:text-slate-300">
               Eu concordo com a {' '}
-              <a href="#" className="font-semibold text-indigo-600">
+              <a href="#" className="font-semibold text-indigo-600 dark:text-indigo-400 focus-visible:outline-indigo-600">
                 Politica de Privacidade (LGPD)
               </a>
               .
