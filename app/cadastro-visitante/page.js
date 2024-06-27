@@ -10,6 +10,7 @@ import Loading from "@/components/Loading";
 import EnviarFotoVisitante from "@/components/EnviarFotoVisitante";
 import ModalCadastro from "@/components/ModalCadastro";
 import AdicionarPessoa from "@/components/AdicionarPessoa";
+import LoadingFacial from "@/components/LoadingFacial";
 const parseJWT = (token) => {
   var base64Url = token.split(".")[1];
   var base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
