@@ -1,12 +1,11 @@
 'use client';
 import { useEffect, useState } from "react";
-import { useSearchParams, useRouter } from 'next/navigation';
-
 const validCPF = (strCPF) => {
     if (!strCPF) return false;
     if (strCPF * 1 == 0) return false;
     let soma = 0
     let resto;
+    strCPF = strCPF.toString();
     for (let i = 1; i <= 9; i++) soma = soma + parseInt(strCPF.substring(i - 1, i)) * (11 - i);
     resto = (soma * 10) % 11;
 
@@ -21,15 +20,9 @@ const validCPF = (strCPF) => {
     if (resto != parseInt(strCPF.substring(10, 11))) return false;
     return true;
 }
-export default function AdicionarPessoa() {
-    const searchParams = useSearchParams();
-    const router = useRouter();
-    const [id, setId] = useState(searchParams.get('id'));
-    const [pedido, setPedido] = useState({});
-
-    const [visitantes, setVisitantes] = useState([]);
-    const [visitante, setVisitante] = useState('');
-    const [token, setToken] = useState('');
+export default function AdicionarPessoa({ id, visitantes, setResult, setLoading, setShowModal }) {
+    const [visitante, setVisitante] = useState(visitantes[0]['cpf'] || '');
+    const [notfound, setNotFound] = useState(false);
     const [registro, setRegistro] = useState({
         matricula: "",
         nome: "",
@@ -72,12 +65,14 @@ export default function AdicionarPessoa() {
                 alert('Você deve informar a Cidade que mora');
                 return;
             }
-            console.log(updated, validCPF(updated.cpf))
+            cadastraPessoa();
         } else {
-            console.log(visitante, validCPF(visitante))
+            if (validCPF(visitante))
+                adicionarPessoa(visitante);
         }
     };
     const adicionarPessoa = async (vinculo) => {
+        setLoading(true);
         const res = await fetch(`https://facial.parquedasaguas.com.br/visitante/adicionar-pessoa`, {
             method: 'POST',
             headers: {
@@ -86,34 +81,57 @@ export default function AdicionarPessoa() {
             },
             body: JSON.stringify({ id, vinculo }),
         });
-        const json = await res.json();
-        if (json['visitantes'])
-            localStorage.setItem('visitantes', JSON.stringify(json['visitantes']));
-        else 
-            localStorage.setItem('visitantes', '[]');
-        if (json['pedidos'])
-            localStorage.setItem('pedidos', JSON.stringify(json['pedidos']));
-        else
-            localStorage.setItem('pedidos', '[]');
-        // router.push('/cadastro-visitante')
+        const result = await res.json();
+        setLoading(false);
+        setShowModal(false);
+        setResult(result);
     }
-    useEffect(() => {
-        let pedidos = JSON.parse(localStorage.getItem("pedidos"));
-        setPedido(pedidos.filter(x => x.id === id)[0]);
-        let vis = JSON.parse(localStorage.getItem("visitantes")) || [];
-        vis.filter(x => !pedidos.filter(x => x.id === id)[0].vinculos.includes(x.cpf));
-        setVisitantes(vis);
-        setVisitante(vis?.[0]?.cpf);
-        setToken(localStorage.getItem("token"));
-    }, [token]);
+    const verifyCPF = async () => {
+        if (validCPF(updated.cpf)) {
+            setLoading(true);
+            const res = await fetch(`https://facial.parquedasaguas.com.br/visitante/check`, {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({ cpf: updated.cpf }),
+            });
+            const result = await res.json();
+            setLoading(false);
+            if (result.status == 'success') {
+                if (result.visitante) {
+                    if (confirm("Cadastro localizado, deseja adicionar esta pessoa?")) {
+                        adicionarPessoa(result.visitante);
+                    }
+                } else {
+                    setNotFound(true);
+                }
+            }
+        } else {
+            alert("O CPF informado é inválido.")
+        }
+    }
+    const cadastraPessoa = async (cpf) => {
+        setLoading(true);
+        const res = await fetch(`https://facial.parquedasaguas.com.br/visitante/cadastro`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: localStorage.getItem('token'),
+            },
+            body: JSON.stringify(updated),
+        });
+        const result = await res.json();
+        adicionarPessoa(updated.cpf);
+    }
     return (
         <div>
             <div
-                className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none"
+                className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-40 outline-none focus:outline-none"
             >
                 <div className="relative w-auto my-6 mx-auto max-w-3xl">
                     {/*content*/}
-                    <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
+                    <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white dark:bg-slate-900 outline-none focus:outline-none">
                         {/*header*/}
                         <div className="flex items-start justify-between p-5 border-b border-solid border-blueGray-200 rounded-t">
                             <h3 className="text-3xl font-semibold">
@@ -129,10 +147,10 @@ export default function AdicionarPessoa() {
                             </button>
                         </div>
                         {/*body*/}
-                        <div className="relative p-4 flex-auto">
-                            <div className="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2">
-                                <div>
-                                    <label htmlFor="pessoa" className="block text-sm font-semibold leading-4 text-gray-900">
+                        { visitantes ? (<div className="relative mx-4 flex-auto">
+                            <div className="grid grid-cols-2 gap-x-4 gap-y-2 sm:grid-cols-2 mt-2">
+                                <div className="col-span-2">
+                                    <label htmlFor="pessoa" className="block text-sm font-semibold leading-4 text-gray-900 dark:text-slate-300">
                                         Selecionar
                                     </label>
                                     <div className="mt-2">
@@ -142,13 +160,13 @@ export default function AdicionarPessoa() {
                                             onChange={(evt) => setVisitante(evt.target.value)}
                                             className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                         >
-                                            {visitantes?.map(visitante => (
-                                                <option value={visitante.cpf} key={visitante.cpf}>{visitante.nome}</option>
+                                            {visitantes?.map((visitante, i) => (
+                                                <option key={i+visitante.cpf} value={visitante.cpf}>{visitante.nome}</option>
                                             ))}
                                         </select>
                                     </div>
                                 </div>
-                                <div className="text-right">
+                                <div className="text-right col-span-2">
                                     <button
                                         className="bg-emerald-500 text-white active:bg-emerald-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                                         type="button"
@@ -158,16 +176,16 @@ export default function AdicionarPessoa() {
                                     </button>
                                 </div>
                             </div>
-                        </div>
-                        <div className="relative p-4 flex-auto text-center">
+                        </div>) : '' }
+                        {visitantes ? (<div className="relative mx-4 flex-auto text-center">
                             Ou Cadastre uma nova pessoa
-                        </div>
-                        <div className="relative p-4 flex-auto">
-                        <div>
-                                <label htmlFor="cpf" className="block text-sm font-semibold leading-4 text-gray-900">
+                        </div>) : ''}
+                        <div className="relative grid grid-cols-2 gap-x-4 gap-y-2 sm:grid-cols-2 mx-4">
+                            <div className="col-span-2">
+                                <label htmlFor="cpf" className="block text-sm font-semibold leading-4 text-gray-900 dark:text-slate-300">
                                     CPF
                                 </label>
-                                <div className="mt-2">
+                                <div className="mt-2 mb-2">
                                     <input
                                         type="text"
                                         name="cpf"
@@ -178,8 +196,20 @@ export default function AdicionarPessoa() {
                                     />
                                 </div>
                             </div>
-                            <div>
-                                <label htmlFor="nome" className="block text-sm font-semibold leading-4 text-gray-900">
+                            { !notfound ? <div className="text-right col-span-2 pb-2">
+                                <button
+                                    className="bg-emerald-500 text-white active:bg-emerald-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                                    type="button"
+                                    onClick={() => verifyCPF()}
+                                >
+                                    Consultar CPF
+                                </button>
+                            </div> : ''}
+                        </div>
+                        { notfound ? 
+                        <div className="relative grid grid-cols-2 gap-x-4 gap-y-2 sm:grid-cols-2 mx-4">
+                            <div className="col-span-2">
+                                <label htmlFor="nome" className="block text-sm font-semibold leading-4 text-gray-900 dark:text-slate-300">
                                     Nome Completo
                                 </label>
                                 <div className="mt-2">
@@ -194,7 +224,7 @@ export default function AdicionarPessoa() {
                                 </div>
                             </div>
                             <div>
-                                <label htmlFor="data_nascimento" className="block text-sm font-semibold leading-4 text-gray-900">
+                                <label htmlFor="data_nascimento" className="block text-sm font-semibold leading-4 text-gray-900 dark:text-slate-300">
                                     Data Nascimento
                                 </label>
                                 <div className="mt-2">
@@ -209,7 +239,7 @@ export default function AdicionarPessoa() {
                                 </div>
                             </div>
                             <div>
-                                <label htmlFor="celular" className="block text-sm font-semibold leading-4 text-gray-900">
+                                <label htmlFor="celular" className="block text-sm font-semibold leading-4 text-gray-900 dark:text-slate-300">
                                     Celular
                                 </label>
                                 <div className="mt-2">
@@ -224,8 +254,8 @@ export default function AdicionarPessoa() {
                                     />
                                 </div>
                             </div>
-                            <div>
-                                <label htmlFor="email" className="block text-sm font-semibold leading-4 text-gray-900">
+                            <div className="col-span-2">
+                                <label htmlFor="email" className="block text-sm font-semibold leading-4 text-gray-900 dark:text-slate-300">
                                     E-Mail
                                 </label>
                                 <div className="mt-2">
@@ -239,8 +269,8 @@ export default function AdicionarPessoa() {
                                     />
                                 </div>
                             </div>
-                            <div>
-                                <label htmlFor="cidade" className="block text-sm font-semibold leading-4 text-gray-900">
+                            <div className="col-span-2 mb-2">
+                                <label htmlFor="cidade" className="block text-sm font-semibold leading-4 text-gray-900 dark:text-slate-300">
                                     Cidade onde mora
                                 </label>
                                 <div className="mt-2">
@@ -255,27 +285,27 @@ export default function AdicionarPessoa() {
                                     />
                                 </div>
                             </div>
-                        </div>
+                        </div> : ''}
                         {/*footer*/}
-                        <div className="flex items-center flex-wrap justify-end p-6 border-t border-solid border-blueGray-200 rounded-b">
+                        <div className="flex items-center flex-wrap justify-end mx-4 py-2 border-t border-solid border-blueGray-200 rounded-b">
                             <button
                                 className="text-red-500 background-transparent font-bold uppercase px-6 py-2 text-sm outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                                 type="button"
-                                onClick={router.back()}
+                                onClick={() => setShowModal(false)}
                             >
                                 Cancelar
                             </button>
-                            <button
+                            {notfound ? <button
                                 className="bg-emerald-500 text-white active:bg-emerald-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                                 type="button"
                                 onClick={() => salvar(true)}
                             >
                                 Salvar
-                            </button>
+                            </button> : '' }
                         </div>
                     </div>
                 </div>
             </div>
-            <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
+            <div className="opacity-25 fixed inset-0 z-10 bg-black"></div>
         </div>);
 }

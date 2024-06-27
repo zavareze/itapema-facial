@@ -33,7 +33,7 @@ export default function ModalCadastro() {
                 className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none"
             >
                 <div className="relative w-auto my-6 mx-auto max-w-3xl">
-                    <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
+                    <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white dark:bg-slate-800 outline-none focus:outline-none">
                         <div className="flex items-start justify-between p-5 border-b border-solid border-blueGray-200 rounded-t">
                             <h3 className="text-3xl font-semibold">
                                 Alterar Data
@@ -51,31 +51,31 @@ export default function ModalCadastro() {
                         <div className="relative p-4 flex-auto">
                             <div className="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2">
                                 <div>
-                                    <label htmlFor="cpf" className="block text-sm font-semibold leading-4 text-gray-900">
+                                    <label htmlFor="cpf" className="block text-sm font-semibold leading-4 text-gray-900 dark:text-slate-300">
                                         Pedido
                                     </label>
                                     <div className="mt-2">
                                         <div
-                                            className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                            className="block w-full rounded-md border-0 px-3.5 py-2  shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                         >
                                             #{searchParams.get('id')?.toString().split('-').reverse().join('/')}
                                         </div>
                                     </div>
                                 </div>
                                 <div>
-                                    <label htmlFor="cpf" className="block text-sm font-semibold leading-4 text-gray-900">
+                                    <label htmlFor="cpf" className="block text-sm font-semibold leading-4 text-gray-900 dark:text-slate-300">
                                         Data Atual
                                     </label>
                                     <div className="mt-2">
                                         <div
-                                            className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                            className="block w-full rounded-md border-0 px-3.5 py-2  shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                         >
                                             {searchParams.get('data')?.toString().split('-').reverse().join('/')}
                                         </div>
                                     </div>
                                 </div>
                                 <div>
-                                    <label htmlFor="cpf" className="block text-sm font-semibold leading-4 text-gray-900">
+                                    <label htmlFor="cpf" className="block text-sm font-semibold leading-4 text-gray-900  dark:text-slate-300">
                                         Nova Data de Visita
                                     </label>
                                     <div className="mt-2">

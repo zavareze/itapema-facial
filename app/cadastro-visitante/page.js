@@ -5,6 +5,11 @@ import { useSearchParams } from 'next/navigation'
 
 import PersonCard from "@/components/PersonCard";
 import Link from "next/link";
+import AlterarData from "@/components/AlterarData";
+import Loading from "@/components/Loading";
+import EnviarFotoVisitante from "@/components/EnviarFotoVisitante";
+import ModalCadastro from "@/components/ModalCadastro";
+import AdicionarPessoa from "@/components/AdicionarPessoa";
 const parseJWT = (token) => {
   var base64Url = token.split(".")[1];
   var base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
@@ -24,121 +29,87 @@ export default function Cadastro() {
   const [token, setToken] = useState([]);
   const [visitantes, setVisitantes] = useState([]);
   const [pedidos, setPedidos] = useState([]);
-  const [registro, setRegistro] = useState({
-    matricula: "",
-    nome: "",
-    cpf: "",
-    data_nascimento: "",
-    celular: "",
-    email: "",
-    cidade: "",
-    facial: "",
-    updated: "",
-  });
-  const [updated, setUpdated] = useState({});
+  const [pedido, setPedido] = useState({});
+  const [loading, setLoading] = useState(false);
+  const [loadingFetch, setLoadingFetch] = useState(false);
+  const [showAlterarData, setShowAlterarData] = useState(false);
+  const [showAdicionarPessoa, setShowAdicionarPessoa] = useState(false);
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const handleOnChange = (event) => {
-    const { name, value } = event.target;
-    setUpdated({ ...updated, [name]: value });
-  };
-  const onUploadSuccess = (response) => {
-    setLoading(false);
-    if (response['response'] == 'success') {
-      localStorage.setItem('token', response['token']);
-      localStorage.setItem('visitantes', JSON.stringify(response['visitantes']));
-      setToken('');
-      setShowModal(false)
-      alert(response['message']);
-    } else {
-      let str = response['message'];
-      if (response.errors) {
-        str += '\n\n';
-        for (const [k, v] of Object.entries(response['errors'])) {
-          str += v + '\n';
-        }
+  const setResult = (result) => {
+    if (result['status'] == 'success') {
+      if (result['token']) {
+        localStorage.setItem('token', result['token']);
+        setToken(result['token']);
       }
-      alert(str);
+      if (result['visitantes']) {
+        localStorage.setItem('visitantes', JSON.stringify(result['visitantes']));
+        setVisitantes(result['visitantes']);
+      }
+      if (result['pedidos']) {
+        localStorage.setItem('pedidos', JSON.stringify(result['pedidos']));
+        setPedidos(result['pedidos']);
+      }
     }
-  };
-  const handleUploadFile = (event) => {
-    // console.log('loading file', event.target.files[0]);
-    const img = document.createElement('img');
-    img.onload = () => {
-      const scale = 3200 / img.width < 1000 / img.height ? 3200 / img.width : 1000 / img.height;
-      const dst = document.createElement("canvas");
-      dst.width = img.width * scale;
-      dst.height = img.height * scale;
-      const ctx = dst.getContext("2d");
-      ctx.drawImage(img, 0, 0, dst.width, dst.height);
-      const body = { matricula: registro.matricula, image: dst.toDataURL() };
-      // console.log('arquivo carregado e redimensionado', JSON.stringify(body));
-      upload(body, token, onUploadSuccess);
-      setLoading(true);
-      setShowModal(false);
-    }
-    img.src = window.URL.createObjectURL(event.target.files[0]);
+    alert(result['message']);
   }
+  const removerPessoa = async (id, vinculo) => {
+    if (confirm("Você deseja remover esta pessoa deste pedido?")) {
+      setLoadingFetch(true);
+      const res = await fetch(`https://facial.parquedasaguas.com.br/visitante/remover-pessoa`, {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json',
+              Authorization: localStorage.getItem('token'),
+          },
+          body: JSON.stringify({ id, vinculo }),
+      });
+      const result = await res.json();
+      setLoadingFetch(false);
+      setResult(result);
+    }
+}
   useEffect(() => {
     setToken(localStorage.getItem("token"));
     setVisitantes(JSON.parse(localStorage.getItem("visitantes")));
     setPedidos(JSON.parse(localStorage.getItem("pedidos")));
   }, [token]);
-  const mostraModal = (person) => {
-    setRegistro(person);
-    setUpdated(person);
-    setShowModal(true);
-  };
-
-  const salvar = () => {
-    // cadastro(updated, token, onCadastroSuccess);
-    setShowModal(false);
-  };
-
   return (
     <div>
       <h1 className="text-2xl font-bold text-center py-2">Reconhecimento Facial</h1>
       <div className="pb-4 px-2">
         <p className="text-sm">
-          Insira as pessoas que visitarão o parque nos dias abaixo
+          Insira as pessoas que irão visitar o parque no dia abaixo
         </p>
       </div>
       {pedidos?.map(pedido => (<div key={pedido.id}>
-        <div className="mx-2 rounded shadow bg-white border-blue-500 px-2 py-1">
+        <div className="mx-2 rounded shadow bg-white dark:bg-slate-700 border-blue-500 px-2 py-1">
           #{pedido.id} - {pedido.parque == '1' ? 'Farroupilha' : 'Viamão'} - {pedido.adultos != '0' ? pedido.adultos + ' Adultos' : ''}
           {pedido.criancas != '0' ? pedido.criancas + ' Crianças' : ''}<br />
         </div>
         <div className="mx-2 text-xs">Data da Visita:</div>
         <div className="flex">
           <div className="mx-2 text-2xl">{pedido.data.split('-').reverse().join('/')}</div>
-          <Link
+          <div
             className="bg-emerald-500 text-white active:bg-emerald-600 font-bold uppercase text-sm px-2 py-1 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
-            type="button"
-            href={{
-              pathname: '/alterar-data',
-              query: {
-                id: pedido.id,
-                data: pedido.data
-              },
-            }}>
+            onClick={() => {setPedido(pedido); setShowAlterarData(true); }}>
             Alterar Data
-          </Link>
+          </div>
         </div>
-        <div className="mx-2">Pessoas que utilizarão estes ingressos</div>
-        <div className="mx-2">
-          <Link
-            className="bg-emerald-500 text-white active:bg-emerald-600 font-bold uppercase text-sm px-2 py-2 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
-            href={{
-              pathname: '/adicionar-pessoa',
-              query: {
-                id: pedido.id,
-              },
-            }}>
-            Adicionar Pessoa
-          </Link>
+        <div className="mx-2 font-semibold">Pessoas que utilizarão estes ingressos</div>
+        <div className="border rounded mx-2 border-black">
+          { parseInt(pedido.adultos-pedido.vinculos_adultos)+parseInt(pedido.criancas-pedido.vinculos_criancas) > 0 ?
+          <div className="mx-2 mt-2">
+            <button
+              className="bg-emerald-500 text-white active:bg-emerald-600 font-bold uppercase text-sm px-2 py-1 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+              onClick={() => { setPedido(pedido); setShowAdicionarPessoa(true)}}>
+              Adicionar Pessoa
+            </button>
+          </div> : '' }
+          {pedido.vinculos.map((vinculo, i) => visitantes.filter(visitante => visitante.cpf == vinculo.vinculo).map(
+            (visitante, j) => (<div key={i+j} className={`px-4 py-2 mb-1`+(visitante.faceDetail == '1' ? ' bg-green-100' : ' bg-red-100')}
+            onClick={() => removerPessoa(pedido.id, vinculo.vinculo)}>{visitante.nome}{visitante.faceDetail == 1 ? '' : <div className="text-red-500 text-xs font-semibold">Reconhecimento Facial Pendente</div>}</div>))) }
+          {pedido.vinculos.length == 0 ? <div className="mx-2 text-center py-3">Ninguém foi selecionado ainda</div> : ''}
         </div>
-        <div className="mx-2 text-center py-3">Ninguém foi selecionado ainda</div>
-
       </div>)
       )}
       <h1 className="text-lg font-bold text-center">Relação de Pessoas Vinculadas</h1>
@@ -146,7 +117,45 @@ export default function Cadastro() {
         role="list"
         className="divide-y sm:grid sm:grid-cols-3 sm:gap-4 cursor-pointer px-2 pb-2"
       >
-        {visitantes?.map((person) => (<PersonCard key={person.matricula} person={person} mostraModal={mostraModal} handleUploadFile={handleUploadFile} />))}
+        {visitantes?.map((person) => (
+            <li
+              key={person.matricula}
+              className={
+                "flex justify-between flex-wrap gap-x-6 mx-2 py-2 mb-2 rounded shadow " +
+                (person.faceDetail == "1" ? "bg-green-100 dark:bg-slate-700" : "bg-red-100 dark:bg-rose-950")
+              }
+            >
+              <div className="flex min-w-0 gap-x-4 px-2">
+                <div className="w-24 flex-none">
+                  <img
+                    className="w-40 h-32 rounded-lg"
+                    src={person.foto}
+                    alt=""
+                  />
+                </div>
+                <div className="min-w-0 flex-auto">
+                  <p className="text-sm font-semibold leading-6 text-gray-900 dark:text-white">
+                    {person.nome}
+                  </p>
+                  <p className="mt-1 truncate text-xs leading-5 text-gray-500 dark:text-slate-300">
+                    {person.cpf}
+                  </p>
+                  <p className="mt-1 truncate text-xs leading-5 text-gray-500 dark:text-slate-300">
+                    {person.celular}
+                  </p>
+                  <p className="mt-1 truncate text-xs leading-5 text-gray-500 dark:text-slate-300">
+                    {person.email}
+                  </p>
+                </div>
+              </div>
+              <div className="px-1 text-xs">
+                { person.faceDetail == '1' ? (<div className="text-center text-green-500 font-bold">Reconhecimento Facial Validado!</div>) : '' }
+                <div className="grid grid-cols-2 gap-x-4">
+                {person.cpf != '' ? <EnviarFotoVisitante cpf={person.cpf} facial={person.faceDetail} setLoading={setLoading} setResult={setResult} /> : (<div className="text-center font-bold text-red-500 col-span-2">Após salvar todos os dados você poderá enviar a Foto para efetuar o reconhecimento facial</div>)}
+                </div>
+              </div>
+            </li>
+          ))}
       </ul>
       <div className="m-4">
           <div
@@ -156,6 +165,21 @@ export default function Cadastro() {
               Voltar
           </div>
       </div>
+      {showAlterarData ? <AlterarData 
+        id={pedido.id} 
+        data={pedido.data} 
+        setShowModal={(show) => setShowAlterarData(show)} 
+        setLoading={(show) => setLoadingFetch(show)} 
+        setResult={(result) => setResult(result)} /> : ''}
+      {loadingFetch ? <Loading /> : ''}
+      {loading ? <LoadingFacial /> : null}
+      {/* {showModalCadastro ? <ModalCadastro person={person} cpf, setShowModal={(show) => setShowModalCadastro(show)} avancar={() => set} />} */}
+      {showAdicionarPessoa ? <AdicionarPessoa 
+        id={pedido.id}
+        visitantes={visitantes}
+        setResult={(result) => setResult(result)}
+        setLoading={(show) => setLoadingFetch(show)}
+        setShowModal={(show) => setShowAdicionarPessoa(show)} /> : ''}
     </div>
   )
 }

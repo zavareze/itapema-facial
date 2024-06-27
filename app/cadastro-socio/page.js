@@ -1,4 +1,5 @@
 "use client";
+import EnviarFotoSocio from "@/components/EnviarFotoSocio";
 import Loading from "@/components/Loading";
 import LoadingFacial from "@/components/LoadingFacial";
 import ModalCadastroSocio from "@/components/ModalCadastroSocio";
@@ -25,42 +26,11 @@ export default function Cadastro() {
   const [token, setToken] = useState([]);
   const [titulos, setTitulos] = useState([]);
   const [person, setPerson] = useState({});
-  const onUploadSuccess = (response) => {
-    setLoading(false);
-    if (response['response'] == 'success') {
-      localStorage.setItem('token', response['token']);
-      localStorage.setItem('titulo', JSON.stringify(response['titulo']));
-      setToken('');
-      setShowModal(false)
-      alert(response['message']);
-    } else {
-      let str = response['message'];
-      if (response.errors) {
-        str += '\n\n';
-        for (const [k, v] of Object.entries(response['errors'])) {
-          str += v+'\n';
-        }
-      }
-      alert(str);
-    }
-  };
-  const handleUploadFile = (event) => {
-    // console.log('loading file', event.target.files[0]);
-    const img = document.createElement('img');
-    img.onload = () => {
-      const scale = 3200 / img.width < 1000 / img.height ? 3200 / img.width : 1000 / img.height;
-      const dst = document.createElement("canvas");
-      dst.width = img.width * scale;
-      dst.height = img.height * scale;
-      const ctx = dst.getContext("2d");
-      ctx.drawImage(img, 0, 0, dst.width, dst.height);
-      const body = { matricula: registro.matricula, image: dst.toDataURL() };
-      // console.log('arquivo carregado e redimensionado', JSON.stringify(body));
-      upload(body, token, onUploadSuccess);
-      setLoading(true);
-      setShowModal(false);
-    }
-    img.src = window.URL.createObjectURL(event.target.files[0]);
+  const setResult = (result) => {
+    localStorage.setItem('token', result['token']);
+    localStorage.setItem('titulo', JSON.stringify(result['titulo']));
+    setToken(result['token']);
+    setTitulos(result['titulos']);
   }
   useEffect(() => {
     setToken(localStorage.getItem("token"));
@@ -78,7 +48,7 @@ export default function Cadastro() {
 
   return (
     <>
-      <div className="bg-slate-200">
+      <div className="bg-slate-200 dark:bg-slate-900">
         <h1 className="text-2xl font-bold text-center py-2">Reconhecimento Facial</h1>
         <div className="pb-4 mx-4 dark:text-slate-300">
           <p className="text-sm">
@@ -106,7 +76,7 @@ export default function Cadastro() {
               key={person.matricula}
               className={
                 "flex justify-between flex-wrap gap-x-6 mx-2 py-2 mb-2 rounded shadow " +
-                (person.facial == "1" ? "bg-white dark:bg-slate-700" : "bg-red-200")
+                (person.facial == "1" ? "bg-white dark:bg-slate-700" : "bg-red-100 dark:bg-rose-950")
               }
             >
               <div className="flex min-w-0 gap-x-4 px-2"
@@ -135,36 +105,21 @@ export default function Cadastro() {
                   </p>
                 </div>
               </div>
-              <div className="px-2 text-sm">
-                <div>
-                  Carteira: <b className={person.carteira_vencida != '0' ? 'text-red-500' : 'text-green-500'}>{person.vencimento_carteira ? person.vencimento_carteira : 'Vencida'}</b>
-                  - Taxa Sanitária: <b className={person.taxa_sanitaria_vencida != '0' ? 'text-red-500' : 'text-green-500'}>{person.vencimento_taxa_sanitaria ? person.vencimento_taxa_sanitaria : 'Vencida'}</b></div>
+              <div className="px-1 text-xs">
+                <div className="grid grid-cols-2">
+                  <div className="text-left">Carteira: <b className={person.carteira_vencida != '0' ? 'text-red-500' : 'text-green-500'}>{person.vencimento_carteira ? person.vencimento_carteira : 'Vencida'}</b></div>
+                  <div className="text-right">Taxa Sanitária: <b className={person.taxa_sanitaria_vencida != '0' ? 'text-red-500' : 'text-green-500'}>{person.vencimento_taxa_sanitaria ? person.vencimento_taxa_sanitaria : 'Vencida'}</b></div>
+                </div>
                 { person.facial == '1' ? (<div className="text-center text-green-500 font-bold">Reconhecimento Facial Validado!</div>) : '' }
-                <div className="flex">
-                {person.cpf != '' ? (
-                  <>
-                    <button
-                      className="btn-responsive bg-emerald-500 text-white active:bg-emerald-600 font-bold uppercase text-sm px-6 py-1 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
-                      type="button"
-                    >
-                      <input type="file" name="image" id="upload" accept="image/*" capture="user" onChange={handleUploadFile}></input>
-                      Foto Câmera
-                    </button>
-                    <button
-                      className="btn-responsive bg-emerald-500 text-white active:bg-emerald-600 font-bold uppercase text-sm px-6 py-1 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
-                      type="button"
-                    >
-                      <input type="file" name="image2" id="upload2" accept="image/*" onChange={handleUploadFile}></input>
-                      Procurar na Galeria
-                    </button>
-                  </>) : (<div className="mb-4 text-center font-bold text-red-500">Após salvar todos os dados você poderá enviar a Foto para efetuar o reconhecimento facial</div>)}
+                <div className="grid grid-cols-2 gap-x-4">
+                {person.cpf != '' ? <EnviarFotoSocio matricula={person.matricula} setLoading={setLoading} setResult={setResult} /> : (<div className="text-center font-bold text-red-500 col-span-2">Após salvar todos os dados você poderá enviar a Foto para efetuar o reconhecimento facial</div>)}
                 </div>
               </div>
             </li>
           ))}
         </ul>
       </div>
-      {showModal ? <ModalCadastroSocio person={person} setPerson={(person) => setPerson(person)} setShowModal={(show) => setShowModal(show)} /> : null}
+      {showModal ? <ModalCadastroSocio person={person} set={(person) => setPerson(person)} setLoading={(show) => setLoadingFetch(show)} setShowModal={(show) => setShowModal(show)} /> : null}
       {loading ? <LoadingFacial /> : null}
       {loadingFetch ? <Loading /> : null}
     </>

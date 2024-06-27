@@ -39,7 +39,7 @@ export default function LoadingFacial() {
             setTarefas(x);
         }, 10000);
     }, []);
-    return (<div className="bg-white w-full px-12 h-full py-28 -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2 fixed">
+    return (<div className="bg-white dark:bg-slate-900 w-full px-12 h-full py-28 -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2 fixed">
     <h2 className="mb-8 text-lg font-semibold text-gray-900 dark:text-white">Aguarde que estamos efetuando o Reconhecimento facial:</h2>
     <div className="mb-8">Este procedimento pode levar em torno de 15 segundos, por favor aguarde</div>
     <ul className="max-w-md space-y-2 text-gray-500 list-inside dark:text-gray-400">
