@@ -84,7 +84,7 @@ export default function Cadastro() {
       </nav>
       <div className="bg-slate-100 sm:grid sm:grid-cols-3 sm:gap-4 lg:grid-cols-4">
       {pedidos?.map(pedido => (<div key={pedido.id} className="py-2">
-        <div className="mx-2 rounded shadow-lg border-t border-slate-100 bg-white dark:bg-slate-700 border-blue-500 px-2 pt-4 pb-2">
+        <div className="mx-2 rounded shadow-lg border-t border-slate-100 bg-white dark:bg-slate-700 px-2 pt-4 pb-2">
           <QRCode value={pedido.voucher} style={{ height: "150px", maxWidth: "100%", width: "100%" }} />
 
           <div className="my-2">
