@@ -2,7 +2,6 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useSearchParams } from 'next/navigation'
-import QRCode from "react-qr-code";
 
 import PersonCard from "@/components/PersonCard";
 import Link from "next/link";
@@ -79,62 +78,64 @@ export default function Cadastro() {
     <div>
       <h1 className="text-2xl font-bold text-center py-2">Reconhecimento Facial</h1>
       <nav class="flex justify-center space-x-4 pb-2">
-        <a href="/cadastro-visitante" class="font-medium px-3 py-2 text-slate-700 rounded-lg hover:bg-slate-100 hover:text-slate-900 bg-slate-300">Pedidos</a>
-        <a href="/cadastro-visitante/vinculos" class="font-medium px-3 py-2 text-slate-700 rounded-lg hover:bg-slate-100 hover:text-slate-900">Pessoas Vinculadas</a>
+        <a href="/cadastro-visitante" class="font-medium px-3 py-2 text-slate-700 rounded-lg hover:bg-slate-100 hover:text-slate-900">Pedidos</a>
+        <a href="/cadastro-visitante/vinculos" class="font-medium px-3 py-2 text-slate-700 rounded-lg hover:bg-slate-100 hover:text-slate-900 bg-slate-300">Pessoas Vinculadas</a>
       </nav>
-      <div className="bg-slate-100 sm:grid sm:grid-cols-3 sm:gap-4 lg:grid-cols-4">
-      {pedidos?.map(pedido => (<div key={pedido.id} className="py-2">
-        <div className="mx-2 rounded shadow-lg border-t border-slate-100 bg-white dark:bg-slate-700 border-blue-500 px-2 pt-4 pb-2">
-          <QRCode value={pedido.voucher} style={{ height: "150px", maxWidth: "100%", width: "100%" }} />
-
-          <div className="my-2">
-            Pedido #: {pedido.id} - Parque {pedido.parque == '1' ? 'Farroupilha' : 'Viamão'} <br />
-            Ingressos: {pedido.adultos != '0' ? pedido.adultos + ' Adultos ' : ''}
-            {pedido.criancas != '0' ? pedido.criancas + ' Crianças' : ''}
-          </div>
-          <div className="text-xs">Data da Visita:</div>
-          <div className="flex">
-            <div className="text-2xl mr-2">{pedido.data.split('-').reverse().join('/')}</div>
+      <div className="bg-slate-100">
+        <h1 className="text-lg font-bold text-center pt-2">Relação de Pessoas Vinculadas</h1>
+        <ul
+            role="list"
+            className="sm:grid sm:grid-cols-3 sm:gap-4 lg:grid-cols-4 cursor-pointer px-2"
+        >
+            {visitantes?.map((person) => (
+                <li
+                key={person.matricula}
+                className={
+                    "flex justify-between flex-wrap gap-x-6 mx-2 py-2 my-4 rounded shadow-lg " +
+                    (person.faceDetail == "1" ? "bg-green-100 dark:bg-slate-700" : "bg-red-100 dark:bg-rose-950")
+                }
+                >
+                <div className="flex min-w-0 gap-x-4 px-2">
+                    <div className="w-24 flex-none">
+                    <img
+                        className="w-40 h-32 rounded-lg"
+                        src={person.foto}
+                        alt=""
+                    />
+                    </div>
+                    <div className="min-w-0 flex-auto">
+                    <p className="text-sm font-semibold leading-6 text-gray-900 dark:text-white">
+                        {person.nome}
+                    </p>
+                    <p className="mt-1 truncate text-xs leading-5 text-gray-500 dark:text-slate-300">
+                        {person.cpf}
+                    </p>
+                    <p className="mt-1 truncate text-xs leading-5 text-gray-500 dark:text-slate-300">
+                        {person.celular}
+                    </p>
+                    <p className="mt-1 truncate text-xs leading-5 text-gray-500 dark:text-slate-300">
+                        {person.email}
+                    </p>
+                    </div>
+                </div>
+                <div className="px-1 text-xs">
+                    { person.faceDetail == '1' ? (<div className="text-center text-green-500 font-bold">Reconhecimento Facial Validado!</div>) : '' }
+                    <div className="grid grid-cols-2 gap-x-4">
+                    {person.cpf != '' ? <EnviarFotoVisitante cpf={person.cpf} facial={person.faceDetail} setLoading={setLoading} setResult={setResult} /> : (<div className="text-center font-bold text-red-500 col-span-2">Após salvar todos os dados você poderá enviar a Foto para efetuar o reconhecimento facial</div>)}
+                    </div>
+                </div>
+                </li>
+            ))}
+        </ul>
+        <div className="m-4">
             <div
-              className="bg-emerald-500 text-white active:bg-emerald-600 font-bold uppercase text-sm px-2 py-1 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
-              onClick={() => {setPedido(pedido); setShowAlterarData(true); }}>
-              Alterar Data
+                className="block w-full rounded-md bg-slate-900 px-3.5 py-2.5 text-center text-xl font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                onClick={() => router.back()}
+            >
+                Voltar
             </div>
-          </div>
-          <div className="font-semibold">Pessoas que utilizarão estes ingressos</div>
-          <div className="rounded border shadow-lg mb-2">
-            { parseInt(pedido.adultos-pedido.vinculos_adultos)+parseInt(pedido.criancas-pedido.vinculos_criancas) > 0 ?
-            <div className="mx-2 mt-2 flex justify-between">
-              <button
-                className="bg-emerald-500 text-white active:bg-emerald-600 font-bold uppercase text-sm px-2 py-1 rounded shadow 
-                hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
-                onClick={() => { setPedido(pedido); setShowAdicionarPessoa(true)}}>
-                Adicionar Pessoa
-              </button>
-              <div>Falta {(pedido.adultos-pedido.vinculos_adultos)+(pedido.criancas-pedido.vinculos_criancas)} vínculo(s)</div>
-            </div> : '' }
-            {pedido.vinculos.map((vinculo, i) => visitantes.filter(visitante => visitante.cpf == vinculo.vinculo).map(
-              (visitante, j) => (<div key={i+j} className={`px-4 py-2 mb-1`+(visitante.faceDetail == '1' ? ' bg-green-100' : ' bg-red-100')}
-              onClick={() => removerPessoa(pedido.id, vinculo.vinculo)}>
-                {visitante.nome}
-                {visitante.faceDetail == 1 ? '' : <div className="text-red-500 text-xs font-semibold">Facial Pendente (Atualize nas pessoas vinculadas)</div>}
-              </div>))) }
-            {pedido.vinculos.length == 0 ? <div className="mx-2 text-center py-3">Você deve adicionar as pessoas que irão utilizar os ingressos na data escolhida</div> : ''}
-          </div>
-
         </div>
-      </div>)
-      )}
       </div>
-      <div className="m-4 bg-slate-100">
-          <div
-              className="block w-full rounded-md bg-slate-900 px-3.5 py-2.5 text-center text-xl font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-              onClick={() => router.back()}
-          >
-              Voltar
-          </div>
-      </div>
-      
       {showAlterarData ? <AlterarData 
         id={pedido.id} 
         data={pedido.data} 
