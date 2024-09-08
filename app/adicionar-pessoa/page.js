@@ -72,9 +72,9 @@ export default function AdicionarPessoa() {
                 alert('Você deve informar a Cidade que mora');
                 return;
             }
-            console.log(updated, validCPF(updated.cpf))
+            // console.log(updated, validCPF(updated.cpf))
         } else {
-            console.log(visitante, validCPF(visitante))
+            // console.log(visitante, validCPF(visitante))
         }
     };
     const adicionarPessoa = async (vinculo) => {

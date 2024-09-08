@@ -29,17 +29,17 @@ export default function Selecao() {
         <div className="m-10">
           <Link
             className="block w-full rounded-md bg-indigo-600 px-3.5 py-2.5 text-center text-xl font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-            href="/selecione-data?parque=2"
+            href="/selecione-data?parque=1"
           >
-            Parque Viamão
+            Parque Farroupilha
           </Link>
         </div>
         <div className="m-10">
           <Link
             className="block w-full rounded-md bg-indigo-600 px-3.5 py-2.5 text-center text-xl font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-            href="/selecione-data?parque=1"
+            href="/selecione-data?parque=2"
           >
-            Parque Farroupilha
+            Parque Viamão
           </Link>
         </div>
         <div className="m-10">
