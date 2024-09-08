@@ -6,7 +6,7 @@ const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
   title: "Thermas Clube Parque das Águas",
-  description: "Revolution Serviços (51) 99992-6208",
+  description: "Compre seu Passaporte e aproveite o Melhor Parque Aquático da Região",
 };
 
 export default function RootLayout({ children }) {
