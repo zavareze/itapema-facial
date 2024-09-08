@@ -1,7 +1,7 @@
 
 
 export default async function Failure(req) {
-    console.log(req);
+    // console.log(req);
     return (
         <div className="isolate bg-white px-6 py-8 sm:py-32 lg:px-8">
             <div

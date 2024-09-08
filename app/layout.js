@@ -12,10 +12,11 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="pt-BR">
-      <body className={inter.className+' bg-white dark:bg-slate-900'} suppressHydrationWarning={true}>
-        <Suspense fallback={<div>Carregando...</div>}>
-          {children}
-        </Suspense>
+      <body
+        className={inter.className + " bg-white dark:bg-slate-900"}
+        suppressHydrationWarning={true}
+      >
+        <Suspense fallback={<div>Carregando...</div>}>{children}</Suspense>
       </body>
     </html>
   );

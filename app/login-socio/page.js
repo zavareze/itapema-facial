@@ -129,10 +129,9 @@ export default function Login() {
             Entrar
           </button>
         </div>
-        </form>
         <div className="mt-4">
           <button
-            type="submit"
+            type="button"
             className="block w-full rounded-md bg-indigo-600 px-3.5 py-2.5 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
             onClick={() => push('/')}
           >
@@ -142,6 +141,7 @@ export default function Login() {
           <div className='pt-8'>
             <small>Dúvidas Revolution Serviços <a href="//wa.me/5551999926208">(51) 99992-6208</a></small>
           </div>
+        </form>
     </div>
   )
 }
