@@ -21,12 +21,11 @@ export default function Selecao() {
           Bem vindo ao Thermas Clube Parque das Águas
         </h2>
         <p className="mt-2 text-lg leading-8 text-gray-600 dark:text-gray-300">
-          Selecione o parque que deseja visitar, hoje contamos com dois parques,
-          um em Farroupilha/RS e outro em Viamão/RS.
+        Selecione o parque que escolha usufruir, na serra Matriz Farroupilha|RS ou região metropolitana Filial Viamão|RS.
         </p>
       </div>
       <div className="mx-auto mt-8 max-w-xl sm:mt-20">
-        <div className="m-10">
+        <div className="lg:m-10 mb-10">
           <Link
             className="block w-full rounded-md bg-indigo-600 px-3.5 py-2.5 text-center text-xl font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
             href="/selecione-data?parque=1"
@@ -34,7 +33,7 @@ export default function Selecao() {
             Parque Farroupilha
           </Link>
         </div>
-        <div className="m-10">
+        <div className="lg:m-10 mb-10">
           <Link
             className="block w-full rounded-md bg-indigo-600 px-3.5 py-2.5 text-center text-xl font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
             href="/selecione-data?parque=2"
@@ -42,7 +41,7 @@ export default function Selecao() {
             Parque Viamão
           </Link>
         </div>
-        <div className="m-10">
+        <div className="lg:m-10 my-10">
           <Link
             className="block w-full rounded-md bg-slate-900 dark:bg-slate-600 px-3.5 py-2.5 text-center text-xl font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
             href="/"

@@ -21,13 +21,12 @@ export default function Selecao() {
           Bem vindo ao Thermas Clube Parque das Águas
         </h2>
         <p className="mt-2 text-lg leading-8 text-gray-600 dark:text-gray-300">
-          Nesta página você pode comprar ingressos, visualizar ingressos ou se
-          for sócio atualizar as taxas e também atualizar seu o reconhecimento
-          facial.
+        Garanta já seu ingresso! Se você é sócio, atualize seus dados para facilitar o reconhecimento facial.
+        Compre ou atualize seus ingressos agora e aproveite ao máximo sua experiência no clube!
         </p>
       </div>
       <div className="mx-auto mt-8 max-w-xl sm:mt-20">
-        <div className="m-10">
+      <div className="lg:m-10 mb-10">
           <Link
             className="block w-full rounded-md bg-indigo-600 px-3.5 py-2.5 text-center text-xl font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
             href="/login-socio"
@@ -35,7 +34,7 @@ export default function Selecao() {
             Sócio
           </Link>
         </div>
-        <div className="m-10">
+        <div className="lg:m-10 mb-10">
           <Link
             className="block w-full rounded-md bg-indigo-600 px-3.5 py-2.5 text-center text-xl font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
             href="/selecione-parque"
@@ -43,7 +42,7 @@ export default function Selecao() {
             Comprar Ingressos
           </Link>
         </div>
-        <div className="m-10">
+        <div className="lg:m-10 mb-10">
           <Link
             className="block w-full rounded-md bg-indigo-600 px-3.5 py-2.5 text-center text-xl font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
             href="/login-visitante"

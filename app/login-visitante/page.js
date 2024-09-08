@@ -68,7 +68,7 @@ export default function Login() {
   const login = async () => {
     if (agreed) {
       const result = await getLogin(celular, cpf);
-      console.log("login-result", result);
+      // console.log("login-result", result);
       if (result.status == "success") {
         router.push("/cadastro-visitante");
       } else if (result.status == "fail") {
@@ -103,7 +103,7 @@ export default function Login() {
           Reconhecimento Facial Visitantes
         </h2>
         <p className="mt-2 text-lg leading-8 text-gray-600 dark:text-slate-300">
-          Efetue o cadastramento de reconhecimento facial para todos visitantes.
+        Efejue já o seu cadastramento facial para acesso ao clube.
         </p>
       </div>
       <form action={login} className="mx-auto mt-8 max-w-xl sm:mt-20">
