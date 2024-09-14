@@ -304,6 +304,7 @@ export default function Selecao() {
           <ModalPix
             pix={pix}
             pedido={pedido}
+            voucher={voucher}
             total={total}
             setShowModal={(show) => setShowDialogPix(show)}
           />

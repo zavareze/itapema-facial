@@ -16,8 +16,15 @@ export default function Voucher(req) {
             });
             const result = await res.json();
             if (!ignore) {
-                if (result.status == 'success')
+                if (result.status == 'success') {
+                    let url = 'https://api.whatsapp.com/send/?text=Olá%2C++Segue+o+link+com+seu+QR+CODE+para+acessar+o+parque.%0A%0A';
+                    url += 'https%3A%2F%2Fcompre.parquedasaguas.com.br%2Fvoucher%2F'+result?.pedido?.voucher+'+%0A%0A';
+                    url += 'Ao+chegar+no+parque%2C+o+usuário+apresenta+o+QR+CODE+e+recebe+uma+pulseira+para+acesso+rastreável.+Esta+pulseira+é+de+uso+obrigatório+para+acesso+e+permanência+no+complexo+aquático.%0A%0A';
+                    url += 'Aproveite+para+seguir+no+instagram+e+ficar+atualizado+sobre+notícias+e+promoções+de+Ingressos%0Ainstagram.com%2F';
+                    url += result?.pedido?.parque?.instagram;
+                    result.pedido.shareLink = url
                     setPedido(result.pedido);
+                }
             }
         }
         getVoucher();
@@ -53,19 +60,27 @@ export default function Voucher(req) {
                 <div>{pedido.parque?.telefone}</div>
             </div>
             <hr />
-            <div className="w-full h-50 mx-auto p-2 bg-white-900">
-                <QRCode value={req.params.voucher} style={{ height: "150px", maxWidth: "100%", width: "100%" }} />
-            </div>
-            <div className="m-4">
-                <div
-                    className="block w-full rounded-md bg-slate-900 px-3.5 py-2.5 text-center text-xl font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                >
-                    Compartilhar via Whatsapp
+            {pedido.status == '2' ? (
+                <div>
+                    <div className="w-full h-50 mx-auto p-2 bg-white-900">
+                        <QRCode value={req.params.voucher} style={{ height: "150px", maxWidth: "100%", width: "100%" }} />
+                    </div>
+                    <div className="m-4">
+                        <a href={pedido.shareLink}
+                            className="block w-full rounded-md bg-slate-900 px-3.5 py-2.5 text-center text-xl font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                        >
+                            Compartilhar via Whatsapp
+                        </a>
+                    </div>
                 </div>
-            </div>
-            <div className="bg-red-100 rounded text-center mx-4 p-4">
+            ) : ''}
+            {pedido.status == '1' ? <div className="bg-red-100 rounded text-center mx-4 p-4">
+                O pedido não está pago, você precisa efetuar o pagamento ou refazer o pedido. Caso queira verificar com o suporte basta clicar no 
+                Whatsapp <a href={'//wa.me/5551999926208?text=Pode+verificar+meu+pedido? ID: '+pedido.id+', em nome de '+pedido.nome}>(51) 99992-6208</a>
+            </div> : ''}
+            {pedido.forma_pagamento == '1' ? <div className="bg-red-100 rounded text-center mx-4 p-4">
                 Você deve apresentar o documento de identidade e o cartão utilizado nesta compra na hora da retirada das pulseiras de acesso
-            </div>
+            </div> : ''}
             <div className="mx-4 text-black">
                 <h2 className="text-xl font-bold mt-4">Pedido: #{pedido.id}</h2>
                 <div className="text-sm">Nome: {pedido.nome}</div>
@@ -81,7 +96,7 @@ export default function Voucher(req) {
             <div className="pt-8 text-center">
                 <small>
                     Dúvidas Revolution Serviços{" "}
-                    <a href="//wa.me/5551999926208">(51) 99992-6208</a>
+                    <a href={'//wa.me/5551999926208?text=Pode+verificar+meu+pedido? ID: '+pedido.id+', em nome de '+pedido.nome}>(51) 99992-6208</a>
                 </small>
             </div>
         </div>

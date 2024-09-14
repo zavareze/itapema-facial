@@ -1,6 +1,38 @@
+import { useState } from "react";
 import QRCode from "react-qr-code";
+import { useRouter } from "next/navigation";
 
-export default function ModalPix({total, pix, pedido, show, setShowModal}) {
+export default function ModalPix({total, pix, pedido, voucher, show, setShowModal}) {
+  const router = useRouter();
+  const [carregando, setCarregando] = useState(false);
+  const [erro, setErro] = useState(false);
+  const verificarPIX = async () => {
+    setCarregando(true);
+    const res = await fetch(`https://facial.parquedasaguas.com.br/pedido/verifica/`+voucher, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    const result = await res.json();
+    setCarregando(false);
+    console.log(result);
+    switch (result.status) {
+      case '-1':
+        alert('Voucher não localizado');
+        break;
+      case '1':
+        setErro(true);
+        console.log('pendente pgto');
+        break;
+      case '2':
+        router.push('/voucher/'+voucher);
+        break;
+      case '3':
+
+        break;
+    }
+  };
 return show ?? (
 <div>
   <div
@@ -35,14 +67,35 @@ return show ?? (
                     <div className="font-bold text-xl text-center p-2 border rounded bg-green-100 dark:bg-green-900">
                         Total R$ {total?.toLocaleString('pt-BR', { minimumFractionDigits: 2})}
                     </div>
+                    <div
+                      className="block w-full rounded-md bg-slate-900 px-3.5 py-2.5 text-center text-xl font-semibold text-white 
+                      dark:bg-slate-600 shadow-sm cursor-pointer
+                      hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 
+                      focus-visible:outline-indigo-600"
+                      onClick={() => verificarPIX() }
+                    >
+                      Já fiz o PIX
+                    </div>
+                    { erro ? (
+                      <div className="font-bold text-red-600 my-4">
+                        Pedido ainda pendente de pagamento, aguarde alguns segundos e tente verificar novamente. 
+                        Caso precise falar com o suporte clique no telefone informado abaixo.
+                        Whatsapp <a href={'//wa.me/5551999926208?text=Pedido via PIX ID: '+pedido}>(51) 99992-6208</a>
+                      </div>) : ''}
                 </div>
                 <div
                     className="block w-full rounded-md bg-slate-900 px-3.5 py-2.5 text-center text-xl font-semibold text-white 
-                    dark:bg-slate-600 shadow-sm 
+                    dark:bg-slate-600 shadow-sm cursor-pointer
                     hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 
                     focus-visible:outline-indigo-600"
                     onClick={() => {
-                        setFormaPagamento(1);
+                      try {
+                        navigator.clipboard.writeText(pix);
+                      } catch (e) {
+                        alert('O Navegador não possui permissão de copiar o conteudo.');
+                      } finally {
+                        alert('Copiado com sucesso!');
+                      }
                     }}
                 >
                     PIX Copia e Cola
@@ -52,7 +105,7 @@ return show ?? (
                     selecione a opção Pix Copia e cola e cole o conteudo lá.
                 </div>
                 <div className="text-sm">
-                    Dúvidas, envie um whatsapp para o suporte (51) 99992-6208
+                    Dúvidas, envie um whatsapp para o suporte <a href={'//wa.me/5551999926208?text=Pedido via PIX ID: '+pedido}>(51) 99992-6208</a>
                 </div>
           </div>
         </div>
