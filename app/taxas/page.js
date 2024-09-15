@@ -1,6 +1,5 @@
 "use client";
 import { useEffect, useState } from "react";
-import InputMask from "react-input-mask";
 const parseJWT = (token) => {
   var base64Url = token.split(".")[1];
   var base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
@@ -33,19 +32,6 @@ async function cadastro(req, token, onSuccess) {
   onSuccess(json);
   return json;
 }
-async function upload(req, token, onSuccess) {
-  const res = await fetch(`https://facial.parquedasaguas.com.br/cadastro/store`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization": token,
-    },
-    body: JSON.stringify(req),
-  });
-  const json = await res.json();
-  onSuccess(json);
-  return json;
-}
 
 export default function Taxas() {
   const [showModal, setShowModal] = useState(false);
@@ -68,10 +54,6 @@ export default function Taxas() {
     updated: "",
   });
   const [updated, setUpdated] = useState({});
-  const handleOnChange = (event) => {
-    const { name, value } = event.target;
-    setUpdated({ ...updated, [name]: value });
-  };
 
 
   const mostraModal = (person) => {
@@ -121,24 +103,7 @@ export default function Taxas() {
       alert(str);
     }
   };
-  const handleUploadFile = (event) => {
-    // console.log('loading file', event.target.files[0]);
-    const img = document.createElement('img');
-    img.onload = () => {
-      const scale = 3200 / img.width < 1000 / img.height ? 3200 / img.width : 1000 / img.height;
-      const dst = document.createElement("canvas");
-      dst.width = img.width * scale;
-      dst.height = img.height * scale;
-      const ctx = dst.getContext("2d");
-      ctx.drawImage(img, 0, 0, dst.width, dst.height);
-      const body = { matricula: registro.matricula, image: dst.toDataURL() };
-      // console.log('arquivo carregado e redimensionado', JSON.stringify(body));
-      upload(body, token, onUploadSuccess);
-      setLoading(true);
-      setShowModal(false);
-    }
-    img.src = window.URL.createObjectURL(event.target.files[0]);
-  }
+  
   const DoneIcon = () => (<svg className="w-4 h-4 me-2 text-green-500 dark:text-green-400 flex-shrink-0" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
   <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z"/>
 </svg>);
@@ -185,11 +150,11 @@ export default function Taxas() {
                   </div>
                   <div className="mt-1 truncate text-xs leading-5 text-gray-500">
                     <div>Vencimento Carteirinha:</div>
-                    <span className="text-center bg-red-500 text-white font-bold uppercase text-sm px-3 py-1 rounded">28/02/2024</span>
+                    <span className="text-center bg-red-500 text-white font-bold uppercase text-sm px-3 py-1 rounded">{person?.vencimento_carteira}</span>
                   </div>
                   <div className="mt-1 truncate text-xs leading-5 text-gray-500">
                     <div>Vencimento Taxa Sanitária:</div>
-                    <span className="text-center bg-red-500 text-white font-bold uppercase text-sm px-3 py-1 rounded">28/02/2024</span>
+                    <span className="text-center bg-red-500 text-white font-bold uppercase text-sm px-3 py-1 rounded">{person?.vencimento_taxa_sanitaria}</span>
                   </div>
                 </div>
               </div>
@@ -223,7 +188,7 @@ export default function Taxas() {
                 <div className="relative p-4 flex-auto">
                   <div className="grid grid-cols-1 gap-x-4 gap-y-2">
                   <div className="btn-responsive text-center bg-red-500 text-white font-bold uppercase text-sm px-2 py-3 rounded shadow outline-none mr-1 mb-1 ease-linear transition-all duration-150">
-                    Vencido Carteirinha 26/01/2050
+                    Vencido Carteirinha {registro?.vencimento_carteira}
                   </div>
                   <button
                     className="btn-responsive bg-emerald-500 text-white active:bg-emerald-600 font-bold uppercase text-sm px-2 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
@@ -237,7 +202,7 @@ export default function Taxas() {
                   </button>
                   <hr />
                   <div className="btn-responsive text-center bg-red-500 text-white font-bold uppercase text-sm px-2 py-3 rounded shadow outline-none mr-1 mb-1 ease-linear transition-all duration-150">
-                    Vencido Taxa Sanitária 26/01/2050
+                    Vencido Taxa Sanitária {registro?.vencimento_taxa_sanitaria}
                   </div>
                   <button
                     className="btn-responsive bg-emerald-500 text-white active:bg-emerald-600 font-bold uppercase text-sm px-2 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
@@ -250,7 +215,7 @@ export default function Taxas() {
                     Taxa Sanitária 5 meses R$ 99,50
                   </button>
 
-                    
+                  
                   </div>
                 </div>
                 <div className="flex items-center flex-wrap justify-end p-6 border-t border-solid border-blueGray-200 rounded-b">

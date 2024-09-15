@@ -1,6 +1,7 @@
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { Suspense } from "react";
+import { GoogleAnalytics } from '@next/third-parties/google'
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -18,6 +19,7 @@ export default function RootLayout({ children }) {
       >
         <Suspense fallback={<div>Carregando...</div>}>{children}</Suspense>
       </body>
+      <GoogleAnalytics gaId="G-CX0HDJXQY4" />
     </html>
   );
 }
