@@ -49,18 +49,18 @@ export default function Voucher(req) {
             <div className="mx-auto max-w-2xl text-center">
                 <img src="/cpa.png" className="w-24 mx-auto" />
                 <h2 className="text-2xl font-bold tracking-tight text-gray-900 sm:text-4xl mb-4">
-                    Voucher
+                    { pedido.cliente == 0 ? 'Recibo Taxas' : 'Voucher' }
                 </h2>
             </div>
             <div className="mx-4 text-xl font-bold text-black">
-                Parque {pedido?.parque?.nome}
+                Parque {pedido.cliente == 0 ? ' das Águas' : pedido?.parque?.nome}
             </div>
             <div className="mx-4 text-sm">
-                <div>{pedido.parque?.endereco}</div>
-                <div>{pedido.parque?.telefone}</div>
+                <div>{pedido.cliente == 0 ? 'Linha Amadeo - Lote 66 - Próximo a Empresa SUL PET - Farroupilha - RS' :pedido.parque?.endereco}</div>
+                <div>{pedido.cliente == 0 ? '(54) 3261-8599| (54) 99167-7490| (54) 99675-3942' :pedido.parque?.telefone}</div>
             </div>
             <hr />
-            {pedido.status == '2' ? (
+            {pedido.status == '2' && pedido.cliente > 0 ? (
                 <div>
                     <div className="w-full h-50 mx-auto p-2 bg-white-900">
                         <QRCode value={req.params.voucher} style={{ height: "150px", maxWidth: "100%", width: "100%" }} />
@@ -82,7 +82,7 @@ export default function Voucher(req) {
                 Você deve apresentar o documento de identidade e o cartão utilizado nesta compra na hora da retirada das pulseiras de acesso
             </div> : ''}
             <div className="mx-4 text-black">
-                <h2 className="text-xl font-bold mt-4">Pedido: #{pedido.id}</h2>
+                <h2 className="text-xl font-bold mt-4">Pedido: #{pedido.id} - Data: {(pedido.data)?.split('-').reverse().join('/')}</h2>
                 <div className="text-sm">Nome: {pedido.nome}</div>
                 <div className="text-sm font-bold">Ingressos: </div>
                 {pedido?.produtos?.map((p, i) => (<div key={i} className="text-sm">

@@ -1,4 +1,7 @@
 "use client";
+import Loading from "@/components/Loading";
+import ModalCartao from "@/components/ModalCartao";
+import ModalPix from "@/components/ModalPix";
 import { useEffect, useState } from "react";
 const parseJWT = (token) => {
   var base64Url = token.split(".")[1];
@@ -32,16 +35,41 @@ async function cadastro(req, token, onSuccess) {
   onSuccess(json);
   return json;
 }
+async function getTaxas(token, onSuccess) {
+  const res = await fetch(`https://facial.parquedasaguas.com.br/taxas`, {
+    // mode: 'no-cors',
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: token,
+    },
+  });
+  const json = await res.json();
+  onSuccess(json);
+  return json;
+}
 
 export default function Taxas() {
   const [showModal, setShowModal] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [carregando, setCarregando] = useState(false);
   const [token, setToken] = useState([]);
   const [titulos, setTitulos] = useState([]);
+  const [taxas, setTaxas] = useState([]);
+  const [carrinho, setCarrinho] = useState([]);
+  const [showDialogPix, setShowDialogPix] = useState(false);
+  const [showDialogCartao, setShowDialogCartao] = useState(false);
+  const [voucher, setVoucher] = useState("");
+  const [pix, setPIX] = useState("");
+  const [pedido, setPedido] = useState("");
+  const [total, setTotal] = useState("");
+
   useEffect(() => {
+    getTaxas(localStorage.getItem("token"), async (result) => {
+      setTaxas(result);
+    });
     setToken(localStorage.getItem("token"));
     setTitulos(JSON.parse(localStorage.getItem("titulo")));
-  }, [token]);
+  }, []);
   const [registro, setRegistro] = useState({
     matricula: "",
     nome: "",
@@ -55,7 +83,6 @@ export default function Taxas() {
   });
   const [updated, setUpdated] = useState({});
 
-
   const mostraModal = (person) => {
     setRegistro(person);
     setUpdated(person);
@@ -63,17 +90,17 @@ export default function Taxas() {
   };
 
   const onCadastroSuccess = (response) => {
-    if (response['response'] == 'success') {
-      localStorage.setItem('token', response['token']);
-      localStorage.setItem('titulo', JSON.stringify(response['titulo']));
-      setToken('');
-      alert(response['message']);
+    if (response["response"] == "success") {
+      localStorage.setItem("token", response["token"]);
+      localStorage.setItem("titulo", JSON.stringify(response["titulo"]));
+      setToken("");
+      alert(response["message"]);
     } else {
-      let str = response['message'];
+      let str = response["message"];
       if (response.errors) {
-        str += '\n\n';
-        for (const [k, v] of Object.entries(response['errors'])) {
-          str += v+'\n';
+        str += "\n\n";
+        for (const [k, v] of Object.entries(response["errors"])) {
+          str += v + "\n";
         }
       }
       alert(str);
@@ -84,43 +111,211 @@ export default function Taxas() {
     cadastro(updated, token, onCadastroSuccess);
     setShowModal(false);
   };
-  const onUploadSuccess = (response) => {
-    setLoading(false);
-    if (response['response'] == 'success') {
-      localStorage.setItem('token', response['token']);
-      localStorage.setItem('titulo', JSON.stringify(response['titulo']));
-      setToken('');
-      setShowModal(false)
-      alert(response['message']);
+  
+  const checkCarrinho = (matricula, convenio) => {
+    return carrinho.filter(
+      (x) => x["matricula"] == matricula && x["convenio"] == convenio
+    );
+  };
+  const atualizaTaxas = (registro, convenio, chave, valor) => {
+    const idx = carrinho.findIndex(
+      (x) => x["matricula"] == registro.matricula && x["convenio"] == convenio
+    );
+    const newCart = carrinho;
+    if (idx > -1) {
+      newCart[idx].chave = chave;
     } else {
-      let str = response['message'];
-      if (response.errors) {
-        str += '\n\n';
-        for (const [k, v] of Object.entries(response['errors'])) {
-          str += v+'\n';
-        }
-      }
-      alert(str);
+      newCart.push({
+        matricula: registro.matricula,
+        nome: registro.nome,
+        convenio,
+        chave,
+        valor,
+      });
+    }
+    setCarrinho(newCart);
+    setShowModal(false);
+  };
+  const montaNomeCarrinho = (convenio, chave) => {
+    let texto = "";
+    switch (convenio) {
+      case 5:
+        texto = "Renovação Taxa Sanitária";
+        break;
+      case 45:
+        texto = "Renovação Carteira Social";
+        break;
+    }
+    switch (chave) {
+      case "T":
+        texto += " Temporada";
+        break;
+      case "M":
+        texto += " 1 Mês";
+        break;
+      case "1ANO":
+        texto += " 1 Ano";
+        break;
+      case "2ANOS":
+        texto += " 2 Anos";
+        break;
+    }
+    return texto;
+  };
+  const totalCarrinho = () => {
+    let total = 0;
+    carrinho.map((x) => (total += x.valor * 1));
+    return total;
+  };
+  const apagarItem = (item) => {
+    if (
+      confirm(
+        "Tem certeza que deseja apagar a taxa de " +
+          montaNomeCarrinho(item.convenio, item.chave)
+      )
+    ) {
+      const newCart = carrinho.filter(
+        (x) =>
+          !(x["matricula"] == item.matricula && x["convenio"] == item.convenio)
+      );
+      setCarrinho(newCart);
     }
   };
-  
-  const DoneIcon = () => (<svg className="w-4 h-4 me-2 text-green-500 dark:text-green-400 flex-shrink-0" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-  <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z"/>
-</svg>);
-  const LoadingIcon = () => (<svg aria-hidden="true" className="w-4 h-4 me-2 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor"/><path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentFill"/></svg>)
+  const geraPedido = async (forma_pagamento) => {
+    setCarregando(true);
+    const res = await fetch(`https://facial.parquedasaguas.com.br/pedido`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        matricula: titulos?.[0]?.matricula,
+        forma_pagamento,
+        tarifas: carrinho,
+      }),
+    });
+    const result = await res.json();
+    setCarregando(false);
+    if (result.status == "success") {
+      setPIX(result.pedido.pix);
+      setVoucher(result.pedido.voucher);
+      setPedido(result.pedido.id);
+      setTotal(result.pedido.valor);
+      if (result.pedido.forma_pagamento == 5) setShowDialogPix(true);
+      if (result.pedido.forma_pagamento == 1) setShowDialogCartao(true);
+    }
+  }
+
   return (
     <>
       <div>
-          <button type="submit" className={`block w-full rounded-md bg-indigo-600 px-2 py-2.5 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 
-          focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 `}>Reconhecimento facial clique aqui</button>
-        <h1 className="text-2xl font-bold text-center py-2">Renovação de Taxas</h1>
+        {carregando ? <Loading /> : ""}
+        {showDialogPix ? (
+          <ModalPix
+            pix={pix}
+            pedido={pedido}
+            voucher={voucher}
+            total={total}
+            setShowModal={(show) => setShowDialogPix(show)}
+            setCarregando={(show) => setCarregando(show)}
+          />
+        ) : (
+          ""
+        )}
+        {showDialogCartao ? (
+          <ModalCartao
+            total={total}
+            pedido={pedido}
+            setCarregando={(show) => setCarregando(show)}
+            setShowModal={(show) => setShowDialogCartao(show)}
+          />
+        ) : (
+          ""
+        )}
+        <button
+          type="button"
+          className={`block w-full rounded-md bg-indigo-600 px-2 py-2.5 text-center text-sm font-semibold text-white 
+          shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 
+          focus-visible:outline-indigo-600 `}
+        >
+          Reconhecimento facial clique aqui
+        </button>
+        <h1 className="text-2xl font-bold text-center py-2">
+          Renovação de Taxas
+        </h1>
         <div className="pb-4 px-2">
           <p className="text-sm">
-            Existem duas taxas que devem ser pagas periodicamente são elas taxa de carteirinha e Taxa Sanitária.
-            A taxa de carteirinha existe renovação por 1 ano ou 2 anos, já a taxa sanitária tem pela validade de 1 mês ou 2 meses.
+            Existem duas taxas que devem ser pagas periodicamente são elas taxa
+            de carteirinha e Taxa Sanitária. A taxa de carteirinha existe
+            renovação por 1 ano ou 2 anos, já a taxa sanitária tem pela validade
+            de 1 mês ou 2 meses.
           </p>
         </div>
-        <h1 className="text-lg font-bold text-center">Relação de Pessoas no Título</h1>
+        {carrinho?.length > 0 ? (<div>
+          <h1 className="text-lg font-bold text-center">Carrinho</h1>
+          <ul
+            role="list"
+            className="divide-y sm:grid sm:grid-cols-2 sm:gap-4 cursor-pointer px-2 pb-2 text-sm"
+          >
+            {carrinho?.map((item) => (
+              <li
+                key={item.matricula + item.chave}
+                onClick={() => apagarItem(item)}
+                className={
+                  "flex justify-between gap-x-2 p-2 mb-2 bg-yellow-200 cursor-pointer"
+                }
+              >
+                <div>
+                  <div>
+                    {item.matricula} - {item.nome}
+                  </div>
+                  <div>{montaNomeCarrinho(item.convenio, item.chave)}</div>
+                </div>
+                <div>
+                  <div>
+                    {parseFloat(item.valor)?.toLocaleString("pt-BR", {
+                      minimumFractionDigits: 2,
+                    })}
+                  </div>
+                  <div>Apagar</div>
+                </div>
+              </li>
+            ))}
+          </ul>
+          <div className="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2 px-2">
+            <div className="font-bold text-xl text-center p-2 border rounded bg-green-100 dark:bg-green-900">
+              Total R${" "}
+              {totalCarrinho()?.toLocaleString("pt-BR", {
+                minimumFractionDigits: 2,
+              })}
+            </div>
+            <div className="mx-4">
+              Escolha a forma de pagamento, caso opte por cartão de crédito na
+              próxima tela você poderá parcelar
+            </div>
+            <div
+              className="block w-full rounded-md bg-slate-900 px-3.5 py-2.5 text-center text-xl font-semibold text-white dark:bg-slate-600 shadow-sm
+                  hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 cursor-pointer"
+              onClick={() => {
+                geraPedido(5);
+              }}
+            >
+              PIX
+            </div>
+            <div
+              className="block w-full rounded-md bg-slate-900 px-3.5 py-2.5 text-center text-xl font-semibold text-white dark:bg-slate-600 shadow-sm 
+                hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 cursor-pointer"
+              onClick={() => {
+                geraPedido(1);
+              }}
+            >
+              Cartão Crédito
+            </div>
+          </div>
+        </div>) : ''}
+        <h1 className="text-lg font-bold text-center">
+          Relação de Pessoas no Título
+        </h1>
         <ul
           role="list"
           className="divide-y sm:grid sm:grid-cols-3 sm:gap-4 cursor-pointer px-2 pb-2"
@@ -150,11 +345,15 @@ export default function Taxas() {
                   </div>
                   <div className="mt-1 truncate text-xs leading-5 text-gray-500">
                     <div>Vencimento Carteirinha:</div>
-                    <span className="text-center bg-red-500 text-white font-bold uppercase text-sm px-3 py-1 rounded">{person?.vencimento_carteira}</span>
+                    <span className="text-center bg-red-500 text-white font-bold uppercase text-sm px-3 py-1 rounded">
+                      {person?.vencimento_carteira}
+                    </span>
                   </div>
                   <div className="mt-1 truncate text-xs leading-5 text-gray-500">
                     <div>Vencimento Taxa Sanitária:</div>
-                    <span className="text-center bg-red-500 text-white font-bold uppercase text-sm px-3 py-1 rounded">{person?.vencimento_taxa_sanitaria}</span>
+                    <span className="text-center bg-red-500 text-white font-bold uppercase text-sm px-3 py-1 rounded">
+                      {person?.vencimento_taxa_sanitaria}
+                    </span>
                   </div>
                 </div>
               </div>
@@ -164,17 +363,13 @@ export default function Taxas() {
       </div>
       {showModal ? (
         <>
-          <div
-            className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none"
-          >
+          <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
             <div className="relative w-auto my-6 mx-auto max-w-3xl">
               {/*content*/}
               <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
                 {/*header*/}
                 <div className="flex items-start justify-between p-5 border-b border-solid border-blueGray-200 rounded-t">
-                  <h3 className="text-3xl font-semibold">
-                    {registro.nome}
-                  </h3>
+                  <h3 className="text-3xl font-semibold">{registro.nome}</h3>
                   <button
                     className="p-1 ml-auto bg-transparent border-0 text-black opacity-5 float-right text-3xl leading-none font-semibold outline-none focus:outline-none"
                     onClick={() => setShowModal(false)}
@@ -187,35 +382,95 @@ export default function Taxas() {
                 {/*body*/}
                 <div className="relative p-4 flex-auto">
                   <div className="grid grid-cols-1 gap-x-4 gap-y-2">
-                  <div className="btn-responsive text-center bg-red-500 text-white font-bold uppercase text-sm px-2 py-3 rounded shadow outline-none mr-1 mb-1 ease-linear transition-all duration-150">
-                    Vencido Carteirinha {registro?.vencimento_carteira}
-                  </div>
-                  <button
-                    className="btn-responsive bg-emerald-500 text-white active:bg-emerald-600 font-bold uppercase text-sm px-2 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
-                    type="button">
-                    Carteirinha 1 Ano R$ 54,50
-                  </button>
-                  <button
-                    className="btn-responsive bg-emerald-500 text-white active:bg-emerald-600 font-bold uppercase text-sm px-2 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
-                    type="button">
-                    Carteirinha 2 Anos R$ 79,50
-                  </button>
-                  <hr />
-                  <div className="btn-responsive text-center bg-red-500 text-white font-bold uppercase text-sm px-2 py-3 rounded shadow outline-none mr-1 mb-1 ease-linear transition-all duration-150">
-                    Vencido Taxa Sanitária {registro?.vencimento_taxa_sanitaria}
-                  </div>
-                  <button
-                    className="btn-responsive bg-emerald-500 text-white active:bg-emerald-600 font-bold uppercase text-sm px-2 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
-                    type="button">
-                    Taxa Sanitária 1 mês R$ 54,50
-                  </button>
-                  <button
-                    className="btn-responsive bg-emerald-500 text-white active:bg-emerald-600 font-bold uppercase text-sm px-2 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
-                    type="button">
-                    Taxa Sanitária 5 meses R$ 99,50
-                  </button>
-
-                  
+                    <div
+                      className={`btn-responsive text-center  text-white font-bold uppercase text-sm 
+                  px-2 py-3 rounded shadow outline-none mr-1 mb-1 ease-linear transition-all duration-150 +
+                  ${
+                    registro.carteira_vencida == "0"
+                      ? "bg-emerald-500"
+                      : checkCarrinho(registro.matricula, 5)
+                      ? "bg-red-500"
+                      : "bg-orange-500"
+                  }`}
+                    >
+                      Carteirinha {registro?.vencimento_carteira}
+                    </div>
+                    <button
+                      className="btn-responsive bg-gray-500 text-white active:bg-gray-600 font-bold uppercase text-sm px-2 py-3 
+                    rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                      type="button"
+                      onClick={() =>
+                        atualizaTaxas(
+                          registro,
+                          45,
+                          "1ANO",
+                          taxas?.[2]?.["valor"]
+                        )
+                      }
+                    >
+                      Carteirinha 1 Ano R${" "}
+                      {parseFloat(taxas?.[2]?.["valor"])?.toLocaleString(
+                        "pt-BR",
+                        {
+                          minimumFractionDigits: 2,
+                        }
+                      )}
+                    </button>
+                    <button
+                      className="btn-responsive bg-gray-500 text-white active:bg-gray-600 font-bold uppercase text-sm px-2 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                      type="button"
+                      onClick={() =>
+                        atualizaTaxas(
+                          registro,
+                          45,
+                          "2ANOS",
+                          taxas?.[3]?.["valor"]
+                        )
+                      }
+                    >
+                      Carteirinha 2 Anos R${" "}
+                      {parseFloat(taxas?.[3]?.["valor"])?.toLocaleString(
+                        "pt-BR",
+                        {
+                          minimumFractionDigits: 2,
+                        }
+                      )}
+                    </button>
+                    <hr />
+                    <div className="btn-responsive text-center bg-red-500 text-white font-bold uppercase text-sm px-2 py-3 rounded shadow outline-none mr-1 mb-1 ease-linear transition-all duration-150">
+                      Vencido Taxa Sanitária{" "}
+                      {registro?.vencimento_taxa_sanitaria}
+                    </div>
+                    <button
+                      className="btn-responsive bg-gray-500 text-white active:bg-gray-600 font-bold uppercase text-sm px-2 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                      type="button"
+                      onClick={() =>
+                        atualizaTaxas(registro, 5, "M", taxas?.[0]?.["valor"])
+                      }
+                    >
+                      Taxa Sanitária 1 mês R${" "}
+                      {parseFloat(taxas?.[0]?.["valor"])?.toLocaleString(
+                        "pt-BR",
+                        {
+                          minimumFractionDigits: 2,
+                        }
+                      )}
+                    </button>
+                    <button
+                      className="btn-responsive bg-gray-500 text-white active:bg-gray-600 font-bold uppercase text-sm px-2 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                      type="button"
+                      onClick={() =>
+                        atualizaTaxas(registro, 5, "T", taxas?.[1]?.["valor"])
+                      }
+                    >
+                      Taxa Sanitária 5 meses R${" "}
+                      {parseFloat(taxas?.[1]?.["valor"])?.toLocaleString(
+                        "pt-BR",
+                        {
+                          minimumFractionDigits: 2,
+                        }
+                      )}
+                    </button>
                   </div>
                 </div>
                 <div className="flex items-center flex-wrap justify-end p-6 border-t border-solid border-blueGray-200 rounded-b">
@@ -240,43 +495,6 @@ export default function Taxas() {
           <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
         </>
       ) : null}
-      {loading ? (
-        <div className="bg-white w-full px-12 h-full py-28 -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2 fixed">
-          <h2 className="mb-8 text-lg font-semibold text-gray-900 dark:text-white">Aguarde que estamos efetuando o Reconhecimento facial:</h2>
-          <div className="mb-8">Este procedimento pode levar em torno de 15 segundos, por favor aguarde</div>
-          <ul className="max-w-md space-y-2 text-gray-500 list-inside dark:text-gray-400">
-              <li className="flex items-center">
-                  <DoneIcon />
-                  Enviando foto para servidor
-              </li>
-              <li className="flex items-center">
-                  <DoneIcon />
-                  Processando imagem
-              </li>
-              <li className="flex items-center">
-                  <div role="status">
-                      <LoadingIcon />
-                      <span className="sr-only">Loading...</span>
-                  </div>
-                  Fazendo Reconhecimento
-              </li>
-              <li className="flex items-center">
-                  <div role="status">
-                      <LoadingIcon />
-                      <span className="sr-only">Loading...</span>
-                  </div>
-                  Comparando Rostos
-              </li>
-              <li className="flex items-center">
-                  <div role="status">
-                      <LoadingIcon />
-                      <span className="sr-only">Loading...</span>
-                  </div>
-                  Associando Face
-              </li>
-          </ul>
-        </div>
-      ) : null}
     </>
-  )
+  );
 }
