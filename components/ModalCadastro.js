@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-export default function ModalCadastro({cpf, setShowModal, avancar}) {
+export default function ModalCadastro({cpf, setShowModal, setCarregando, avancar}) {
   const [registro, setRegistro] = useState({
     nome: '',
     data_nascimento: '',
