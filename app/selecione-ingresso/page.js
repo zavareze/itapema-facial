@@ -307,6 +307,7 @@ export default function Selecao() {
             voucher={voucher}
             total={total}
             setShowModal={(show) => setShowDialogPix(show)}
+            setCarregando={(show) => setCarregando(show)}
           />
         ) : (
           ""

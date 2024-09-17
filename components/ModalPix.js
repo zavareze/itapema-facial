@@ -2,9 +2,8 @@ import { useState } from "react";
 import QRCode from "react-qr-code";
 import { useRouter } from "next/navigation";
 
-export default function ModalPix({total, pix, pedido, voucher, show, setShowModal}) {
+export default function ModalPix({total, pix, pedido, voucher, show, setShowModal, setCarregando}) {
   const router = useRouter();
-  const [carregando, setCarregando] = useState(false);
   const [erro, setErro] = useState(false);
   const verificarPIX = async () => {
     setCarregando(true);
