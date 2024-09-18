@@ -3,6 +3,7 @@ import EnviarFotoSocio from "@/components/EnviarFotoSocio";
 import Loading from "@/components/Loading";
 import LoadingFacial from "@/components/LoadingFacial";
 import ModalCadastroSocio from "@/components/ModalCadastroSocio";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 const parseJWT = (token) => {
   var base64Url = token.split(".")[1];
@@ -60,12 +61,12 @@ export default function Cadastro() {
             Vale lembrar que as mesmas devem também estar em
             dia com as taxas para poder acessar o clube</p>
         </div>
-        <button type="submit" className={`mb-2 block mx-auto rounded-md bg-indigo-600 px-2 py-2.5 text-center text-sm 
+        <Link href="/taxas" className={`mb-2 block mx-auto rounded-md bg-indigo-600 px-2 py-2.5 text-center text-sm 
         font-semibold text-white shadow-sm hover:bg-indigo-500 
           focus-visible:outline focus-visible:outline-2 
           focus-visible:outline-offset-2 focus-visible:outline-indigo-600 `}>
             Pagamento de taxas clique aqui
-        </button>
+        </Link>
         <h1 className="text-lg font-bold text-center">Relação de Pessoas no Título</h1>
         <ul
           role="list"

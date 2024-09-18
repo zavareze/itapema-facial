@@ -2,6 +2,7 @@
 import Loading from "@/components/Loading";
 import ModalCartao from "@/components/ModalCartao";
 import ModalPix from "@/components/ModalPix";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 const parseJWT = (token) => {
   var base64Url = token.split(".")[1];
@@ -205,7 +206,6 @@ export default function Taxas() {
       if (result.pedido.forma_pagamento == 1) setShowDialogCartao(true);
     }
   }
-
   return (
     <>
       <div>
@@ -232,14 +232,13 @@ export default function Taxas() {
         ) : (
           ""
         )}
-        <button
-          type="button"
+        <Link href="/cadastro-socio"
           className={`block w-full rounded-md bg-indigo-600 px-2 py-2.5 text-center text-sm font-semibold text-white 
           shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 
           focus-visible:outline-indigo-600 `}
         >
           Reconhecimento facial clique aqui
-        </button>
+        </Link>
         <h1 className="text-2xl font-bold text-center py-2">
           Renovação de Taxas
         </h1>
@@ -345,13 +344,13 @@ export default function Taxas() {
                   </div>
                   <div className="mt-1 truncate text-xs leading-5 text-gray-500">
                     <div>Vencimento Carteirinha:</div>
-                    <span className="text-center bg-red-500 text-white font-bold uppercase text-sm px-3 py-1 rounded">
+                    <span className={`text-center ${person.carteira_vencida == '1' ? 'bg-red-500' : 'bg-green-500' } text-white font-bold uppercase text-sm px-3 py-1 rounded`}>
                       {person?.vencimento_carteira}
                     </span>
                   </div>
                   <div className="mt-1 truncate text-xs leading-5 text-gray-500">
                     <div>Vencimento Taxa Sanitária:</div>
-                    <span className="text-center bg-red-500 text-white font-bold uppercase text-sm px-3 py-1 rounded">
+                    <span className={`text-center ${person.taxa_sanitaria_vencida == '1' ? 'bg-red-500' : 'bg-green-500' } text-white font-bold uppercase text-sm px-3 py-1 rounded`}>
                       {person?.vencimento_taxa_sanitaria}
                     </span>
                   </div>
@@ -388,7 +387,7 @@ export default function Taxas() {
                   ${
                     registro.carteira_vencida == "0"
                       ? "bg-emerald-500"
-                      : checkCarrinho(registro.matricula, 5)
+                      : checkCarrinho(registro.matricula, 45)
                       ? "bg-red-500"
                       : "bg-orange-500"
                   }`}
@@ -437,7 +436,15 @@ export default function Taxas() {
                       )}
                     </button>
                     <hr />
-                    <div className="btn-responsive text-center bg-red-500 text-white font-bold uppercase text-sm px-2 py-3 rounded shadow outline-none mr-1 mb-1 ease-linear transition-all duration-150">
+                    <div className={`btn-responsive text-center  text-white font-bold uppercase text-sm 
+                  px-2 py-3 rounded shadow outline-none mr-1 mb-1 ease-linear transition-all duration-150 +
+                  ${
+                    registro.taxa_sanitaria_vencida == "0"
+                      ? "bg-emerald-500"
+                      : checkCarrinho(registro.matricula, 5)
+                      ? "bg-red-500"
+                      : "bg-orange-500"
+                  }`}>
                       Vencido Taxa Sanitária{" "}
                       {registro?.vencimento_taxa_sanitaria}
                     </div>
