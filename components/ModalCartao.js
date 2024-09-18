@@ -19,6 +19,34 @@ export default function ModalCartao({total, pedido, show, setCarregando, setShow
         setUpdated({ ...updated, [name]: value });
     };
     const pagar = async () => {
+      if (!updated?.cardName) {
+        alert('Você deve preencher o nome do titular do cartão.');
+        return;
+      }
+      if (!updated?.cardNumber) {
+        alert('Você deve preencher o número do cartão.');
+        return;
+      }
+      if (!updated?.cardCvv) {
+        alert('Você deve preencher o código de autorização do cartão.');
+        return;
+      }
+      if (!updated?.cardYear) {
+        alert('Você deve preencher o ano de vencimento do cartão.');
+        return;
+      }
+      if (!updated?.cardMonth) {
+        alert('Você deve preencher o mês de vencimento do cartão.');
+        return;
+      }
+      if (updated?.cardYear.length != 4) {
+        alert('Você deve preencher o ano de vencimento com 4 digitos.');
+        return;
+      }
+      if (updated?.cardMonth.length != 2) {
+        alert('Você deve preencher o mês de vencimento com 2 digitos.');
+        return;
+      }
       try {
           setCarregando(true);
           const r = await fetch(`https://facial.parquedasaguas.com.br/rede`, {
@@ -44,6 +72,8 @@ export default function ModalCartao({total, pedido, show, setCarregando, setShow
           if (result.success) {
             router.push(result.url);
           }
+          if (result.error)
+            alert(result.message);
       } catch (error) {
         setCarregando(false);
       }
