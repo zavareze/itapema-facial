@@ -1,3 +1,4 @@
+import Link from "next/link";
 
 
 export default async function Failure(req) {
@@ -28,13 +29,14 @@ export default async function Failure(req) {
                 <h2 className="text-xl font-bold mt-4 text-center pb-4">Não foi possível processar a sua compra no cartão.</h2>
                 <div className="text-sm pb-4">Abaixo o erro informado pela operadora.</div>
                 <div className="bg-red-100 rounded text-center p-4">{req.searchParams.errorCode} - {req.searchParams.message}</div>
+                <div className="bg-red-100 rounded text-center p-4">{req.searchParams.errorCode3DS} - {req.searchParams.message3DS}</div>
             </div>
             <div className="m-4">
-                <div
+                <Link href="/selecione-parque"
                     className="block w-full rounded-md bg-slate-900 px-3.5 py-2.5 text-center text-xl font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                 >
                     Voltar
-                </div>
+                </Link>
             </div>
             <div className="pt-8 text-center">
                 <small>
