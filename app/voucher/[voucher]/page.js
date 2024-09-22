@@ -78,7 +78,7 @@ export default function Voucher(req) {
                 O pedido não está pago, você precisa efetuar o pagamento ou refazer o pedido. Caso queira verificar com o suporte basta clicar no 
                 Whatsapp <a href={'//wa.me/5551999926208?text=Pode+verificar+meu+pedido? ID: '+pedido.id+', em nome de '+pedido.nome}>(51) 99992-6208</a>
             </div> : ''}
-            {pedido.forma_pagamento == '1' ? <div className="bg-red-100 rounded text-center mx-4 p-4">
+            {pedido.cliente != 0 && pedido.forma_pagamento == '1' ? <div className="bg-red-100 rounded text-center mx-4 p-4">
                 Você deve apresentar o documento de identidade e o cartão utilizado nesta compra na hora da retirada das pulseiras de acesso
             </div> : ''}
             <div className="mx-4 text-black">
