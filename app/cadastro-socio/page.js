@@ -59,7 +59,8 @@ export default function Cadastro() {
           </p>
           <p className="text-sm">
             Vale lembrar que as mesmas devem também estar em
-            dia com as taxas para poder acessar o clube</p>
+            dia com as taxas para poder acessar o clube.</p>
+            <p className="text-sm font-bold">Clique na pessoa para atualizar os dados da mesma. Após isso você poderá enviar uma nova Foto.</p>
         </div>
         <Link href="/taxas" className={`mb-2 block mx-auto rounded-md bg-indigo-600 px-2 py-2.5 text-center text-sm 
         font-semibold text-white shadow-sm hover:bg-indigo-500 
@@ -95,6 +96,7 @@ export default function Cadastro() {
                   <p className="text-sm font-semibold leading-6 text-gray-900 dark:text-white">
                     {person.nome}
                   </p>
+                  {person.cpf == '' ? (<div className="text-red-700 bg-yellow-300 rounded p-2 text-center">CLIQUE AQUI PARA ATUALIZAR OS DADOS CADASTRAIS</div>) : ''}
                   <p className="mt-1 truncate text-xs leading-5 text-gray-500 dark:text-slate-300">
                     {person.cpf}
                   </p>
