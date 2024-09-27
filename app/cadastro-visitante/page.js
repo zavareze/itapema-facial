@@ -83,6 +83,16 @@ export default function Cadastro() {
         <a href="/cadastro-visitante/vinculos" class="font-medium px-3 py-2 text-slate-700 rounded-lg hover:bg-slate-100 hover:text-slate-900">Pessoas Vinculadas</a>
       </nav>
       <div className="bg-slate-100 sm:grid sm:grid-cols-3 sm:gap-4 lg:grid-cols-4">
+      <div className="py-4 mx-4 dark:text-slate-300">
+          <p className="text-sm">
+            <div>Nesta tela você visualiza os vouchers disponíveis para uso.</div>
+            <div>1) Você pode alterar o dia da visita clicando no botão Alterar Data.</div>
+            <div>2) Você pode incluir as pessoas que irão com você no dia da visita, elas devem ser inseridas primeiramente na aba Pessoas Vinculadas.</div>
+            <div>3) Se você quer trocar a pessoa escolhida basta clicar em cima do nome dela que o sistema perguntará se você quer remover ela.</div>
+          </p>
+          <p className="text-sm font-bold">
+            Se a pessoa que você incluiu ficar na cor rosa, significa que estão faltando dados ou a foto, você pode atualizar na aba Pessoas Vinculadas.</p>
+        </div>
       {pedidos?.map(pedido => (<div key={pedido.id} className="py-2">
         <div className="mx-2 rounded shadow-lg border-t border-slate-100 bg-white dark:bg-slate-700 px-2 pt-4 pb-2">
           <QRCode value={pedido.voucher} style={{ height: "150px", maxWidth: "100%", width: "100%" }} />
