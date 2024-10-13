@@ -41,7 +41,9 @@ export default function ModalCadastroSocio({person, setResult, setLoading, setSh
                     alert(result.message);
                 if (result.type == 'token')
                     router.push('/login-socio');
+                console.log('fail');
             } else {
+              console.log('else', result);
                 setShowModal(false);
                 setResult(result);
             }

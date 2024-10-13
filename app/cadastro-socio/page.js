@@ -30,6 +30,7 @@ export default function Cadastro() {
   const setResult = (result) => {
     localStorage.setItem('token', result['token']);
     localStorage.setItem('titulo', JSON.stringify(result['titulo']));
+    console.log(result, result['token']);
     setToken(result['token']);
     setTitulos(result['titulos']);
   }
@@ -122,7 +123,7 @@ export default function Cadastro() {
           ))}
         </ul>
       </div>
-      {showModal ? <ModalCadastroSocio person={person} set={(person) => setPerson(person)} setLoading={(show) => setLoadingFetch(show)} setShowModal={(show) => setShowModal(show)} /> : null}
+      {showModal ? <ModalCadastroSocio person={person} setResult={(result) => setResult(result)} setLoading={(show) => setLoadingFetch(show)} setShowModal={(show) => setShowModal(show)} /> : null}
       {loading ? <LoadingFacial /> : null}
       {loadingFetch ? <Loading /> : null}
     </>
