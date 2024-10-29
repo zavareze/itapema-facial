@@ -15,7 +15,7 @@ export default function Totem() {
                 />
             </div>
             <div className="mx-auto max-w-2xl text-center">
-                <img src="https://compre.parquedasaguas.com.br/img/cpa.png" className="w-24 mx-auto" />
+                <img src="https://compre2.parquedasaguas.com.br/img/cpa.png" className="w-24 mx-auto" />
                 <h2 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-4xl">Como deseja seu Recibo?</h2>
                 <p className="mt-2 text-lg leading-8 text-gray-600 dark:text-slate-300">
                     Como quer receber seu recibo?

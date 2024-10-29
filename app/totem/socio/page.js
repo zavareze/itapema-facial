@@ -7,8 +7,8 @@ import { useEffect, useState } from 'react';
 export default function Totem() {
     const router = useRouter();
     const [erro, setErro] = useState('');
-    const getTickets = async () => {
-        const res = await fetch(`https://facial.parquedasaguas.com.br/estacionamento`, {
+    const localizaAssociado = async () => {
+        const res = await fetch(`https://facial.parquedasaguas.com.br/socio/`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -26,10 +26,7 @@ export default function Totem() {
             localStorage.setItem('fechados', '[]');
     }
     useEffect(() => {
-        getTickets();
         localStorage.setItem('leitura', '');
-        localStorage.setItem('ticket_selecionado', 'undefined');
-        localStorage.setItem('trnAmount', '25,00');
         function keyDownHandler(e) {
             if (e.key === "Enter") {
                 console.log(localStorage.getItem('leitura'));
@@ -37,8 +34,6 @@ export default function Totem() {
                 const localizado = tickets_abertos.filter(x => x.ticket == localStorage.getItem('leitura'))?.[0];
                 if (localizado) {
                     setErro('');
-                    localStorage.setItem('ticket_selecionado', JSON.stringify(localizado));
-                    console.log('ticket localizado', localizado);
                     router.push('/totem/pagamento')
                 } else {
                     getTickets();
@@ -57,7 +52,7 @@ export default function Totem() {
     }, []);
     return (
         <div className="isolate bg-white dark:bg-slate-900 px-6 py-12 sm:py-32 lg:px-8">
-            <Header title="Pagamento Estacionamento Visitante" caption="Leia o QR Code localizado abaixo e a esquerda" />
+            <Header title="Identificação Associado" caption="Leia o QR Code localizado abaixo e a esquerda" />
             <div className="rounded-xl bg-indigo-600 text-center font-bold text-white shadow-xl text-6xl col-span-2 mx-auto my-8">
                 <img src="https://placehold.co/1920x1080" className="w-full h-[639px]" />
             </div>
@@ -65,11 +60,11 @@ export default function Totem() {
                 {erro}
             </div> : ''}
             <div className="rounded-xl bg-green-600 p-8 text-center font-semibold text-white shadow-xl text-6xl my-8">
-                Leia o QR Code de seu Ticket de Estacionamento no leitor abaixo conforme imagem de exemplo
+                Leia o QR Code de sua Carteirinha de Sócio
             </div>
-            <Link href="/totem/informar-placa">
+            <Link href="/totem/pagamento">
                 <div className="rounded-xl bg-indigo-600 p-10 text-center font-semibold text-white shadow-xl text-6xl">
-                    Prefiro Informar a Placa
+                    Voltar
                 </div>
             </Link>
             <Footer />

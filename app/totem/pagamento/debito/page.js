@@ -4,9 +4,9 @@ import Script from 'next/script';
 import Footer from '@/components/TotemFooter';
 import Header from '@/components/TotemHeader';
 import { useRouter } from 'next/navigation';
-import {venda_credito, tef_continuetransaction, trataColeta } from '@/components/SkyTef';
+import {venda_debito, tef_continuetransaction, trataColeta } from '@/components/SkyTef';
 import { useEffect, useState } from 'react';
-export default function Credito() {
+export default function Debito() {
     const router = useRouter();
     const [display, setDisplay] = useState('');
     const [btnCancelar, SetBtnCancelar] = useState(false);
@@ -19,7 +19,8 @@ export default function Credito() {
             if (localStorage.getItem('tef_btn_confirm') == 'true') {
                 router.push('/totem/pagamento');
                 SetBtnConfirmar(localStorage.getItem('tef_btn_confirm'));
-            }            updateDisplay();
+            }
+            updateDisplay();
         }, 100);
     }
     useEffect(() => {
@@ -29,12 +30,12 @@ export default function Credito() {
         localStorage.setItem('tef_input', '');
         localStorage.setItem('tef_input_type', 'text');
         localStorage.setItem('tef_input_length', 1);
-        venda_credito('1,23', '20241025074801');
+        venda_debito('25,00', '20241025074801');
         updateDisplay();
     }, []);
     return (
         <div className="isolate bg-white dark:bg-slate-900 px-6 py-12 sm:py-32 lg:px-8">
-            <Header title="Pagamento via Cartão de Crédito" caption="Siga as instruções na maquininha de cartão" />
+            <Header title="Pagamento via Cartão de Débito" caption="Siga as instruções na maquininha de cartão" />
             <div className="text-8xl font-bold text-center border rounded-xl p-4 bg-green-100 my-16 py-8">Valor: R$ 25,00</div>
             <div className="mt-4 grid grid-cols-8 gap-4 w-full mb-8">
                 <div className="rounded-xl bg-white text-center font-bold text-white shadow-xl text-6xl col-span-2 mx-auto my-auto">
