@@ -143,11 +143,11 @@ export default function Voucher(req) {
                         </a>
                     </div>
                     { parseInt(pedido.adultos-pedido.vinculos_adultos)+parseInt(pedido.criancas-pedido.vinculos_criancas) > 0 && pedido.cliente > 0 && <div className="m-4">
-                        <a href={'/reconhecimento-facial/'+pedido?.voucher}
+                        <div
                             className="block w-full rounded-md bg-orange-500 px-3.5 py-2.5 text-center font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                         >
                             Você deve efetuar o reconhecimento facial antes de acessar o parque, clique aqui e informe as pessoas e envie as fotos de quem irá no dia.
-                        </a>
+                        </div>
                     </div>}
                 </div>
             ) : ''}
