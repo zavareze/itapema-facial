@@ -146,7 +146,7 @@ export default function Voucher(req) {
                         <div
                             className="block w-full rounded-md bg-orange-500 px-3.5 py-2.5 text-center font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                         >
-                            Você deve efetuar o reconhecimento facial antes de acessar o parque, clique aqui e informe as pessoas e envie as fotos de quem irá no dia.
+                            Você deve efetuar o reconhecimento facial antes de acessar o parque. Role para baixo para adicionar pessoas no Voucher.
                         </div>
                     </div>}
                 </div>
