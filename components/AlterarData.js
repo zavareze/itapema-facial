@@ -10,13 +10,15 @@ export default function AlterarData({id, data, setResult, setShowModal, setLoadi
         'Content-Type': 'application/json',
         Authorization: localStorage.getItem('token'),
       },
-      body: JSON.stringify({ id, data }),
+      body: JSON.stringify({ id, data: dataAlterada }),
     });
     const result = await res.json();
     setLoading(false);
     if (result.status == 'success') {
       setResult(result);
       setShowModal(false);
+    } else {
+      alert(result.message);
     }
   }
   return (

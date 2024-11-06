@@ -26,6 +26,7 @@ export default function EnviarFotoSocio({matricula, setLoading, setResult}) {
         const result = await res.json();
         setLoading(false);
         if (result['status'] == 'success') {
+            result['refresh'] = true;
             setResult(result);
             alert(result['message']);
         } else

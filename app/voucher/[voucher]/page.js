@@ -2,38 +2,108 @@
 'use client';
 import { useEffect, useState } from "react";
 import QRCode from "react-qr-code";
+import AlterarData from "@/components/AlterarData";
+import Loading from "@/components/Loading";
+import AdicionarPessoa from "@/components/AdicionarPessoa";
+import LoadingFacial from "@/components/LoadingFacial";
+import EnviarFotoVisitante from "@/components/EnviarFotoVisitante";
 
+const parseJWT = (token) => {
+    var base64Url = token.split(".")[1];
+    var base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+    var jsonPayload = decodeURIComponent(
+      window
+        .atob(base64)
+        .split("")
+        .map(function (c) {
+          return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
+        })
+        .join("")
+    );
+    return JSON.parse(jsonPayload);
+};
 export default function Voucher(req) {
+    const [token, setToken] = useState([]);
     const [pedido, setPedido] = useState({});
-    useEffect(() => {
-        let ignore = false;
-        const getVoucher = async () => {
-            const res = await fetch(`https://facial.parquedasaguas.com.br/voucher/`+req.params.voucher, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            });
-            const result = await res.json();
-            if (!ignore) {
-                if (result.status == 'success') {
-                    let url = 'https://api.whatsapp.com/send/?text=Olá%2C++Segue+o+link+com+seu+QR+CODE+para+acessar+o+parque.%0A%0A';
-                    url += 'https%3A%2F%2Fcompre.parquedasaguas.com.br%2Fvoucher%2F'+result?.pedido?.voucher+'+%0A%0A';
-                    url += 'Ao+chegar+no+parque%2C+o+usuário+apresenta+o+QR+CODE+e+recebe+uma+pulseira+para+acesso+rastreável.+Esta+pulseira+é+de+uso+obrigatório+para+acesso+e+permanência+no+complexo+aquático.%0A%0A';
-                    url += 'Aproveite+para+seguir+no+instagram+e+ficar+atualizado+sobre+notícias+e+promoções+de+Ingressos%0Ainstagram.com%2F';
-                    url += result?.pedido?.parque?.instagram;
-                    result.pedido.shareLink = url
-                    setPedido(result.pedido);
+    const [visitantes, setVisitantes] = useState([]);
+    const [pedidos, setPedidos] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [loadingFetch, setLoadingFetch] = useState(false);
+    const [showAlterarData, setShowAlterarData] = useState(false);
+    const [showAdicionarPessoa, setShowAdicionarPessoa] = useState(false);
+    const setResult = (result) => {
+        if (result['status'] == 'success') {
+            if (result['refresh']) {
+                getVoucher(false);
+            }
+            if (result['pedido']) {
+                setPedido(result.pedido);
+            } else {
+                if (result['pedidos']) {
+                    result['pedido'] = result['pedidos'].filter(x => x.voucher == pedido.voucher)[0];
+                    setPedido(result['pedido']);
                 }
             }
+
+          if (result['token']) {
+            localStorage.setItem('token', result['token']);
+            setToken(result['token']);
+          }
+          if (result['visitantes']) {
+            localStorage.setItem('visitantes', JSON.stringify(result['visitantes']));
+            setVisitantes(result['visitantes']);
+          }
+          if (result['pedidos']) {
+            localStorage.setItem('pedidos', JSON.stringify(result['pedidos']));
+            setPedidos(result['pedidos']);
+          }
         }
-        getVoucher();
+    }
+    const removerPessoa = async (id, vinculo) => {
+        if (confirm("Você deseja remover esta pessoa deste pedido?")) {
+          setLoadingFetch(true);
+          const res = await fetch(`https://facial.parquedasaguas.com.br/visitante/remover-pessoa`, {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json',
+                  Authorization: localStorage.getItem('token'),
+              },
+              body: JSON.stringify({ id, vinculo }),
+          });
+          const result = await res.json();
+          setLoadingFetch(false);
+          setResult(result);
+        }
+    }
+    const getVoucher = async (ignore) => {
+        const res = await fetch(`https://facial.parquedasaguas.com.br/voucher/`+req.params.voucher, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+        const result = await res.json();
+        if (!ignore) {
+            if (result.status == 'success') {
+                let url = 'https://api.whatsapp.com/send/?text=Olá%2C++Segue+o+link+com+seu+QR+CODE+para+acessar+o+parque.%0A%0A';
+                url += 'https%3A%2F%2Fcompre.parquedasaguas.com.br%2Fvoucher%2F'+result?.pedido?.voucher+'+%0A%0A';
+                url += 'Ao+chegar+no+parque%2C+o+usuário+apresenta+o+QR+CODE+e+recebe+uma+pulseira+para+acesso+rastreável.+Esta+pulseira+é+de+uso+obrigatório+para+acesso+e+permanência+no+complexo+aquático.%0A%0A';
+                url += 'Aproveite+para+seguir+no+instagram+e+ficar+atualizado+sobre+notícias+e+promoções+de+Ingressos%0Ainstagram.com%2F';
+                url += result?.pedido?.parque?.instagram;
+                result.pedido.shareLink = url
+                setResult(result);
+            }
+        }
+    }
+    useEffect(() => {
+        let ignore = false;
+        getVoucher(ignore);
         return () => {
             ignore = true;
         }
     }, []);
     return (
-        <div className="isolate bg-white px-6 py-8 sm:py-32 lg:px-8">
+        <div className="isolate bg-white py-4 sm:py-32 lg:px-8">
             <div
                 className="absolute inset-x-0 top-[-10rem] -z-10 transform-gpu overflow-hidden blur-3xl sm:top-[-20rem]"
                 aria-hidden="true"
@@ -53,7 +123,7 @@ export default function Voucher(req) {
                 </h2>
             </div>
             <div className="mx-4 text-xl font-bold text-black">
-                Parque {pedido.cliente == 0 ? ' das Águas' : pedido?.parque?.nome}
+                {pedido.cliente == 0 ? 'Parque das Águas' : pedido?.parque?.nome}
             </div>
             <div className="mx-4 text-sm">
                 <div>{pedido.cliente == 0 ? 'Linha Amadeo - Lote 66 - Próximo a Empresa SUL PET - Farroupilha - RS' :pedido.parque?.endereco}</div>
@@ -72,6 +142,13 @@ export default function Voucher(req) {
                             Compartilhar via Whatsapp
                         </a>
                     </div>
+                    { parseInt(pedido.adultos-pedido.vinculos_adultos)+parseInt(pedido.criancas-pedido.vinculos_criancas) > 0 && pedido.cliente > 0 && <div className="m-4">
+                        <a href={'/reconhecimento-facial/'+pedido?.voucher}
+                            className="block w-full rounded-md bg-orange-500 px-3.5 py-2.5 text-center font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                        >
+                            Você deve efetuar o reconhecimento facial antes de acessar o parque, clique aqui e informe as pessoas e envie as fotos de quem irá no dia.
+                        </a>
+                    </div>}
                 </div>
             ) : ''}
             {pedido.status == '1' ? <div className="bg-red-100 rounded text-center mx-4 p-4">
@@ -82,7 +159,16 @@ export default function Voucher(req) {
                 Você deve apresentar o documento de identidade e o cartão utilizado nesta compra na hora da retirada das pulseiras de acesso
             </div> : ''}
             <div className="mx-4 text-black">
-                <h2 className="text-xl font-bold mt-4">Pedido: #{pedido.id} - Data: {(pedido.data)?.split('-').reverse().join('/')}</h2>
+                <h2 className="text-xl font-bold mt-4">Pedido: #{pedido.id}</h2>
+                <div className="text-xs">Data da Visita:</div>
+                <div className="flex">
+                    <div className="text-2xl mr-2">{pedido.data?.split('-').reverse().join('/')}</div>
+                    <div
+                    className="bg-emerald-500 text-white active:bg-emerald-600 font-bold uppercase text-sm px-2 py-1 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                    onClick={() => {setPedido(pedido); setShowAlterarData(true); }}>
+                    Alterar Data
+                    </div>
+                </div>
                 <div className="text-sm">Nome: {pedido.nome}</div>
                 <div className="text-sm font-bold">Ingressos: </div>
                 {pedido?.produtos?.map((p, i) => (<div key={i} className="text-sm">
@@ -93,12 +179,49 @@ export default function Voucher(req) {
                     Total: R$ {(pedido.valor*1).toLocaleString('pt-BR', { minimumFractionDigits: 2})}
                 </div>
             </div>
+            <div className="font-semibold">Pessoas que utilizarão estes ingressos</div>
+          <div className="rounded border shadow-lg mb-2">
+            { parseInt(pedido.adultos-pedido.vinculos_adultos)+parseInt(pedido.criancas-pedido.vinculos_criancas) > 0 ?
+            <div className="mx-2 mt-2 flex justify-between">
+              <button
+                className="bg-emerald-500 text-white active:bg-emerald-600 font-bold uppercase text-sm px-2 py-1 rounded shadow 
+                hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                onClick={() => { setPedido(pedido); setShowAdicionarPessoa(true)}}>
+                Adicionar Pessoa
+              </button>
+              <div>Falta {(pedido.adultos-pedido.vinculos_adultos)+(pedido.criancas-pedido.vinculos_criancas)} vínculo(s)</div>
+            </div> : '' }
+            {pedido.vinculos?.map((vinculo, i) => visitantes.filter(visitante => visitante.cpf == vinculo.vinculo).map(
+              (visitante, j) => (<div key={i+j} className={`px-4 py-2 mb-1`+(visitante.faceDetail == '1' ? ' bg-green-100' : ' bg-red-100')}
+              >
+                {visitante.nome} <a onClick={() => removerPessoa(pedido.id, vinculo.vinculo)}>(Remover)</a>
+                {visitante.faceDetail == 1 ? '' : <div className="text-red-500 text-xs font-semibold">
+                {visitante.cpf != '' ? <EnviarFotoVisitante cpf={visitante.cpf} facial={visitante.faceDetail} setLoading={setLoading} setResult={setResult} /> : (<div className="text-center font-bold text-red-500 col-span-2">Após salvar todos os dados você poderá enviar a Foto para efetuar o reconhecimento facial</div>)}
+                </div>}
+              </div>))) }
+            {!pedido.vinculos || pedido.vinculos?.length == 0 ? <div className="mx-2 text-center py-3">Você deve adicionar as pessoas que irão utilizar os ingressos na data escolhida</div> : ''}
+          </div>
             <div className="pt-8 text-center">
                 <small>
                     Dúvidas Revolution Serviços{" "}
                     <a href={'//wa.me/5551999926208?text=Pode+verificar+meu+pedido? ID: '+pedido.id+', em nome de '+pedido.nome}>(51) 99992-6208</a>
                 </small>
             </div>
+                {showAlterarData ? <AlterarData 
+                id={pedido.id} 
+                data={pedido.data} 
+                setShowModal={(show) => setShowAlterarData(show)} 
+                setLoading={(show) => setLoadingFetch(show)} 
+                setResult={(result) => setResult(result)} /> : ''}
+            {loadingFetch ? <Loading /> : ''}
+            {loading ? <LoadingFacial /> : null}
+            {/* {showModalCadastro ? <ModalCadastro person={person} cpf, setShowModal={(show) => setShowModalCadastro(show)} avancar={() => set} />} */}
+            {showAdicionarPessoa ? <AdicionarPessoa 
+                id={pedido.id}
+                visitantes={visitantes}
+                setResult={(result) => setResult(result)}
+                setLoading={(show) => setLoadingFetch(show)}
+                setShowModal={(show) => setShowAdicionarPessoa(show)} /> : ''}
         </div>
     );
 }

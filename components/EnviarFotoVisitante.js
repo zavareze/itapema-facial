@@ -26,6 +26,7 @@ export default function EnviarFotoVisitante({cpf, facial, setLoading, setResult}
         const result = await res.json();
         setLoading(false);
         if (result['status'] == 'success') {
+            result['refresh'] = true;
             setResult(result);
         } else
             if (result.status == 'fail') {

@@ -1,6 +1,7 @@
 'use client';
 import { useEffect, useState } from "react";
 const validCPF = (strCPF) => {
+    strCPF = strCPF.replace(/[^0-9]+/g, "");
     if (!strCPF) return false;
     if (strCPF * 1 == 0) return false;
     let soma = 0

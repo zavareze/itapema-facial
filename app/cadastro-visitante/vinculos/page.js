@@ -77,19 +77,20 @@ export default function Cadastro() {
   return (
     <div>
       <h1 className="text-2xl font-bold text-center py-2">Reconhecimento Facial</h1>
-      <nav class="flex justify-center space-x-4 pb-2">
-        <a href="/cadastro-visitante" class="font-medium px-3 py-2 text-slate-700 rounded-lg hover:bg-slate-100 hover:text-slate-900">Pedidos</a>
-        <a href="/cadastro-visitante/vinculos" class="font-medium px-3 py-2 text-slate-700 rounded-lg hover:bg-slate-100 hover:text-slate-900 bg-slate-300">Pessoas Vinculadas</a>
+      <nav className="flex justify-center space-x-4 pb-2">
+        <a href="/cadastro-visitante" className="font-medium px-3 py-2 text-slate-700 rounded-lg hover:bg-slate-100 hover:text-slate-900">Pedidos</a>
+        <a href="/cadastro-visitante/vinculos" className="font-medium px-3 py-2 text-slate-700 rounded-lg hover:bg-slate-100 hover:text-slate-900 bg-slate-300">Pessoas Vinculadas</a>
       </nav>
 
       <div className="py-4 mx-4 dark:text-slate-300">
-          <p className="text-sm">
+          <div className="text-sm">
             <div>Nesta tela você visualiza e atualiza as pessoas vinculadas a você.</div>
             <div>1) Você pode atualizar os dados clicando em cima do nome da pessoa.</div>
             <div>2) Você pode atualizar o reconhecimmento facial.</div>
-          </p>
-          <p className="text-sm font-bold">
-            Se a pessoa ficar na cor rosa, significa que estão faltando dados ou a foto, elas devem ficar na cor verde para poder utilizar o voucher.</p>
+          </div>
+          <div className="text-sm font-bold">
+            Se a pessoa ficar na cor rosa, significa que estão faltando dados ou a foto, elas devem ficar na cor verde para poder utilizar o voucher.
+          </div>
         </div>
       <div className="bg-slate-100">
         <h1 className="text-lg font-bold text-center pt-2">Relação de Pessoas Vinculadas</h1>
@@ -114,18 +115,18 @@ export default function Cadastro() {
                     />
                     </div>
                     <div className="min-w-0 flex-auto">
-                    <p className="text-sm font-semibold leading-6 text-gray-900 dark:text-white">
+                    <div className="text-sm font-semibold leading-6 text-gray-900 dark:text-white">
                         {person.nome}
-                    </p>
-                    <p className="mt-1 truncate text-xs leading-5 text-gray-500 dark:text-slate-300">
+                    </div>
+                    <div className="mt-1 truncate text-xs leading-5 text-gray-500 dark:text-slate-300">
                         {person.cpf}
-                    </p>
-                    <p className="mt-1 truncate text-xs leading-5 text-gray-500 dark:text-slate-300">
+                    </div>
+                    <div className="mt-1 truncate text-xs leading-5 text-gray-500 dark:text-slate-300">
                         {person.celular}
-                    </p>
-                    <p className="mt-1 truncate text-xs leading-5 text-gray-500 dark:text-slate-300">
+                    </div>
+                    <div className="mt-1 truncate text-xs leading-5 text-gray-500 dark:text-slate-300">
                         {person.email}
-                    </p>
+                    </div>
                     </div>
                 </div>
                 <div className="px-1 text-xs">
