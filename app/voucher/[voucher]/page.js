@@ -195,9 +195,9 @@ export default function Voucher(req) {
               (visitante, j) => (<div key={i+j} className={`px-4 py-2 mb-1`+(visitante.faceDetail == '1' ? ' bg-green-100' : ' bg-red-100')}
               >
                 {visitante.nome} <a onClick={() => removerPessoa(pedido.id, vinculo.vinculo)}>(Remover)</a>
-                {visitante.faceDetail == 1 ? '' : <div className="text-red-500 text-xs font-semibold">
-                {visitante.cpf != '' ? <EnviarFotoVisitante cpf={visitante.cpf} facial={visitante.faceDetail} setLoading={setLoading} setResult={setResult} /> : (<div className="text-center font-bold text-red-500 col-span-2">Após salvar todos os dados você poderá enviar a Foto para efetuar o reconhecimento facial</div>)}
-                </div>}
+                <div className="text-red-500 text-xs font-semibold">
+                    {visitante.cpf != '' ? <EnviarFotoVisitante cpf={visitante.cpf} facial={visitante.faceDetail} setLoading={setLoading} setResult={setResult} /> : (<div className="text-center font-bold text-red-500 col-span-2">Após salvar todos os dados você poderá enviar a Foto para efetuar o reconhecimento facial</div>)}
+                </div>
               </div>))) }
             {!pedido.vinculos || pedido.vinculos?.length == 0 ? <div className="mx-2 text-center py-3">Você deve adicionar as pessoas que irão utilizar os ingressos na data escolhida</div> : ''}
           </div>
