@@ -83,6 +83,8 @@ export default function AdicionarPessoa({ id, visitantes, setResult, setLoading,
             body: JSON.stringify({ id, vinculo }),
         });
         const result = await res.json();
+        if (result.status == 'fail')
+            alert(result.message);
         setLoading(false);
         setShowModal(false);
         setResult(result);
