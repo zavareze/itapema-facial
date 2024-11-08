@@ -150,12 +150,14 @@ export default function Voucher(req) {
                         </div>
                     </div>}
                 </div>
-            ) : ''}
+            ) : <h1 className="text-2xl text-center py-8 font-bold tracking-tight text-gray-900 sm:text-4xl mb-4">
+                VOUCHER JÁ UTILIZADO
+            </h1>}
             {pedido.status == '1' ? <div className="bg-red-100 rounded text-center mx-4 p-4">
                 O pedido não está pago, você precisa efetuar o pagamento ou refazer o pedido. Caso queira verificar com o suporte basta clicar no 
                 Whatsapp <a href={'//wa.me/5551999926208?text=Pode+verificar+meu+pedido? ID: '+pedido.id+', em nome de '+pedido.nome}>(51) 99992-6208</a>
             </div> : ''}
-            {pedido.cliente != 0 && pedido.forma_pagamento == '1' ? <div className="bg-red-100 rounded text-center mx-4 p-4">
+            {pedido.status == 2 && pedido.cliente != 0 && pedido.forma_pagamento == '1' ? <div className="bg-red-100 rounded text-center mx-4 p-4">
                 Você deve apresentar o documento de identidade e o cartão utilizado nesta compra na hora da retirada das pulseiras de acesso
             </div> : ''}
             <div className="mx-4 text-black">
@@ -163,11 +165,11 @@ export default function Voucher(req) {
                 <div className="text-xs">Data da Visita:</div>
                 <div className="flex">
                     <div className="text-2xl mr-2">{pedido.data?.split('-').reverse().join('/')}</div>
-                    <div
+                    {pedido.status == 2 ? <div
                     className="bg-emerald-500 text-white active:bg-emerald-600 font-bold uppercase text-sm px-2 py-1 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                     onClick={() => {setPedido(pedido); setShowAlterarData(true); }}>
                     Alterar Data
-                    </div>
+                    </div> : ''}
                 </div>
                 <div className="text-sm">Nome: {pedido.nome}</div>
                 <div className="text-sm font-bold">Ingressos: </div>
@@ -179,9 +181,9 @@ export default function Voucher(req) {
                     Total: R$ {(pedido.valor*1).toLocaleString('pt-BR', { minimumFractionDigits: 2})}
                 </div>
             </div>
-            <div className="font-semibold">Pessoas que utilizarão estes ingressos</div>
+            { pedido.status == 2 ? <div className="font-semibold">Pessoas que utilizarão estes ingressos</div> : ''}
           <div className="rounded border shadow-lg mb-2">
-            { parseInt(pedido.adultos-pedido.vinculos_adultos)+parseInt(pedido.criancas-pedido.vinculos_criancas) > 0 ?
+            { pedido.status == 2 && parseInt(pedido.adultos-pedido.vinculos_adultos)+parseInt(pedido.criancas-pedido.vinculos_criancas) > 0 ?
             <div className="mx-2 mt-2 flex justify-between">
               <button
                 className="bg-emerald-500 text-white active:bg-emerald-600 font-bold uppercase text-sm px-2 py-1 rounded shadow 
@@ -191,7 +193,7 @@ export default function Voucher(req) {
               </button>
               <div>Falta {(pedido.adultos-pedido.vinculos_adultos)+(pedido.criancas-pedido.vinculos_criancas)} vínculo(s)</div>
             </div> : '' }
-            {pedido.vinculos?.map((vinculo, i) => visitantes.filter(visitante => visitante.cpf == vinculo.vinculo).map(
+            {pedido.status == 2 && pedido.vinculos?.map((vinculo, i) => visitantes.filter(visitante => visitante.cpf == vinculo.vinculo).map(
               (visitante, j) => (<div key={i+j} className={`px-4 py-2 mb-1`+(visitante.faceDetail == '1' ? ' bg-green-100' : ' bg-red-100')}
               >
                 {visitante.nome} <a onClick={() => removerPessoa(pedido.id, vinculo.vinculo)}>(Remover)</a>
@@ -199,7 +201,7 @@ export default function Voucher(req) {
                     {visitante.cpf != '' ? <EnviarFotoVisitante cpf={visitante.cpf} facial={visitante.faceDetail} setLoading={setLoading} setResult={setResult} /> : (<div className="text-center font-bold text-red-500 col-span-2">Após salvar todos os dados você poderá enviar a Foto para efetuar o reconhecimento facial</div>)}
                 </div>
               </div>))) }
-            {!pedido.vinculos || pedido.vinculos?.length == 0 ? <div className="mx-2 text-center py-3">Você deve adicionar as pessoas que irão utilizar os ingressos na data escolhida</div> : ''}
+            {pedido.status == 2 && (!pedido.vinculos || pedido.vinculos?.length == 0) ? <div className="mx-2 text-center py-3">Você deve adicionar as pessoas que irão utilizar os ingressos na data escolhida</div> : ''}
           </div>
             <div className="pt-8 text-center">
                 <small>
