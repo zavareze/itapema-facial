@@ -83,9 +83,11 @@ export default function Selecao() {
   useEffect(() => {
     let total = 0;
     Object.entries(produtosEscolhidos).forEach(([k, v]) => {
-      let p = (ingressos.filter((x) => x.id == k)?.[0]?.valorPromo * 1) | 0;
-      total += p * v;
+      let p = parseFloat(ingressos.filter((x) => x.id == k)?.[0]?.valorPromo);
+      console.log(p);
+      total += parseFloat(p * v);
     });
+    console.log('toaki', total, produtosEscolhidos, ingressos);
     setTotal(total);
   }, [produtosEscolhidos]);
 
