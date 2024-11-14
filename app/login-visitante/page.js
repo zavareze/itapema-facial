@@ -202,7 +202,7 @@ export default function Login() {
         <div className="pt-8">
           <small>
             Dúvidas Revolution Serviços{" "}
-            <a href="//wa.me/5551999926208">(51) 99992-6208</a>
+            <a href="//wa.me/5551999984008">(51) 99998-4008</a>
           </small>
         </div>
       </form>

@@ -159,7 +159,7 @@ export default function Voucher(req) {
             </h1> : ''}
             {pedido.status == '1' ? <div className="bg-red-100 rounded text-center mx-4 p-4">
                 O pedido não está pago, você precisa efetuar o pagamento ou refazer o pedido. Caso queira verificar com o suporte basta clicar no 
-                Whatsapp <a href={'//wa.me/5551999926208?text=Pode+verificar+meu+pedido? ID: '+pedido.id+', em nome de '+pedido.nome}>(51) 99992-6208</a>
+                Whatsapp <a href={'//wa.me/5551999984008?text=Pode+verificar+meu+pedido? ID: '+pedido.id+', em nome de '+pedido.nome}>(51) 99998-4008</a>
             </div> : ''}
             {pedido.status == 2 && pedido.cliente != 0 && pedido.forma_pagamento == '1' ? <div className="bg-red-100 rounded text-center mx-4 p-4">
                 Você deve apresentar o documento de identidade e o cartão utilizado nesta compra na hora da retirada das pulseiras de acesso
@@ -210,7 +210,7 @@ export default function Voucher(req) {
             <div className="pt-8 text-center">
                 <small>
                     Dúvidas Revolution Serviços{" "}
-                    <a href={'//wa.me/5551999926208?text=Pode+verificar+meu+pedido? ID: '+pedido.id+', em nome de '+pedido.nome}>(51) 99992-6208</a>
+                    <a href={'//wa.me/5551999984008?text=Pode+verificar+meu+pedido? ID: '+pedido.id+', em nome de '+pedido.nome}>(51) 99998-4008</a>
                 </small>
             </div>
                 {showAlterarData ? <AlterarData 
