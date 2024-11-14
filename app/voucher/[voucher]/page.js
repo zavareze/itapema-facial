@@ -150,9 +150,13 @@ export default function Voucher(req) {
                         </div>
                     </div>}
                 </div>
-            ) : <h1 className="text-2xl text-center py-8 font-bold tracking-tight text-gray-900 sm:text-4xl mb-4">
+            ) : '' }
+            {pedido.status == '3' ? <h1 className="text-2xl text-center py-8 font-bold tracking-tight text-gray-900 sm:text-4xl mb-4">
                 VOUCHER JÁ UTILIZADO
-            </h1>}
+            </h1> : ''}
+            {!pedido.status ? <h1 className="text-2xl text-center py-8 font-bold tracking-tight text-gray-900 sm:text-4xl mb-4">
+                CARREGANDO VOUCHER
+            </h1> : ''}
             {pedido.status == '1' ? <div className="bg-red-100 rounded text-center mx-4 p-4">
                 O pedido não está pago, você precisa efetuar o pagamento ou refazer o pedido. Caso queira verificar com o suporte basta clicar no 
                 Whatsapp <a href={'//wa.me/5551999926208?text=Pode+verificar+meu+pedido? ID: '+pedido.id+', em nome de '+pedido.nome}>(51) 99992-6208</a>
