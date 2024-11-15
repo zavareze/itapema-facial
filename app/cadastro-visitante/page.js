@@ -84,14 +84,14 @@ export default function Cadastro() {
       </nav>
       <div className="bg-slate-100 sm:grid sm:grid-cols-3 sm:gap-4 lg:grid-cols-4">
       <div className="py-4 mx-4 dark:text-slate-300">
-          <p className="text-sm">
+          <div className="text-sm">
             <div>Nesta tela você visualiza os vouchers disponíveis para uso.</div>
             <div>1) Você pode alterar o dia da visita clicando no botão Alterar Data.</div>
             <div>2) Você pode incluir as pessoas que irão com você no dia da visita, elas devem ser inseridas primeiramente na aba Pessoas Vinculadas.</div>
             <div>3) Se você quer trocar a pessoa escolhida basta clicar em cima do nome dela que o sistema perguntará se você quer remover ela.</div>
-          </p>
-          <p className="text-sm font-bold">
-            Se a pessoa que você incluiu ficar na cor rosa, significa que estão faltando dados ou a foto, você pode atualizar na aba Pessoas Vinculadas.</p>
+          </div>
+          <div className="text-sm font-bold">
+            Se a pessoa que você incluiu ficar na cor rosa, significa que estão faltando dados ou a foto, você pode atualizar na aba Pessoas Vinculadas.</div>
         </div>
       {pedidos?.map(pedido => (<div key={pedido.id} className="py-2">
         <div className="mx-2 rounded shadow-lg border-t border-slate-100 bg-white dark:bg-slate-700 px-2 pt-4 pb-2">
@@ -125,11 +125,16 @@ export default function Cadastro() {
             </div> : '' }
             {pedido.vinculos.map((vinculo, i) => visitantes.filter(visitante => visitante.cpf == vinculo.vinculo).map(
               (visitante, j) => (<div key={i+j} className={`px-4 py-2 mb-1`+(visitante.faceDetail == '1' ? ' bg-green-100' : ' bg-red-100')}
-              onClick={() => removerPessoa(pedido.id, vinculo.vinculo)}>
-                {visitante.nome}
+              >
+                {visitante.nome} <a onClick={() => removerPessoa(pedido.id, vinculo.vinculo)}>(Remover)</a>
+                <div className="text-red-500 text-xs font-semibold">
+                    {visitante.cpf != '' ? <EnviarFotoVisitante cpf={visitante.cpf} facial={visitante.faceDetail} setLoading={setLoading} setResult={setResult} /> : (<div className="text-center font-bold text-red-500 col-span-2">Após salvar todos os dados você poderá enviar a Foto para efetuar o reconhecimento facial</div>)}
+                </div>
                 {visitante.faceDetail == 1 ? '' : <div className="text-red-500 text-xs font-semibold">Facial Pendente (Atualize nas pessoas vinculadas)</div>}
               </div>))) }
             {pedido.vinculos.length == 0 ? <div className="mx-2 text-center py-3">Você deve adicionar as pessoas que irão utilizar os ingressos na data escolhida</div> : ''}
+            
+
           </div>
 
         </div>
