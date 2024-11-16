@@ -51,6 +51,6 @@ export default function EnviarFotoVisitante({cpf, facial, setLoading, setResult}
             type="button"
         >
             <input type="file" name="image2" id="upload2" accept="image/*" onChange={handleUploadFile}></input>
-            Procurar na Galeria
+            Procurar Galeria
         </button></div>);
 }

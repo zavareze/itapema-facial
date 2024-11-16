@@ -185,7 +185,7 @@ export default function Voucher(req) {
                     Total: R$ {(pedido.valor*1).toLocaleString('pt-BR', { minimumFractionDigits: 2})}
                 </div>
             </div>
-            { pedido.status == 2 ? <div className="font-semibold">Pessoas que utilizarão estes ingressos</div> : ''}
+            { pedido.status == 2 ? <div className="font-semibold mx-4">Pessoas que utilizarão estes ingressos</div> : ''}
           <div className="rounded border shadow-lg mb-2">
             { pedido.status == 2 && parseInt(pedido.adultos-pedido.vinculos_adultos)+parseInt(pedido.criancas-pedido.vinculos_criancas) > 0 ?
             <div className="mx-2 mt-2 flex justify-between">
@@ -198,11 +198,24 @@ export default function Voucher(req) {
               <div>Falta {(pedido.adultos-pedido.vinculos_adultos)+(pedido.criancas-pedido.vinculos_criancas)} vínculo(s)</div>
             </div> : '' }
             {pedido.status == 2 && pedido.vinculos?.map((vinculo, i) => visitantes.filter(visitante => visitante.cpf == vinculo.vinculo).map(
-              (visitante, j) => (<div key={i+j} className={`px-4 py-2 mb-1`+(visitante.faceDetail == '1' ? ' bg-green-100' : ' bg-red-100')}
+              (visitante, j) => (<div key={i+j} className={`mx-4 px-2 py-2 mb-1`+(visitante.faceDetail == '1' ? ' bg-green-100' : ' bg-red-100')}
               >
-                {visitante.nome} <a onClick={() => removerPessoa(pedido.id, vinculo.vinculo)}>(Remover)</a>
-                <div className="text-red-500 text-xs font-semibold">
-                    {visitante.cpf != '' ? <EnviarFotoVisitante cpf={visitante.cpf} facial={visitante.faceDetail} setLoading={setLoading} setResult={setResult} /> : (<div className="text-center font-bold text-red-500 col-span-2">Após salvar todos os dados você poderá enviar a Foto para efetuar o reconhecimento facial</div>)}
+                <div className="flex min-w-0 gap-x-2">
+                    <div className="w-20 flex-none">
+                    <img
+                        className="w-20 h-24 rounded-lg"
+                        src={visitante.foto}
+                        alt=""
+                    />
+                    </div>
+                    <div className="min-w-0 flex-auto">
+                        <div className="text-sm font-semibold leading-6 text-gray-900 dark:text-white">
+                            {visitante.nome} <a onClick={() => removerPessoa(pedido.id, vinculo.vinculo)}> (Remover)</a>
+                        </div>
+                        <div className="text-red-500 text-xs font-semibold">
+                            {visitante.cpf != '' ? <EnviarFotoVisitante cpf={visitante.cpf} facial={visitante.faceDetail} setLoading={setLoading} setResult={setResult} /> : (<div className="text-center font-bold text-red-500 col-span-2">Após salvar todos os dados você poderá enviar a Foto para efetuar o reconhecimento facial</div>)}
+                        </div>
+                    </div>
                 </div>
               </div>))) }
             {pedido.status == 2 && (!pedido.vinculos || pedido.vinculos?.length == 0) ? <div className="mx-2 text-center py-3">Você deve adicionar as pessoas que irão utilizar os ingressos na data escolhida</div> : ''}
