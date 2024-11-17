@@ -166,15 +166,17 @@ export default function Voucher(req) {
             </div> : ''}
             <div className="mx-4 text-black">
                 <h2 className="text-xl font-bold mt-4">Pedido: #{pedido.id}</h2>
-                <div className="text-xs">Data da Visita:</div>
-                <div className="flex">
-                    <div className="text-2xl mr-2">{pedido.data?.split('-').reverse().join('/')}</div>
-                    {pedido.status == 2 ? <div
-                    className="bg-emerald-500 text-white active:bg-emerald-600 font-bold uppercase text-sm px-2 py-1 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
-                    onClick={() => {setPedido(pedido); setShowAlterarData(true); }}>
-                    Alterar Data
-                    </div> : ''}
-                </div>
+                {pedido.cliente > 0 ? <>
+                    <div className="text-xs">Data da Visita:</div>
+                    <div className="flex">
+                        <div className="text-2xl mr-2">{pedido.data?.split('-').reverse().join('/')}</div>
+                        {pedido.status == 2 ? <div
+                        className="bg-emerald-500 text-white active:bg-emerald-600 font-bold uppercase text-sm px-2 py-1 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                        onClick={() => {setPedido(pedido); setShowAlterarData(true); }}>
+                        Alterar Data
+                        </div> : ''}
+                    </div>
+                </> : ''}
                 <div className="text-sm">Nome: {pedido.nome}</div>
                 <div className="text-sm font-bold">Ingressos: </div>
                 {pedido?.produtos?.map((p, i) => (<div key={i} className="text-sm">
