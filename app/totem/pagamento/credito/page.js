@@ -29,7 +29,7 @@ export default function Credito() {
         localStorage.setItem('tef_input', '');
         localStorage.setItem('tef_input_type', 'text');
         localStorage.setItem('tef_input_length', 1);
-        venda_credito('1,23', '20241025074801');
+        venda_credito();
         updateDisplay();
     }, []);
     return (

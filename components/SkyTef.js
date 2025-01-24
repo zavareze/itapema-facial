@@ -31,6 +31,7 @@ async function tef_start_transaction(data) {
 	data['storeId'] = localStorage.getItem('storeId');
 	data['terminalId'] = localStorage.getItem('terminalId');
 	data['cashierOperator'] = localStorage.getItem('cashierOperator');
+	if (!data['trnAmount']) data['trnAmount'] = localStorage.getItem('trnAmount');
 	if (data['sitefIp'] == '') {
 		alert('OBRIGATÓRIO: Você deve informar o IP do servidor Sitef [sitefIp]');
 		return;
@@ -43,9 +44,7 @@ async function tef_start_transaction(data) {
 		alert('OBRIGATÓRIO: Você deve informar o ID do terminal [terminalId]');
 		return;
 	}
-	if (data['taxInvoiceNumber'] && data['taxInvoiceNumber'] != '')
-		data['taxInvoiceNumber'] = data['taxInvoiceNumber'];
-	else
+	if (!data['taxInvoiceNumber'])
 		data['taxInvoiceNumber'] = new Date().toISOString().replace(/\D/g, '');
 	localStorage.setItem('taxInvoiceNumber', data['taxInvoiceNumber']);
 

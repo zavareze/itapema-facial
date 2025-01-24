@@ -30,7 +30,7 @@ export default function Debito() {
         localStorage.setItem('tef_input', '');
         localStorage.setItem('tef_input_type', 'text');
         localStorage.setItem('tef_input_length', 1);
-        venda_debito('25,00', '20241025074801');
+        venda_debito();
         updateDisplay();
     }, []);
     return (

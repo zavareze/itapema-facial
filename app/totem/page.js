@@ -27,6 +27,14 @@ export default function Totem() {
     }
     useEffect(() => {
         getTickets();
+        if (!localStorage.getItem('agentURL')) {
+            localStorage.setItem('agentURL', 'https://127.0.0.1/agente/clisitef');
+            localStorage.setItem('cashierOperator', 'Edgar');
+            localStorage.setItem('local', 'FARROUPILHA');
+            localStorage.setItem('sitefIp', '127.0.0.1');
+            localStorage.setItem('storeId', '00037101');
+            localStorage.setItem('terminalId', 'TOTEM001');
+        }
         localStorage.setItem('leitura', '');
         localStorage.setItem('ticket_selecionado', 'undefined');
         localStorage.setItem('trnAmount', '25,00');
