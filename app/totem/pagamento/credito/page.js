@@ -16,10 +16,14 @@ export default function Credito() {
         setTimeout(() => {
             setDisplay(localStorage.getItem('display'));
             SetBtnCancelar(localStorage.getItem('tef_btn_cancelar'));
-            if (localStorage.getItem('tef_btn_confirm') == 'true') {
-                router.push('/totem/pagamento');
-                SetBtnConfirmar(localStorage.getItem('tef_btn_confirm'));
-            }            updateDisplay();
+            if (localStorage.getItem('via_cliente')) {
+                router.push('/totem/recibo');
+            } else
+                if (localStorage.getItem('tef_btn_confirm') == 'true') {
+                    router.push('/totem/pagamento');
+                    SetBtnConfirmar(localStorage.getItem('tef_btn_confirm'));
+                }
+            updateDisplay();
         }, 100);
     }
     useEffect(() => {

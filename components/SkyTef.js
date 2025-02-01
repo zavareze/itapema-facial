@@ -156,8 +156,10 @@ export function tef_continuetransaction(data) {
 				//tef_log(data['data']+'\nPressione enter');
 				tef_display(data['data'])
 				//setTimeout(() => {tef_continuetransaction('')}, 1000);
-				localStorage.setItem('tef_btn_cancelar', false);
-				localStorage.setItem('tef_btn_confirm', true);
+				setTimeout(() => {
+					localStorage.setItem('tef_btn_cancelar', false);
+					localStorage.setItem('tef_btn_confirm', true);
+				}, 3000);
 				break;
 			case 23:
 				var contents = '1';
@@ -202,11 +204,13 @@ export function tef_continuetransaction(data) {
 				}
 				tef_menu(data);
 				break;
-			case 22:
+			/*case 22:
 				tef_display(data['data']);
-				tef_session['continua'] = 0;
-				tef_save_session(tef_session);
-				break;
+				setTimeout(() => {
+					tef_session['continua'] = 0;
+					tef_save_session(tef_session);
+				}, 3000);
+				break;*/
 			case 30: //COMPLEXO
 				switch (data['fieldId']) {
 					case 140:
@@ -377,20 +381,22 @@ export function tef_finishtransaction(confirma, reenviaParametrosSiTef, foraDoFl
 					tef_log('Estornando transação fora do fluxo');
 				}
 			}
-			fetchReq('POST', '//sistema.parquedasaguas.com.br/tef/insertTransaction.php', JSON.stringify(tef_session), (data) => {
+			fetchReq('POST', 'https://sistema.parquedasaguas.com.br/tef/insertTransaction.php', JSON.stringify(tef_session), (data) => {
 				tef_log(data);
+				tef_session = JSON.parse(localStorage.getItem('tef_session'));
 				localStorage.setItem('tef_taxInvoiceNumber', '');
 				console.log('debug json inserttransaction', json);
 				tef_session['tef_id'] = data['tef_id'];
 				tef_save_session(tef_session);
 				localStorage.setItem('tef_session_last', tef_session);
-				tef_save_session(tef_session_clean);
-				if (tef_session_last.onFinish)
-					tef_session_last.onFinish(tef_session_last);
-				if (json['via_caixa'])
-					tef_print(json['via_caixa']);
-				if (json['via_cliente'])
-					tef_print(json['via_cliente']);
+				tef_save_session({});
+				if (tef_session.onFinish)
+					tef_session.onFinish(tef_session);
+				//if (json['via_caixa'])
+				//	tef_print(json['via_caixa']);
+				if (json['via_cliente']) {
+					localStorage.setItem('via_cliente', json['via_cliente']);
+				}
 			});
 		}, error => { console.log(error)});
 	}
@@ -568,11 +574,70 @@ const processaTransacao = () => {
 	return json;
 } 
 var reimprimir = '';
-const tef_print = (str) => {
-	id = Math.floor((Math.random() * 1000) + 1); //Aleatorio de 1 a 1000
-	str = '[INICIALIZAR][CONDENSADO]' + str + "\n\n\n\n[CORTAR]";
+
+export const tef_print = async (str) => {
+	var jsWebClientPrint = (function() {
+		var setA = function() {
+			var e_id = 'id_' + new Date().getTime();
+			if (window.chrome) {
+				document.querySelector('body').append('<a id="' + e_id + '"></a>');
+				document.getElementById(e_id).attr('href', 'webclientprint:' + arguments[0]);
+				var a = $('a#' + e_id)[0];
+				var evObj = document.createEvent('MouseEvents');
+				evObj.initEvent('click', true, true);
+				a.dispatchEvent(evObj)
+			} else {
+				$('body').append('<iframe name="' + e_id + '" id="' + e_id + '" width="1" height="1" style="visibility:hidden;position:absolute" />');
+				$('#' + e_id).attr('src', 'webclientprint:' + arguments[0])
+			}
+			setTimeout(function() {
+				$('#' + e_id).remove()
+			}, 5000)
+		};
+		return {
+			print: function() {
+				console.log(arguments);
+				setA(location.protocol+'//impressora.zavareze.com.br/Processador.php?clientPrint' + (arguments.length == 1 ? '&' + arguments[0] : ''))
+			},
+			getPrinters: function() {
+				setA('-getPrinters:'+location.protocol+'//impressora.zavareze.com.br/WebClientPrint.php?WEB_CLIENT_PRINT&sid=' + $('#sid').val());
+				var delay_ms = (typeof wcppGetPrintersDelay_ms === 'undefined') ? 10000 : wcppGetPrintersDelay_ms;
+				setTimeout(function() {
+					$.get(location.protocol+'//impressora.zavareze.com.br/WebClientPrint.php?WEB_CLIENT_PRINT&getPrinters&sid=' + $('#sid').val(), function(data) {
+						if (data.length > 0) {
+							wcpGetPrintersOnSuccess(data)
+						} else {
+							wcpGetPrintersOnFailure()
+						}
+					})
+				}, delay_ms)
+			},
+			getWcppVer: function() {
+				setA('-getWcppVersion:'+location.protocol+'//impressora.zavareze.com.br/WebClientPrint.php?WEB_CLIENT_PRINT&sid=' + $('#sid').val());
+				var delay_ms = (typeof wcppGetVerDelay_ms === 'undefined') ? 10000 : wcppGetVerDelay_ms;
+				setTimeout(function() {
+					$.get(location.protocol+'//impressora.zavareze.com.br/WebClientPrint.php?WEB_CLIENT_PRINT&getWcppVersion&sid=' + $('#sid').val(), function(data) {
+						if (data.length > 0) {
+							wcpGetWcppVerOnSuccess(data)
+						} else {
+							wcpGetWcppVerOnFailure()
+						}
+					})
+				}, delay_ms)
+			},
+			send: function() {
+				setA.apply(this, arguments)
+			}
+		}
+	})();
+	const id = Math.floor((Math.random() * 1000) + 1); //Aleatorio de 1 a 1000
+	str = '[INICIALIZAR][CONDENSADO]' + str + "\n\n\n\n[CORTAR][INICIALIZAR]";
 	reimprimir = str;
-	output = '';
+	let output = '';
+	if (!localStorage.getItem('impressoraRecibo')) {
+		localStorage.setItem('impressoraRecibo', 'Generic / Text Only');
+		localStorage.setItem('impressoraTipo', 'escpos');
+	}
 	output += "sid="+id;
 	output += "&pid=2";
 	output += "&installedPrinterName="+localStorage.getItem('impressoraRecibo');
@@ -580,12 +645,11 @@ const tef_print = (str) => {
 	output += "&printerCommands="+escape(str);
 	//$('#print-comprovante').html(str);
 	//$('#tef_receipt').show();
-	$.post('//impressora.zavareze.com.br/Processador.php',
-		output,
-		function(data) {
-			jsWebClientPrint.print('sid=' + id);
-		}
-	);	
+	const response = await fetch('https://impressora.zavareze.com.br/Processador.php', { method: 'POST', body: output });
+	setTimeout(() => {
+		location.href = 'webclientprint:https://impressora.zavareze.com.br/Processador.php?clientPrint&sid='+81;
+	}, 500)
+	// jsWebClientPrint.print('sid=' + id);
 }
 const tef_print_close = () => { 
 	//$('#tef_receipt').hide();

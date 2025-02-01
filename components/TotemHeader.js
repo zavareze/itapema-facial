@@ -21,6 +21,7 @@ export default function Header({title, caption}) {
         <img
           src="https://compre2.parquedasaguas.com.br/img/cpa.png"
           className="mx-auto w-1/3 h-[430px]"
+          onClick={() => router.push('/totem')}
         />
         <h2 className="text-6xl font-bold tracking-tight text-gray-900 dark:text-white">
           {title}

@@ -18,7 +18,8 @@
     "react": "^18",
     "react-dom": "^18",
     "react-input-mask": "^2.0.4",
-    "react-qr-code": "^2.0.15"
+    "react-qr-code": "^2.0.15",
+    "react-to-print": "^3.0.5"
   },
   "devDependencies": {
     "autoprefixer": "^10.0.1",

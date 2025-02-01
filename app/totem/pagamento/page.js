@@ -9,6 +9,7 @@ export default function Totem() {
     const [valor, setValor] = useState('');
     useEffect(() => {
         setValor(localStorage.getItem('trnAmount'));
+        localStorage.setItem('via_cliente', '');
     }, []);
     return (
         <div className="isolate bg-white dark:bg-slate-900 px-6 py-12 sm:py-32 lg:px-8">

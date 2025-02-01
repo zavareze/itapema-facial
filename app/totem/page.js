@@ -54,7 +54,11 @@ export default function Totem() {
                 }
                 localStorage.setItem('leitura', '');
             } else {
-                localStorage.setItem('leitura', localStorage.getItem('leitura')+e.key)
+                if (e.key == ';')
+                    localStorage.setItem('leitura', localStorage.getItem('leitura')+'-')
+                else
+                if (e.key != 'Shift')
+                    localStorage.setItem('leitura', localStorage.getItem('leitura')+e.key)
             }
             e.preventDefault();
         }

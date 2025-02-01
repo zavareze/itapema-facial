@@ -7,8 +7,8 @@ import { useEffect, useState } from 'react';
 export default function Totem() {
     const router = useRouter();
     const [erro, setErro] = useState('');
-    const localizaAssociado = async () => {
-        const res = await fetch(`https://facial.parquedasaguas.com.br/socio/`, {
+    const localizaAssociado = async (matricula, ticket) => {
+        const res = await fetch(`https://facial.parquedasaguas.com.br/estacionamento/socio/${matricula}/${ticket}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -16,28 +16,23 @@ export default function Totem() {
             },
         });
         const json = await res.json();
-        if (json['tickets'])
-            localStorage.setItem('tickets', JSON.stringify(json['tickets']));
-        else 
-            localStorage.setItem('tickets', '[]');
-        if (json['fechados'])
-            localStorage.setItem('fechados', JSON.stringify(json['fechados']));
-        else
-            localStorage.setItem('fechados', '[]');
+        return json;
     }
     useEffect(() => {
         localStorage.setItem('leitura', '');
-        function keyDownHandler(e) {
+        async function keyDownHandler(e) {
             if (e.key === "Enter") {
                 console.log(localStorage.getItem('leitura'));
-                const tickets_abertos = JSON.parse(localStorage.getItem('tickets'));
-                const localizado = tickets_abertos.filter(x => x.ticket == localStorage.getItem('leitura'))?.[0];
-                if (localizado) {
-                    setErro('');
-                    router.push('/totem/pagamento')
+                const ticket_localizado = JSON.parse(localStorage.getItem('ticket_selecionado'));
+                const localizado = await localizaAssociado(localStorage.getItem('leitura'), ticket_localizado['ticket']);
+                if (!localizado.erro) {
+                    console.log('socio', localizado);
+                    setErro('TICKET VALIDADO COM SUCESSO!');
+                    setTimeout(() => {
+                        router.push('/totem');
+                    }, 5000);
                 } else {
-                    getTickets();
-                    setErro('Ticket não localizado, tente novamente');
+                    setErro(localizado.erro);
                 }
                 localStorage.setItem('leitura', '');
             } else {
