@@ -24,9 +24,7 @@ export default function Totem() {
                     onClick={() => imprimirRecibo()}>
                         Imprimir Recibo
                 </div>
-                <Link href="webclientprint:https://impressora.zavareze.com.br/Processador.php?clientPrint&sid=81">
-                    print
-                </Link>
+                
                 {/*<div className="rounded-xl bg-indigo-600 p-10 text-center font-semibold text-white shadow-xl text-7xl mb-8 col-span-2"
                     onClick={() => router.push('/totem')}>
                         por E-mail

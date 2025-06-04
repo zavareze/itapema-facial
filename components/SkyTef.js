@@ -576,60 +576,6 @@ const processaTransacao = () => {
 var reimprimir = '';
 
 export const tef_print = async (str) => {
-	var jsWebClientPrint = (function() {
-		var setA = function() {
-			var e_id = 'id_' + new Date().getTime();
-			if (window.chrome) {
-				document.querySelector('body').append('<a id="' + e_id + '"></a>');
-				document.getElementById(e_id).attr('href', 'webclientprint:' + arguments[0]);
-				var a = $('a#' + e_id)[0];
-				var evObj = document.createEvent('MouseEvents');
-				evObj.initEvent('click', true, true);
-				a.dispatchEvent(evObj)
-			} else {
-				$('body').append('<iframe name="' + e_id + '" id="' + e_id + '" width="1" height="1" style="visibility:hidden;position:absolute" />');
-				$('#' + e_id).attr('src', 'webclientprint:' + arguments[0])
-			}
-			setTimeout(function() {
-				$('#' + e_id).remove()
-			}, 5000)
-		};
-		return {
-			print: function() {
-				console.log(arguments);
-				setA(location.protocol+'//impressora.zavareze.com.br/Processador.php?clientPrint' + (arguments.length == 1 ? '&' + arguments[0] : ''))
-			},
-			getPrinters: function() {
-				setA('-getPrinters:'+location.protocol+'//impressora.zavareze.com.br/WebClientPrint.php?WEB_CLIENT_PRINT&sid=' + $('#sid').val());
-				var delay_ms = (typeof wcppGetPrintersDelay_ms === 'undefined') ? 10000 : wcppGetPrintersDelay_ms;
-				setTimeout(function() {
-					$.get(location.protocol+'//impressora.zavareze.com.br/WebClientPrint.php?WEB_CLIENT_PRINT&getPrinters&sid=' + $('#sid').val(), function(data) {
-						if (data.length > 0) {
-							wcpGetPrintersOnSuccess(data)
-						} else {
-							wcpGetPrintersOnFailure()
-						}
-					})
-				}, delay_ms)
-			},
-			getWcppVer: function() {
-				setA('-getWcppVersion:'+location.protocol+'//impressora.zavareze.com.br/WebClientPrint.php?WEB_CLIENT_PRINT&sid=' + $('#sid').val());
-				var delay_ms = (typeof wcppGetVerDelay_ms === 'undefined') ? 10000 : wcppGetVerDelay_ms;
-				setTimeout(function() {
-					$.get(location.protocol+'//impressora.zavareze.com.br/WebClientPrint.php?WEB_CLIENT_PRINT&getWcppVersion&sid=' + $('#sid').val(), function(data) {
-						if (data.length > 0) {
-							wcpGetWcppVerOnSuccess(data)
-						} else {
-							wcpGetWcppVerOnFailure()
-						}
-					})
-				}, delay_ms)
-			},
-			send: function() {
-				setA.apply(this, arguments)
-			}
-		}
-	})();
 	const id = Math.floor((Math.random() * 1000) + 1); //Aleatorio de 1 a 1000
 	str = '[INICIALIZAR][CONDENSADO]' + str + "\n\n\n\n[CORTAR][INICIALIZAR]";
 	reimprimir = str;
@@ -643,13 +589,17 @@ export const tef_print = async (str) => {
 	output += "&installedPrinterName="+localStorage.getItem('impressoraRecibo');
 	output += "&tipo_impressora="+localStorage.getItem('impressoraTipo');
 	output += "&printerCommands="+escape(str);
+	
 	//$('#print-comprovante').html(str);
 	//$('#tef_receipt').show();
-	const response = await fetch('https://impressora.zavareze.com.br/Processador.php', { method: 'POST', body: output });
-	setTimeout(() => {
-		location.href = 'webclientprint:https://impressora.zavareze.com.br/Processador.php?clientPrint&sid='+81;
-	}, 500)
-	// jsWebClientPrint.print('sid=' + id);
+	const response = await fetch('https://impressora.zavareze.com.br/Processador.php', { 
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/x-www-form-urlencoded',                 
+		},
+		body: output
+	});
+	location.href='webclientprint:https://impressora.zavareze.com.br/Processador.php?clientPrint&sid='+id
 }
 const tef_print_close = () => { 
 	//$('#tef_receipt').hide();
