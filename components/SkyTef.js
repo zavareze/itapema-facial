@@ -83,6 +83,9 @@ async function tef_start_transaction(data) {
 			tef_save_session(Object.assign(data, result));
 			tef_continuetransaction('');
 		}
+	} , error => { 
+		tef_display('Não foi possível conectar ao servidor da operadora de cartão, tente outra forma de pagamento ou tente novamente');
+		setTimeout(() => { localStorage.setItem('redirect', '/totem/pagamento'); }, 2000);
 	});
 }
 var lastContents23 = '';

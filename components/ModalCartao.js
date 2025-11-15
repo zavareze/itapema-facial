@@ -200,7 +200,7 @@ return show ?? (
                 </div>
             </div>
                 <div className="text-sm col-span-3">
-                    Dúvidas, envie um whatsapp para o suporte (51) 99992-6208
+                    Dúvidas, envie um whatsapp para o suporte (51) 99998-4008
                 </div>
           </div>) : (
             <div className="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2">

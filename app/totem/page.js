@@ -37,7 +37,7 @@ export default function Totem() {
         }
         localStorage.setItem('leitura', '');
         localStorage.setItem('ticket_selecionado', 'undefined');
-        localStorage.setItem('trnAmount', '25,00');
+        localStorage.setItem('trnAmount', '30,00');
         function keyDownHandler(e) {
             if (e.key === "Enter") {
                 console.log(localStorage.getItem('leitura'));
@@ -57,8 +57,8 @@ export default function Totem() {
                 if (e.key == ';')
                     localStorage.setItem('leitura', localStorage.getItem('leitura')+'-')
                 else
-                if (e.key != 'Shift')
-                    localStorage.setItem('leitura', localStorage.getItem('leitura')+e.key)
+                if ((e.key != 'Shift') && (e.key != 'CapsLock'))
+                    localStorage.setItem('leitura', localStorage.getItem('leitura')+e.key.toUpperCase());
             }
             e.preventDefault();
         }

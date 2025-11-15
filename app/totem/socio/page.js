@@ -25,12 +25,14 @@ export default function Totem() {
                 console.log(localStorage.getItem('leitura'));
                 const ticket_localizado = JSON.parse(localStorage.getItem('ticket_selecionado'));
                 const localizado = await localizaAssociado(localStorage.getItem('leitura'), ticket_localizado['ticket']);
+                console.log('localizado', localizado);
                 if (!localizado.erro) {
+                    localStorage.setItem('trnAmount', (localizado.ticket.valor*1).toFixed(2).toString().replace('.', ','));
                     console.log('socio', localizado);
                     setErro('TICKET VALIDADO COM SUCESSO!');
                     setTimeout(() => {
-                        router.push('/totem');
-                    }, 5000);
+                        router.push('/totem/pagamento');
+                    }, 500);
                 } else {
                     setErro(localizado.erro);
                 }

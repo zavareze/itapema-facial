@@ -5,7 +5,7 @@ export default function Footer() {
       https://estacionamento.parquedasaguas.com.br
     </div>
     <div className="text-2xl">
-        Dúvidas Revolution Serviços (51) 99992-6208
+        Dúvidas Revolution Serviços (51) 99998-4008
     </div>
   </footer>;
 }

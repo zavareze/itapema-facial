@@ -5,15 +5,17 @@ import Footer from '@/components/TotemFooter';
 import Header from '@/components/TotemHeader';
 import { useRouter } from 'next/navigation';
 import {venda_credito, tef_continuetransaction, trataColeta } from '@/components/SkyTef';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 export default function Credito() {
+    const timer = useRef(null);
     const router = useRouter();
     const [display, setDisplay] = useState('');
     const [btnCancelar, SetBtnCancelar] = useState(false);
     const [btnConfirmar, SetBtnConfirmar] = useState(false);
     const [btnMenu, SetBtnMenu] = useState(false);
     const updateDisplay = () => {
-        setTimeout(() => {
+        setInterval(() => {
+            console.log('updateDisplay()')
             setDisplay(localStorage.getItem('display'));
             SetBtnCancelar(localStorage.getItem('tef_btn_cancelar'));
             if (localStorage.getItem('via_cliente')) {
@@ -23,7 +25,11 @@ export default function Credito() {
                     router.push('/totem/pagamento');
                     SetBtnConfirmar(localStorage.getItem('tef_btn_confirm'));
                 }
-            updateDisplay();
+                if (localStorage.getItem('redirect') != '') {
+                    const redirect = localStorage.getItem('redirect')
+                    localStorage.setItem('redirect', '');
+                    router.push(''+redirect);
+                }
         }, 100);
     }
     useEffect(() => {
@@ -34,12 +40,15 @@ export default function Credito() {
         localStorage.setItem('tef_input_type', 'text');
         localStorage.setItem('tef_input_length', 1);
         venda_credito();
-        updateDisplay();
+        timer.current = updateDisplay();
+        return () => { 
+            clearTimeout(timer.current); 
+        }
     }, []);
     return (
         <div className="isolate bg-white dark:bg-slate-900 px-6 py-12 sm:py-32 lg:px-8">
             <Header title="Pagamento via Cartão de Crédito" caption="Siga as instruções na maquininha de cartão" />
-            <div className="text-8xl font-bold text-center border rounded-xl p-4 bg-green-100 my-16 py-8">Valor: R$ 25,00</div>
+            <div className="text-8xl font-bold text-center border rounded-xl p-4 bg-green-100 my-16 py-8">Valor: R$ 30,00</div>
             <div className="mt-4 grid grid-cols-8 gap-4 w-full mb-8">
                 <div className="rounded-xl bg-white text-center font-bold text-white shadow-xl text-6xl col-span-2 mx-auto my-auto">
                     <img src="https://www.gertec.com.br/wp-content/uploads/2023/05/PPC930_-1000x1812-1.png" width="300" />

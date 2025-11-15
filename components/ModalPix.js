@@ -79,7 +79,7 @@ return show ?? (
                       <div className="font-bold text-red-600 my-4">
                         Pedido ainda pendente de pagamento, aguarde alguns segundos e tente verificar novamente. 
                         Caso precise falar com o suporte clique no telefone informado abaixo.
-                        Whatsapp <a href={'//wa.me/5551999926208?text=Pedido via PIX ID: '+pedido}>(51) 99992-6208</a>
+                        Whatsapp <a href={'//wa.me/5551999984008?text=Pedido via PIX ID: '+pedido}>(51) 99998-4008</a>
                       </div>) : ''}
                 </div>
                 <div
@@ -104,7 +104,7 @@ return show ?? (
                     selecione a opção Pix Copia e cola e cole o conteudo lá.
                 </div>
                 <div className="text-sm">
-                    Dúvidas, envie um whatsapp para o suporte <a href={'//wa.me/5551999926208?text=Pedido via PIX ID: '+pedido}>(51) 99992-6208</a>
+                    Dúvidas, envie um whatsapp para o suporte <a href={'//wa.me/5551999984008?text=Pedido via PIX ID: '+pedido}>(51) 99998-4008</a>
                 </div>
           </div>
         </div>

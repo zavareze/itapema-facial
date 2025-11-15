@@ -13,15 +13,14 @@ export default function Debito() {
     const [btnConfirmar, SetBtnConfirmar] = useState(false);
     const [btnMenu, SetBtnMenu] = useState(false);
     const updateDisplay = () => {
-        setTimeout(() => {
+        setInterval(() => {
             setDisplay(localStorage.getItem('display'));
             SetBtnCancelar(localStorage.getItem('tef_btn_cancelar'));
             if (localStorage.getItem('tef_btn_confirm') == 'true') {
                 router.push('/totem/pagamento');
                 SetBtnConfirmar(localStorage.getItem('tef_btn_confirm'));
             }
-            updateDisplay();
-        }, 100);
+        }, 500);
     }
     useEffect(() => {
         localStorage.setItem('display', '');
@@ -36,7 +35,7 @@ export default function Debito() {
     return (
         <div className="isolate bg-white dark:bg-slate-900 px-6 py-12 sm:py-32 lg:px-8">
             <Header title="Pagamento via Cartão de Débito" caption="Siga as instruções na maquininha de cartão" />
-            <div className="text-8xl font-bold text-center border rounded-xl p-4 bg-green-100 my-16 py-8">Valor: R$ 25,00</div>
+            <div className="text-8xl font-bold text-center border rounded-xl p-4 bg-green-100 my-16 py-8">Valor: R$ 30,00</div>
             <div className="mt-4 grid grid-cols-8 gap-4 w-full mb-8">
                 <div className="rounded-xl bg-white text-center font-bold text-white shadow-xl text-6xl col-span-2 mx-auto my-auto">
                     <img src="https://www.gertec.com.br/wp-content/uploads/2023/05/PPC930_-1000x1812-1.png" width="300" />
