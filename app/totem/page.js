@@ -44,10 +44,14 @@ export default function Totem() {
                 const tickets_abertos = JSON.parse(localStorage.getItem('tickets'));
                 const localizado = tickets_abertos.filter(x => x.ticket == localStorage.getItem('leitura'))?.[0];
                 if (localizado) {
-                    setErro('');
-                    localStorage.setItem('ticket_selecionado', JSON.stringify(localizado));
-                    console.log('ticket localizado', localizado);
-                    router.push('/totem/pagamento')
+                    if (localizado.data_liberacao != '0000-00-00 00:00:00') {
+                        setErro('Ticket já consta como pago/liberado');
+                    } else {
+                        setErro('');
+                        localStorage.setItem('ticket_selecionado', JSON.stringify(localizado));
+                        console.log('ticket localizado', localizado);
+                        router.push('/totem/pagamento')
+                    }
                 } else {
                     getTickets();
                     setErro('Ticket não localizado, tente novamente');
@@ -79,11 +83,13 @@ export default function Totem() {
             <div className="rounded-xl bg-green-600 p-8 text-center font-semibold text-white shadow-xl text-6xl my-8">
                 Leia o QR Code de seu Ticket de Estacionamento no leitor abaixo conforme imagem de exemplo
             </div>
+            { /*
             <Link href="/totem/informar-placa">
                 <div className="rounded-xl bg-indigo-600 p-10 text-center font-semibold text-white shadow-xl text-6xl">
                     Prefiro Informar a Placa
                 </div>
             </Link>
+            */ }
             <Footer />
         </div>
     )

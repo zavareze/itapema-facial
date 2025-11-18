@@ -12,6 +12,7 @@ export default function Pix() {
     const [erro, setErro] = useState('');
     useEffect(() => {
         const ticket_localizado = JSON.parse(localStorage.getItem('ticket_selecionado')) ?? {};
+        ticket_localizado['valor'] = parseFloat(localStorage.getItem('trnAmount')) ?? 0;
         const qrcode_pix = montaPix(ticket_localizado);
         setPix(qrcode_pix);
         setValor(localStorage.getItem('trnAmount'));
@@ -90,11 +91,35 @@ export default function Pix() {
                 setErro('Pagamento ainda não identificado, aguarde alguns segundos e tente novamente.');
             } else {
                 setErro('Pagamento realizado com sucesso! Liberando o estacionamento...');
-                /*setTimeout(() => {
-                    router.push('/recibo');
-                }, 2000);*/
+                reciboPix(json.ticket);
+                setTimeout(() => {
+                    router.push('/totem/recibo');
+                }, 2000);
             }
     }
+    const reciboPix = (ticket) => {
+        const recibo = `[INICIALIZAR][NEGRITO]CLUBE PARQUE DAS AGUAS
+[!NEGRITO]Endereo: Linha Amadeo, SN, Lote 66
+CEP: 90430-090 - Farroupilha/RS
+Fone: (054) 3268-1655      17/11/2025 20:03:27
+CNPJ: 00.236.866/0001-04                  UF: RS
+------------------------------------------------
+[EXPANDIDO]RECIBO #${ticket.recibo}
+[INICIALIZAR]------------------------------------------------
+[CONDENSADO]Estacionamento - TICKET: ${ticket.ticket}
+[!CONDENSADO][INICIALIZAR]------------------------------------------------
+
+Data: ${ticket.data_liberacao}
+Valor Pago: R$ ${ticket.valor_pago}
+Operador: Totem
+
+
+
+
+
+[CORTAR]`;
+        localStorage.setItem('via_cliente', recibo);
+    } 
     return (
         <div className="isolate bg-white dark:bg-slate-900 px-6 py-12 sm:py-32 lg:px-8">
             <Header title="Pagamento via Cartão PIX" caption="Leia o QR Code com o aplicativo de seu banco" />
