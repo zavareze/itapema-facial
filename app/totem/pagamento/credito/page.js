@@ -15,7 +15,7 @@ export default function Credito() {
     const [btnMenu, SetBtnMenu] = useState(false);
     const updateDisplay = () => {
         setInterval(() => {
-            //console.log('updateDisplay()')
+            console.log('updateDisplay()')
             setDisplay(localStorage.getItem('display'));
             SetBtnCancelar(localStorage.getItem('tef_btn_cancelar'));
             if (localStorage.getItem('via_cliente')) {
