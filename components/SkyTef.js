@@ -400,6 +400,7 @@ export function tef_finishtransaction(confirma, reenviaParametrosSiTef, foraDoFl
 				if (json['via_cliente']) {
 					localStorage.setItem('via_cliente', json['via_cliente']);
 				}
+				setTimeout(() => { localStorage.setItem('redirect', '/totem/recibo'); }, 2000);
 			});
 		}, error => { console.log(error)});
 	}
