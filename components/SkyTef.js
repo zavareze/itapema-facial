@@ -385,6 +385,7 @@ export function tef_finishtransaction(confirma, reenviaParametrosSiTef, foraDoFl
 					tef_log('Estornando transação fora do fluxo');
 				}
 			}
+			tef_session = JSON.parse(localStorage.getItem('tef_session'));
 			tef_session['estacionamento'] = true;
 			tef_session['ticket'] = JSON.parse(localStorage.getItem("ticket_selecionado"));
 			fetchReq('POST', 'https://sistema.parquedasaguas.com.br/tef/insertTransaction.php', JSON.stringify(tef_session), (data) => {
