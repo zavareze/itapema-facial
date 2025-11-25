@@ -385,7 +385,7 @@ export function tef_finishtransaction(confirma, reenviaParametrosSiTef, foraDoFl
 				}
 			}
 			tef_session['estacionamento'] = true;
-			tef_session['ticket'] = localStorage.getItem("ticket");
+			tef_session['ticket'] = localStorage.getItem("ticket_selecionado");
 			fetchReq('POST', 'https://sistema.parquedasaguas.com.br/tef/insertTransaction.php', JSON.stringify(tef_session), (data) => {
 				tef_log(data);
 				tef_session = JSON.parse(localStorage.getItem('tef_session'));
