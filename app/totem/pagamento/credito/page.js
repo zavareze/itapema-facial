@@ -31,7 +31,7 @@ export default function Credito() {
                 localStorage.setItem('redirect', '');
                 router.push(''+redirect);
             }
-            timer.current = updateDisplay
+            timer.current = updateDisplay()
         }, 100);
     }
     useEffect(() => {
