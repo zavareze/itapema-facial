@@ -19,20 +19,21 @@ export default function Credito() {
             console.log('updateDisplay()')
             setDisplay(localStorage.getItem('display'));
             SetBtnCancelar(localStorage.getItem('tef_btn_cancelar'));
-            if (localStorage.getItem('via_cliente')) {
+            
+            if (localStorage.getItem('via_cliente') && localStorage.getItem('via_cliente') != '') {
                 router.push('/totem/recibo');
             } else
                 if (localStorage.getItem('tef_btn_confirm') == 'true') {
                     router.push('/totem/pagamento');
                     SetBtnConfirmar(localStorage.getItem('tef_btn_confirm'));
                 }
-            if (localStorage.getItem('redirect') != '') {
+            if (localStorage.getItem('redirect') && localStorage.getItem('redirect') != '') {
                 const redirect = localStorage.getItem('redirect')
                 localStorage.setItem('redirect', '');
                 router.push(''+redirect);
             }
             timer.current = updateDisplay()
-        }, 100);
+        }, 500);
     }
     useEffect(() => {
         localStorage.setItem('display', '');
