@@ -14,6 +14,7 @@ export default function Totem() {
     const imprimirRecibo = () => {
         tef_print(localStorage.getItem('via_cliente'));
         setTimeout(() => {
+            localStorage.setItem('via_cliente', '');
             router.push('/totem');
         }, 3000);
         //localStorage.setItem('via_cliente', '');

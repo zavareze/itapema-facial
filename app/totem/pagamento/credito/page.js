@@ -36,6 +36,7 @@ export default function Credito() {
     }
     useEffect(() => {
         localStorage.setItem('display', '');
+        localStorage.setItem('via_cliente', '');
         localStorage.setItem('tef_btn_cancelar', false);
         localStorage.setItem('tef_btn_confirm', false);
         localStorage.setItem('tef_input', '');

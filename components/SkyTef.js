@@ -80,7 +80,7 @@ async function tef_start_transaction(data) {
 		} else {
 			tef_session['continua'] = 0;
 			//console.log(Object.assign(tef_session, data, result))
-			tef_save_session(Object.assign(data, result));
+			tef_save_session(Object.assign(data, args, result));
 			tef_continuetransaction('');
 		}
 	} , error => { 
@@ -350,6 +350,7 @@ export function tef_finishtransaction(confirma, reenviaParametrosSiTef, foraDoFl
 	let json = processaTransacao();
 	tef_session = JSON.parse(localStorage.getItem('tef_session'));
 	tef_session = Object.assign(tef_session, json, {confirm_transaction: confirma});
+	console.log("APOS PROCESSATRANSACAO", tef_session);
 	tef_save_session(tef_session);
 	//console.log('LOG TEF SESSION FINISH', tef_session);
 	//tef_log('FINALIZADO SEM FINISH');
