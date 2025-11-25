@@ -15,7 +15,7 @@ export default function Credito() {
     const [btnConfirmar, SetBtnConfirmar] = useState(false);
     const [btnMenu, SetBtnMenu] = useState(false);
     const updateDisplay = () => {
-        setInterval(() => {
+        return setTimeout(() => {
             console.log('updateDisplay()')
             setDisplay(localStorage.getItem('display'));
             SetBtnCancelar(localStorage.getItem('tef_btn_cancelar'));
@@ -26,11 +26,12 @@ export default function Credito() {
                     router.push('/totem/pagamento');
                     SetBtnConfirmar(localStorage.getItem('tef_btn_confirm'));
                 }
-                if (localStorage.getItem('redirect') != '') {
-                    const redirect = localStorage.getItem('redirect')
-                    localStorage.setItem('redirect', '');
-                    router.push(''+redirect);
-                }
+            if (localStorage.getItem('redirect') != '') {
+                const redirect = localStorage.getItem('redirect')
+                localStorage.setItem('redirect', '');
+                router.push(''+redirect);
+            }
+            timer.current = updateDisplay
         }, 100);
     }
     useEffect(() => {

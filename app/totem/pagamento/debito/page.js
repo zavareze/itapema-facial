@@ -5,8 +5,9 @@ import Footer from '@/components/TotemFooter';
 import Header from '@/components/TotemHeader';
 import { useRouter } from 'next/navigation';
 import {venda_debito, tef_continuetransaction, trataColeta } from '@/components/SkyTef';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 export default function Debito() {
+    const timer = useRef(null);
     const router = useRouter();
     const [display, setDisplay] = useState('');
     const [valor, setValor] = useState('');
@@ -14,13 +15,26 @@ export default function Debito() {
     const [btnConfirmar, SetBtnConfirmar] = useState(false);
     const [btnMenu, SetBtnMenu] = useState(false);
     const updateDisplay = () => {
-        setInterval(() => {
+        return setTimeout(() => {
             setDisplay(localStorage.getItem('display'));
             SetBtnCancelar(localStorage.getItem('tef_btn_cancelar'));
             if (localStorage.getItem('tef_btn_confirm') == 'true') {
                 router.push('/totem/pagamento');
                 SetBtnConfirmar(localStorage.getItem('tef_btn_confirm'));
             }
+            if (localStorage.getItem('via_cliente')) {
+                router.push('/totem/recibo');
+            } else
+                if (localStorage.getItem('tef_btn_confirm') == 'true') {
+                    router.push('/totem/pagamento');
+                    SetBtnConfirmar(localStorage.getItem('tef_btn_confirm'));
+                }
+            if (localStorage.getItem('redirect') != '') {
+                const redirect = localStorage.getItem('redirect')
+                localStorage.setItem('redirect', '');
+                router.push(''+redirect);
+            }
+            timer.current = updateDisplay();
         }, 500);
     }
     useEffect(() => {
@@ -32,7 +46,10 @@ export default function Debito() {
         localStorage.setItem('tef_input_length', 1);
         setValor(localStorage.getItem('trnAmount'));
         venda_debito();
-        updateDisplay();
+        timer.current = updateDisplay();
+        return () => { 
+            clearTimeout(timer.current); 
+        }
     }, []);
     return (
         <div className="isolate bg-white dark:bg-slate-900 px-6 py-12 sm:py-32 lg:px-8">
