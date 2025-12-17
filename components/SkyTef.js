@@ -600,14 +600,14 @@ export const tef_print = async (str) => {
 	
 	//$('#print-comprovante').html(str);
 	//$('#tef_receipt').show();
-	const response = await fetch('https://impressora.zavareze.com.br/Processador.php', { 
+	const response = await fetch('https://sistema.caixeirosviajantes.com.br/Impressora.php', { 
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/x-www-form-urlencoded',                 
 		},
 		body: output
 	});
-	location.href='webclientprint:https://impressora.zavareze.com.br/Processador.php?clientPrint&sid='+id
+	location.href='webclientprint:https://sistema.caixeirosviajantes.com.br/Impressora.php?clientPrint&sid='+id
 }
 const tef_print_close = () => { 
 	//$('#tef_receipt').hide();

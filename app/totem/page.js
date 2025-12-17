@@ -36,6 +36,7 @@ export default function Totem() {
             localStorage.setItem('terminalId', 'TOTEM001');
         }
         localStorage.setItem('leitura', '');
+        localStorage.setItem('via_cliente', '');
         localStorage.setItem('ticket_selecionado', 'undefined');
         localStorage.setItem('trnAmount', '30,00');
         function keyDownHandler(e) {
