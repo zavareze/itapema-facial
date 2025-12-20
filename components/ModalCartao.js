@@ -49,7 +49,7 @@ export default function ModalCartao({total, pedido, show, setCarregando, setShow
       }
       try {
           setCarregando(true);
-          const r = await fetch(`https://facial.parquedasaguas.com.br/rede`, {
+          const r = await fetch(`https://facial.parquedasaguas.com.br/rede/normal`, {
               method: 'POST',
               headers: {
                   'Content-Type': 'application/json',
@@ -69,8 +69,9 @@ export default function ModalCartao({total, pedido, show, setCarregando, setShow
           });
           const result = await r.json();
           setCarregando(false);
+          console.log(result);
           if (result.success) {
-            router.push(result.url);
+            router.push('/voucher/'+result.voucher);
           }
           if (result.error)
             alert(result.message);
