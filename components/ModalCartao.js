@@ -39,12 +39,16 @@ export default function ModalCartao({total, pedido, show, setCarregando, setShow
         alert('Você deve preencher o mês de vencimento do cartão.');
         return;
       }
-      if (updated?.cardYear.length != 4) {
+      if (updated?.cardYear.toString().length != 4) {
         alert('Você deve preencher o ano de vencimento com 4 digitos.');
         return;
       }
-      if (updated?.cardMonth.length != 2) {
+      if (updated?.cardMonth.toString().length != 2) {
         alert('Você deve preencher o mês de vencimento com 2 digitos.');
+        return;
+      }
+      if (updated?.cardMonth < 1 || updated?.cardMonth > 12) {
+        alert('Mês deve ser entre 01 e 12');
         return;
       }
       try {
@@ -152,7 +156,7 @@ return show ?? (
             </div>
             <div>
                 <label htmlFor="cardYear" className="block text-sm font-semibold leading-4 text-gray-900 dark:text-slate-300">
-                    Ano
+                    Ano (4 dígitos)
                 </label>
                 <div className="mt-2">
                     <input
