@@ -7,6 +7,7 @@ export default function Selecao() {
   // const hoje = new Date('2024-06-08 00:00');
   const searchParams = useSearchParams();
   const [parque, setParque] = useState(searchParams.get("parque"));
+  const [cupom, setCupom] = useState(searchParams.get("cupom"));
   const router = useRouter();
   const dias_semana = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"];
   const [calendario, setCalendario] = useState([]);
@@ -14,13 +15,13 @@ export default function Selecao() {
   const [calendarioAtual, setCalendarioAtual] = useState([]);
   useEffect(() => {
     let ignore = false;
-    if (searchParams.get("cupom"))
-      localStorage.setItem("cupom", searchParams.get("cupom"));
+    if (cupom)
+      localStorage.setItem("cupom", cupom);
     else
       localStorage.setItem("cupom", "");
     const getCalendario = async () => {
       const res = await fetch(
-        `https://facial.parquedasaguas.com.br/ingressos?parque=` + parque + `&cupom=`+localStorage.getItem("cupom"),
+        `https://facial.parquedasaguas.com.br/ingressos?parque=` + parque + `&cupom=`+cupom,
         {
           method: "GET",
           headers: {
@@ -39,7 +40,7 @@ export default function Selecao() {
     return () => {
       ignore = true;
     };
-  }, []);
+  }, [cupom]);
   return (
     <div className="isolate bg-white dark:bg-slate-900 px-6 py-8 sm:py-32 lg:px-8">
       <div
@@ -63,7 +64,22 @@ export default function Selecao() {
           Selecione o data da Visita
         </p>
       </div>
-      <div className="mx-auto mt-8 max-w-xl sm:mt-20">
+      <div className="mx-auto mt-4 max-w-xl sm:mt-10">
+        <div className="grid grid-cols-4 gap-2 mb-4">
+          <input type="text" placeholder="CUPOM DESCONTO" className="col-span-3 p-3 rounded border text-center" 
+            defaultValue={cupom || ""} onBlur={(e) => {
+            setCupom(e.target.value);
+            if (e.target.value)
+              localStorage.setItem("cupom", e.target.value);
+            else
+              localStorage.setItem("cupom", "");
+          }} />
+          <div
+                className="cursor-pointer mx-auto rounded-md bg-slate-900 dark:bg-slate-600 px-3.5 text-center font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                onClick={() => { }}>
+                Aplicar Desconto
+              </div>
+        </div>
         <div className="grid grid-cols-7">
           <div className="text-center font-bold col-span-7">
             {calendarioAtual["caption"]}
