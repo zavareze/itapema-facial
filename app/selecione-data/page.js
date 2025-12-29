@@ -14,6 +14,10 @@ export default function Selecao() {
   const [calendarioAtual, setCalendarioAtual] = useState([]);
   useEffect(() => {
     let ignore = false;
+    if (searchParams.get("cupom"))
+      localStorage.setItem("cupom", searchParams.get("cupom"));
+    else
+      localStorage.setItem("cupom", "");
     const getCalendario = async () => {
       const res = await fetch(
         `https://facial.parquedasaguas.com.br/ingressos?parque=` + parque + `&cupom=`+localStorage.getItem("cupom"),
@@ -25,10 +29,6 @@ export default function Selecao() {
         }
       );
       const result = await res.json();
-      if (searchParams.get("cupom"))
-        localStorage.setItem("cupom", searchParams.get("cupom"));
-      else
-        localStorage.setItem("cupom", "");
       if (!ignore) {
         // console.log(result);
         setCalendario(result);
