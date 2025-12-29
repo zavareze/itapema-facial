@@ -52,6 +52,7 @@ export default function Selecao() {
   };
   const geraPedido = async (forma_pagamento) => {
     setCarregando(true);
+    const cupom = localStorage.getItem("cupom") || "";
     const res = await fetch(`https://facial.parquedasaguas.com.br/pedido`, {
       method: "POST",
       headers: {
@@ -61,6 +62,7 @@ export default function Selecao() {
         cpf,
         forma_pagamento,
         parque,
+        cupom,
         data,
         produtos: produtosEscolhidos,
         voucher,
@@ -96,7 +98,7 @@ export default function Selecao() {
     setCarregando(true);
     const getCalendario = async () => {
       const res = await fetch(
-        `https://facial.parquedasaguas.com.br/ingressos?parque=` + parque,
+        `https://facial.parquedasaguas.com.br/ingressos?parque=` + parque + `&cupom=`+localStorage.getItem("cupom"),
         {
           method: "GET",
           headers: {
