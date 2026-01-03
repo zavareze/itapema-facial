@@ -6,8 +6,8 @@ import { GoogleAnalytics } from '@next/third-parties/google'
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
-  title: "Thermas Clube Parque das Águas",
-  description: "Compre seu Passaporte e aproveite o Melhor Parque Aquático da Região",
+  title: "Itapema Park",
+  description: "Compre seu Passaporte e aproveite o Maior Parque Aquático da Região",
 };
 
 export default function RootLayout({ children }) {
