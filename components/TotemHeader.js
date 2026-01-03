@@ -19,7 +19,7 @@ export default function Header({title, caption}) {
       </div>
       <div className="mx-auto text-center h-[530px]">
         <img
-          src="https://compre2.parquedasaguas.com.br/img/cpa.png"
+          src="/itapema.png"
           className="mx-auto w-1/3 h-[430px]"
           onClick={() => router.push('/totem')}
         />

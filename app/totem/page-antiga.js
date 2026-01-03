@@ -16,7 +16,7 @@ export default function Totem() {
         />
       </div>
       <div className="mx-auto text-center h-3/6 h-[1150px]">
-        <img src="https://compre2.parquedasaguas.com.br/img/cpa.png" className="mx-auto w-9/12  h-[966px]" />
+        <img src="/itapema.png" className="mx-auto w-9/12  h-[966px]" />
         <h2 className="text-7xl font-bold tracking-tight text-gray-900 dark:text-white mb-8">Pagamento Estacionamento</h2>
         <p className="mt-2 text-4xl leading-8 text-gray-600 dark:text-slate-300 mx-4">
           Efetue seu pagamento do estacionamento aqui ou pelo nosso site.

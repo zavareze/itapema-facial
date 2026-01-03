@@ -117,7 +117,7 @@ export default function Voucher(req) {
                 />
             </div>
             <div className="mx-auto max-w-2xl text-center">
-                <img src="/cpa.png" className="w-24 mx-auto" />
+                <img src="/itapema.png" className="w-48 mx-auto" />
                 <h2 className="text-2xl font-bold tracking-tight text-gray-900 sm:text-4xl mb-4">
                     { pedido.cliente == 0 ? 'Recibo Taxas' : 'Voucher' }
                 </h2>

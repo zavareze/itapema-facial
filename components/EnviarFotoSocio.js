@@ -15,7 +15,7 @@ export default function EnviarFotoSocio({matricula, setLoading, setResult}) {
     }
     const upload = async (req) => {
         setLoading(true);
-        const res = await fetch(`https://facial.parquedasaguas.com.br/cadastro/store`, {
+        const res = await fetch(`https://facial.itapemapark.com.br/cadastro/store`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

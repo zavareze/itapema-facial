@@ -6,7 +6,7 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
 async function getLogin(matricula, cpf) {
-  const res = await fetch(`https://facial.parquedasaguas.com.br/login`, {
+  const res = await fetch(`https://facial.itapemapark.com.br/login`, {
     method: 'POST',
     headers: {
         'Content-Type': 'application/json',
@@ -54,7 +54,7 @@ export default function Login() {
         />
       </div>
       <div className="mx-auto max-w-2xl text-center">
-        <img src="https://compre2.parquedasaguas.com.br/img/cpa.png" className="w-24 mx-auto" />
+        <img src="/itapema.png" className="w-48 mx-auto" />
         <h2 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-4xl">Reconhecimento Facial Sócios</h2>
         <p className="mt-2 text-lg leading-8 text-gray-600 dark:text-slate-300">
           Efetue o cadastramento e atualização de dados de reconhecimento facial para sócios e dependentes.

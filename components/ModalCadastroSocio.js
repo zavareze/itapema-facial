@@ -22,7 +22,7 @@ export default function ModalCadastroSocio({person, setResult, setLoading, setSh
             // console.log(post, localStorage.getItem('token'));
             setLoading(true);
             
-            const r = await fetch(`https://facial.parquedasaguas.com.br/cadastro/titulo`, {
+            const r = await fetch(`https://facial.itapemapark.com.br/cadastro/titulo`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

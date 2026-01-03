@@ -37,7 +37,7 @@ async function cadastro(req, token, onSuccess) {
   return json;
 }
 async function getTaxas(token, onSuccess) {
-  const res = await fetch(`https://facial.parquedasaguas.com.br/taxas`, {
+  const res = await fetch(`https://facial.itapemapark.com.br/taxas`, {
     // mode: 'no-cors',
     method: "GET",
     headers: {
@@ -140,25 +140,8 @@ export default function Taxas() {
   const montaNomeCarrinho = (convenio, chave) => {
     let texto = "";
     switch (convenio) {
-      case 5:
-        texto = "Renovação Taxa Sanitária";
-        break;
-      case 45:
-        texto = "Renovação Carteira Social";
-        break;
-    }
-    switch (chave) {
-      case "T":
-        texto += " Temporada";
-        break;
-      case "M":
-        texto += " 1 Mês";
-        break;
-      case "1ANO":
-        texto += " 1 Ano";
-        break;
-      case "2ANOS":
-        texto += " 2 Anos";
+      case 2:
+        texto = "Renovação Anual";
         break;
     }
     return texto;
@@ -240,14 +223,11 @@ export default function Taxas() {
           Reconhecimento facial clique aqui
         </Link>
         <h1 className="text-2xl font-bold text-center py-2">
-          Renovação de Taxas
+          Renovação de Taxa Anual
         </h1>
         <div className="pb-4 px-2">
           <p className="text-sm">
-            Existem duas taxas que devem ser pagas periodicamente são elas taxa
-            de carteirinha e Taxa Sanitária. A taxa de carteirinha existe
-            renovação por 1 ano ou 2 anos, já a taxa sanitária tem pela validade
-            de 1 mês ou 2 meses.
+            A Taxa anual deve ser paga todos os anos por cada dependente ativo no título, ela é cobrada independentemente do uso.
           </p>
         </div>
         {carrinho?.length > 0 ? (<div>
@@ -343,15 +323,9 @@ export default function Taxas() {
                     {person.nome}
                   </div>
                   <div className="mt-1 truncate text-xs leading-5 text-gray-500">
-                    <div>Vencimento Carteirinha:</div>
+                    <div>Vencimento:</div>
                     <span className={`text-center ${person.carteira_vencida == '1' ? 'bg-red-500' : 'bg-green-500' } text-white font-bold uppercase text-sm px-3 py-1 rounded`}>
                       {person?.vencimento_carteira}
-                    </span>
-                  </div>
-                  <div className="mt-1 truncate text-xs leading-5 text-gray-500">
-                    <div>Vencimento Taxa Sanitária:</div>
-                    <span className={`text-center ${person.taxa_sanitaria_vencida == '1' ? 'bg-red-500' : 'bg-green-500' } text-white font-bold uppercase text-sm px-3 py-1 rounded`}>
-                      {person?.vencimento_taxa_sanitaria}
                     </span>
                   </div>
                 </div>
@@ -392,7 +366,7 @@ export default function Taxas() {
                       : "bg-orange-500"
                   }`}
                     >
-                      Carteirinha {registro?.vencimento_carteira}
+                      Taxa Anual {registro?.vencimento_carteira}
                     </div>
                     <button
                       className="btn-responsive bg-gray-500 text-white active:bg-gray-600 font-bold uppercase text-sm px-2 py-3 
@@ -401,77 +375,14 @@ export default function Taxas() {
                       onClick={() =>
                         atualizaTaxas(
                           registro,
-                          45,
-                          "1ANO",
-                          taxas?.[2]?.["valor"]
+                          2,
+                          "TX.CARTEIRINHA",
+                          taxas?.[0]?.["valor"]
                         )
                       }
                     >
-                      Carteirinha 1 Ano R${" "}
-                      {parseFloat(taxas?.[2]?.["valor"])?.toLocaleString(
-                        "pt-BR",
-                        {
-                          minimumFractionDigits: 2,
-                        }
-                      )}
-                    </button>
-                    <button
-                      className="btn-responsive bg-gray-500 text-white active:bg-gray-600 font-bold uppercase text-sm px-2 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
-                      type="button"
-                      onClick={() =>
-                        atualizaTaxas(
-                          registro,
-                          45,
-                          "2ANOS",
-                          taxas?.[3]?.["valor"]
-                        )
-                      }
-                    >
-                      Carteirinha 2 Anos R${" "}
-                      {parseFloat(taxas?.[3]?.["valor"])?.toLocaleString(
-                        "pt-BR",
-                        {
-                          minimumFractionDigits: 2,
-                        }
-                      )}
-                    </button>
-                    <hr />
-                    <div className={`btn-responsive text-center  text-white font-bold uppercase text-sm 
-                  px-2 py-3 rounded shadow outline-none mr-1 mb-1 ease-linear transition-all duration-150 +
-                  ${
-                    registro.taxa_sanitaria_vencida == "0"
-                      ? "bg-emerald-500"
-                      : checkCarrinho(registro.matricula, 5)
-                      ? "bg-red-500"
-                      : "bg-orange-500"
-                  }`}>
-                      Vencido Taxa Sanitária{" "}
-                      {registro?.vencimento_taxa_sanitaria}
-                    </div>
-                    <button
-                      className="btn-responsive bg-gray-500 text-white active:bg-gray-600 font-bold uppercase text-sm px-2 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
-                      type="button"
-                      onClick={() =>
-                        atualizaTaxas(registro, 5, "M", taxas?.[0]?.["valor"])
-                      }
-                    >
-                      Taxa Sanitária 1 mês R${" "}
+                      Renovar 1 Ano R${" "}
                       {parseFloat(taxas?.[0]?.["valor"])?.toLocaleString(
-                        "pt-BR",
-                        {
-                          minimumFractionDigits: 2,
-                        }
-                      )}
-                    </button>
-                    <button
-                      className="btn-responsive bg-gray-500 text-white active:bg-gray-600 font-bold uppercase text-sm px-2 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
-                      type="button"
-                      onClick={() =>
-                        atualizaTaxas(registro, 5, "T", taxas?.[1]?.["valor"])
-                      }
-                    >
-                      Taxa Sanitária 5 meses R${" "}
-                      {parseFloat(taxas?.[1]?.["valor"])?.toLocaleString(
                         "pt-BR",
                         {
                           minimumFractionDigits: 2,

@@ -59,7 +59,7 @@ export default function Cadastro() {
             mesmas possam acessar o clube.
           </p>
           <p className="text-sm">
-            Vale lembrar que as mesmas devem também estar em
+            Vale lembrar que todos devem também estar em
             dia com as taxas para poder acessar o clube.</p>
             <p className="text-sm font-bold">Clique na pessoa para atualizar os dados da mesma. Após isso você poderá enviar uma nova Foto.</p>
         </div>

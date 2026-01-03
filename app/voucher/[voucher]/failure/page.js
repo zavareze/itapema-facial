@@ -18,7 +18,7 @@ export default async function Failure(req) {
                 />
             </div>
             <div className="mx-auto max-w-2xl text-center">
-                <img src="/cpa.png" className="w-24 mx-auto" />
+                <img src="/itapema.png" className="w-24 mx-auto" />
                 <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl mb-4">
                     Retorno Operadora Cartão (Falha)
                 </h2>

@@ -98,7 +98,7 @@ export default function Selecao() {
     setCarregando(true);
     const getCalendario = async () => {
       const res = await fetch(
-        `https://facial.parquedasaguas.com.br/ingressos?parque=` + parque + `&cupom=`+localStorage.getItem("cupom"),
+        `https://facial.parquedasaguas.com.br/ingressos/lista?parque=3&cupom=`+localStorage.getItem("cupom"),
         {
           method: "GET",
           headers: {
@@ -109,13 +109,7 @@ export default function Selecao() {
       const result = await res.json();
       if (!ignore) {
         setCarregando(false);
-        result.map((item) => {
-          item.dias.map((dia) => {
-            if (dia.data == data) {
-              setIngressos(dia.produtos);
-            }
-          });
-        });
+        setIngressos(result.produtos);
       }
     };
     getCalendario();
@@ -139,10 +133,10 @@ export default function Selecao() {
         />
       </div>
       <div className="mx-auto max-w-2xl text-center">
-        <img src="/cpa.png" className="w-24 mx-auto" />
+        <img src="/itapema.png" className="w-48 mx-auto" />
         <h2 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-4xl mb-4">
           Promoções Disponíveis<br />
-          {data.split('-').reverse().join('/')} {parque == 1 ? 'Farroupilha/RS' : 'Viamão/RS'}
+          Alvorada/RS
         </h2>
       </div>
 
@@ -198,9 +192,7 @@ export default function Selecao() {
                 )}
               </div>
               <div className="text-sm mb-2 text-black dark:text-gray-300">
-                Tenha seu acesso individual liberado no parque aquático de
-                viamão durante 1 ano e ainda ganhe desconto no estacionamento,
-                adquira já seu VIPCARD.
+                {produto.informacoes}
               </div>
               <div className="flex mb-2">
                 <div className="font-bold mx-4 text-xl">
