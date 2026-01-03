@@ -98,7 +98,7 @@ export default function Cadastro() {
           <QRCode value={pedido.voucher} style={{ height: "150px", maxWidth: "100%", width: "100%" }} />
 
           <div className="my-2">
-            Pedido #: {pedido.id} - Parque {pedido.parque == '1' ? 'Farroupilha' : 'Viamão'} <br />
+            Pedido #: {pedido.id} - Parque em Alvorada <br />
             Ingressos: {pedido.adultos != '0' ? pedido.adultos + ' Adultos ' : ''}
             {pedido.criancas != '0' ? pedido.criancas + ' Crianças' : ''}
           </div>

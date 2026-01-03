@@ -32,7 +32,7 @@ export default async function Failure(req) {
                 <div className="bg-red-100 rounded text-center p-4">{req.searchParams.errorCode3DS} - {req.searchParams.message3DS}</div>
             </div>
             <div className="m-4">
-                <Link href="/selecione-parque"
+                <Link href="/"
                     className="block w-full rounded-md bg-slate-900 px-3.5 py-2.5 text-center text-xl font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                 >
                     Voltar

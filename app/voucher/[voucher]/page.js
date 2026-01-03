@@ -123,7 +123,7 @@ export default function Voucher(req) {
                 </h2>
             </div>
             <div className="mx-4 text-xl font-bold text-black">
-                {pedido.cliente == 0 ? 'Parque das Águas' : pedido?.parque?.nome}
+                {pedido.cliente == 0 ? 'Itapema Park' : pedido?.parque?.nome}
             </div>
             <div className="mx-4 text-sm">
                 <div>{pedido.cliente == 0 ? 'Linha Amadeo - Lote 66 - Próximo a Empresa SUL PET - Farroupilha - RS' :pedido.parque?.endereco}</div>

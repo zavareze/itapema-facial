@@ -19,8 +19,8 @@ export default function Pix() {
     }, []);
     const montaPix = (data) => {
 		const chave = '05411490000132';
-		const nome = 'PARQUE DAS AGUAS';
-		const cidade = 'VIAMAO';
+		const nome = 'ITAPEMA PARK';
+		const cidade = 'ALVORADA';
 		const referencia = `Estacionamento ${data['ticket']}`;
 		const pedido = 'E'+data['id'];
 		let valor = data['valor'];
@@ -98,7 +98,7 @@ export default function Pix() {
             }
     }
     const reciboPix = (ticket) => {
-        const recibo = `[INICIALIZAR][NEGRITO]CLUBE PARQUE DAS AGUAS
+        const recibo = `[INICIALIZAR][NEGRITO]ITAPEMA PARK
 [!NEGRITO]Endereo: Linha Amadeo, SN, Lote 66
 CEP: 90430-090 - Farroupilha/RS
 Fone: (054) 3268-1655      17/11/2025 20:03:27
